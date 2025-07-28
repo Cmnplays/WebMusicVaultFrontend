@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useRef, useState } from "react";
+const apiBase = import.meta.env.VITE_API_URL;
 
 const UploadPage: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -35,14 +36,15 @@ const UploadPage: React.FC = () => {
 
     setIsUploading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/v1/song/upload",
-        formData
-      );
+      await axios.post(`${apiBase}/song/upload`, formData, {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+
       setSuccessMsg("Upload successful!");
       setFiles([]);
       if (inputRef.current) inputRef.current.value = "";
-      console.log("Server response:", response.data);
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
         if (err.response.status === 409) {
@@ -56,6 +58,8 @@ const UploadPage: React.FC = () => {
         setError("An unexpected error occurred. Please try again.");
       }
       console.error("Upload error:", err);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -109,6 +113,12 @@ const UploadPage: React.FC = () => {
         {successMsg && (
           <p className="text-green-600 text-sm font-medium">{successMsg}</p>
         )}
+
+        {/* Upload duration info message */}
+        <p className="text-gray-500 text-sm italic mb-2">
+          Upload might take up to 2 minutes depending on file size and
+          connection.
+        </p>
 
         <button
           type="submit"

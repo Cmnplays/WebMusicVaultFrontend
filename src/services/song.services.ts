@@ -1,4 +1,5 @@
 import axios from "axios";
+const apiBase = import.meta.env.VITE_API_URL;
 interface apiResponse<K> {
   status: number;
   message: string;
@@ -16,13 +17,18 @@ const fetchAllSongs = async (
   page: number = 1
 ): Promise<Song[]> => {
   try {
-    const response = await axios.get<apiResponse<Song[]>>("/api/v1/song", {
+    const response = await axios.get<apiResponse<Song[]>>(`${apiBase}/song`, {
       params: {
         limit,
         page,
       },
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
     });
+
     if (response.data.status !== 200) {
+      console.log(response.data);
       throw new Error(response.data.message || "Failed to fetch songs");
     }
     return response.data.data;
