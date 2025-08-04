@@ -1,20 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
 import { fetchAllSongs } from "../services/song.services";
 import type { Song } from "../services/song.services";
-
-function formatDuration(seconds: number) {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-}
+import SongPlayerPanel from "../components/SongPlayerPanel";
+import { formatDuration } from "../components/formatDuration";
 
 const MusicPage: React.FC = () => {
   const [playingSong, setPlayingSong] = useState<Song | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [songs, setSongs] = useState<Song[]>([]);
   const [page, setPage] = useState<number>(1);
   const [hasMoreSongs, setHasMoreSongs] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const [panelTrigger, setPanelTrigger] = useState(0);
+
   const Limit = 10;
 
   // Fetch songs on page or initial load
@@ -86,16 +87,45 @@ const MusicPage: React.FC = () => {
     };
   }, [loading, hasMoreSongs]);
 
+  useEffect(() => {
+    const song = audioRef.current;
+    if (!song) {
+      return;
+    }
+    const onLoadMetadata = () => {
+      setDuration(song.duration ?? 0);
+    };
+    const onTimeUpdate = () => {
+      setCurrentTime(song.currentTime ?? 0);
+    };
+    song.addEventListener("loadedmetadata", onLoadMetadata);
+    song.addEventListener("timeupdate", onTimeUpdate);
+
+    return () => {
+      song.removeEventListener("loadedmetadata", onLoadMetadata);
+      song.removeEventListener("timeupdate", onTimeUpdate);
+    };
+  }, []);
+
   // Handle play button click
   function handlePlayClick(song: Song) {
     if (playingSong?._id === song._id) {
-      setPlayingSong(null);
+      if (playing) {
+        setPlaying(false);
+        audioRef.current?.pause();
+      } else {
+        setPlaying(true);
+        audioRef.current?.play();
+        setPanelTrigger((prev) => prev + 1);
+      }
     } else {
       if (!song.fileUrl) {
         alert("Audio not available for this song.");
+        setPlaying(false);
         return;
       }
       setPlayingSong(song);
+      setPlaying(true);
     }
   }
 
@@ -118,6 +148,36 @@ const MusicPage: React.FC = () => {
     }
   }
 
+  const moveToNextSong = () => {
+    const currentIndex = songs.findIndex((s) => s._id === playingSong?._id);
+    if (currentIndex === -1) {
+      setPlayingSong(null);
+    }
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < songs.length) {
+      setPlayingSong(songs[nextIndex]);
+    } else {
+      // No more songs in list
+      setPlayingSong(songs[0]);
+    }
+    setPlaying(true);
+  };
+
+  const moveToPreviousSong = () => {
+    const currentIndex = songs.findIndex((s) => s._id === playingSong?._id);
+    if (currentIndex === -1) {
+      setPlayingSong(null);
+    }
+    const previousSong = currentIndex - 1;
+    if (previousSong < 0) {
+      setPlayingSong(songs[songs.length - 1]);
+    } else {
+      // No more songs in list
+      setPlayingSong(songs[previousSong]);
+    }
+    setPlaying(true);
+  };
+
   return (
     <main className="max-w-5xl mx-auto p-4">
       <h2 className="text-3xl font-extrabold mb-6 text-gray-900 tracking-tight">
@@ -126,26 +186,34 @@ const MusicPage: React.FC = () => {
 
       <ul className="space-y-4">
         {songs.map((song) => {
-          const isPlaying = playingSong?._id === song._id;
+          const isCurrentSongPlaying = playingSong?._id === song._id && playing;
 
           return (
             <li
               key={song._id}
-              className="flex items-center gap-4 p-3 bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 cursor-pointer"
+              onClick={() => handlePlayClick(song)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handlePlayClick(song);
+                }
+              }}
+              aria-label={isCurrentSongPlaying ? "Pause" : "Play"}
+              title={isCurrentSongPlaying ? "Pause" : "Play"}
+              className="flex items-center gap-4 p-3 bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2"
             >
-              <button
-                onClick={() => handlePlayClick(song)}
+              <div
                 className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-white shadow focus:outline-none
                   ${
-                    isPlaying
+                    isCurrentSongPlaying
                       ? "bg-gradient-to-tr from-purple-700 to-purple-900"
                       : "bg-gradient-to-tr from-blue-400 to-purple-600"
                   }
                 `}
-                aria-label={isPlaying ? "Pause" : "Play"}
-                title={isPlaying ? "Pause" : "Play"}
               >
-                {isPlaying ? (
+                {isCurrentSongPlaying ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-6 h-6"
@@ -165,7 +233,7 @@ const MusicPage: React.FC = () => {
                     <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
                   </svg>
                 )}
-              </button>
+              </div>
 
               <div className="flex-grow overflow-hidden">
                 <h3
@@ -198,6 +266,29 @@ const MusicPage: React.FC = () => {
         <p className="text-center mt-4 text-gray-600">
           You have reached the end of the list.
         </p>
+      )}
+      {playingSong && (
+        <SongPlayerPanel
+          song={playingSong}
+          currentTime={currentTime}
+          setCurrentTime={setCurrentTime}
+          audioRef={audioRef as React.RefObject<HTMLAudioElement>}
+          duration={duration}
+          playing={playing}
+          setPlaying={setPlaying}
+          panelTrigger={panelTrigger}
+          handlePlayPause={() => {
+            if (!playing) {
+              audioRef.current?.play();
+              setPlaying(true);
+              return;
+            }
+            audioRef.current?.pause();
+            setPlaying(false);
+          }}
+          moveToNextSong={moveToNextSong}
+          moveToPreviousSong={moveToPreviousSong}
+        />
       )}
     </main>
   );
