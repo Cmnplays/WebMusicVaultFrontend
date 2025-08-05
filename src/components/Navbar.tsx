@@ -1,8 +1,46 @@
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import gsap from "gsap";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!menuRef.current) return;
+
+    if (isOpen) {
+      gsap.to(menuRef.current, {
+        height: "auto",
+        opacity: 1,
+        duration: 0.4,
+        ease: "power2.out",
+        display: "block",
+      });
+    } else {
+      gsap.to(menuRef.current, {
+        height: 0,
+        opacity: 0,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => {
+          if (menuRef.current) {
+            menuRef.current.style.display = "none";
+          }
+        },
+      });
+    }
+  }, [isOpen]);
+
+  // Initialize hidden menu on mount
+  useEffect(() => {
+    if (menuRef.current) {
+      menuRef.current.style.height = "0";
+      menuRef.current.style.opacity = "0";
+      menuRef.current.style.overflow = "hidden";
+      menuRef.current.style.display = "none";
+    }
+  }, []);
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -25,7 +63,7 @@ const Navbar = () => {
             </svg>
           </span>
 
-          {/* Desktop: full name + icon, matching mobile style */}
+          {/* Desktop: full name + icon */}
           <span className="hidden sm:flex items-center space-x-2 text-blue-600 font-semibold italic text-2xl md:text-3xl tracking-tight select-none">
             <span>WebMusicVault</span>
             <svg
@@ -94,30 +132,32 @@ const Navbar = () => {
       </div>
 
       {/* Mobile nav menu */}
-      {isOpen && (
-        <div className="sm:hidden px-6 pb-4 bg-white shadow-md">
-          <ul className="space-y-2">
-            <li>
-              <Link
-                to="/musics"
-                className="block text-gray-800 font-medium"
-                onClick={() => setIsOpen(false)}
-              >
-                Musics
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/upload"
-                className="block text-gray-800 font-medium"
-                onClick={() => setIsOpen(false)}
-              >
-                Upload
-              </Link>
-            </li>
-          </ul>
-        </div>
-      )}
+      <div
+        ref={menuRef}
+        className="sm:hidden px-6 pb-4 bg-white shadow-md overflow-hidden"
+        style={{ height: 0, opacity: 0, display: "none" }}
+      >
+        <ul className="space-y-2">
+          <li>
+            <Link
+              to="/musics"
+              className="block text-gray-800 font-medium"
+              onClick={() => setIsOpen(false)}
+            >
+              Musics
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/upload"
+              className="block text-gray-800 font-medium"
+              onClick={() => setIsOpen(false)}
+            >
+              Upload
+            </Link>
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 };
