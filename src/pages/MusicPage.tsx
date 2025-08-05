@@ -3,7 +3,6 @@ import { fetchAllSongs } from "../services/song.services";
 import type { Song } from "../services/song.services";
 import SongPlayerPanel from "../components/SongPlayerPanel";
 import { formatDuration } from "../components/formatDuration";
-
 const MusicPage: React.FC = () => {
   const [playingSong, setPlayingSong] = useState<Song | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -15,7 +14,7 @@ const MusicPage: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [panelTrigger, setPanelTrigger] = useState(0);
-
+  const [panelOpen, setPanelOpen] = useState(false);
   const Limit = 10;
 
   // Fetch songs on page or initial load
@@ -124,6 +123,9 @@ const MusicPage: React.FC = () => {
         setPlaying(false);
         return;
       }
+      if (!panelOpen) {
+        setPanelTrigger((prev) => prev + 1);
+      }
       setPlayingSong(song);
       setPlaying(true);
     }
@@ -179,7 +181,7 @@ const MusicPage: React.FC = () => {
   };
 
   return (
-    <main className="max-w-5xl mx-auto p-4">
+    <main className={`max-w-5xl mx-auto p-4 ${playing && "mb-[192px]"}`}>
       <h2 className="text-3xl font-extrabold mb-6 text-gray-900 tracking-tight">
         Your Music Collection
       </h2>
@@ -277,6 +279,7 @@ const MusicPage: React.FC = () => {
           playing={playing}
           setPlaying={setPlaying}
           panelTrigger={panelTrigger}
+          setPanelOpen={setPanelOpen}
           handlePlayPause={() => {
             if (!playing) {
               audioRef.current?.play();

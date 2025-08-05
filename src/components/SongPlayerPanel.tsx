@@ -10,6 +10,7 @@ interface songPanelProps {
   audioRef: React.RefObject<HTMLAudioElement>;
   setCurrentTime: React.Dispatch<React.SetStateAction<number>>;
   setPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  setPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
   panelTrigger: number;
   handlePlayPause: () => void;
   moveToNextSong: () => void;
@@ -28,6 +29,7 @@ const SongPlayerPanel = ({
   setPlaying,
   panelTrigger,
   moveToPreviousSong,
+  setPanelOpen,
 }: songPanelProps) => {
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -49,7 +51,7 @@ const SongPlayerPanel = ({
     if (panelRef.current) {
       fadeInPanel(panelRef.current);
     }
-  }, [panelTrigger, song]);
+  }, [panelTrigger]);
 
   const fadeOutPanel = (
     panelElement: HTMLDivElement,
@@ -81,7 +83,9 @@ const SongPlayerPanel = ({
           role="button"
           onClick={() => {
             if (panelRef.current && audioRef) {
-              fadeOutPanel(panelRef.current);
+              fadeOutPanel(panelRef.current, () => {
+                setPanelOpen(false);
+              });
               audioRef.current.pause();
               setPlaying(false);
             }
