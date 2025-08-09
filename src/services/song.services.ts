@@ -15,7 +15,7 @@ export interface Song {
 const fetchAllSongs = async (
   limit: number = 10,
   page: number = 1,
-  sortOrder: "asc" | "desc"
+  sortOrder: "asc" | "desc" = "asc"
 ): Promise<Song[]> => {
   try {
     const response = await axios.get<apiResponse<Song[]>>(`${apiBase}/song`, {

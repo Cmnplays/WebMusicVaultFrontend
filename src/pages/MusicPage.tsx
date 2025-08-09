@@ -20,7 +20,6 @@ const MusicPage: React.FC = () => {
   const [downloading, setDownloading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [mountDeleteConfirmation, setMountDeleteConfirmation] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const Limit = 10;
 
@@ -29,7 +28,7 @@ const MusicPage: React.FC = () => {
     const loadSongs = async () => {
       setLoading(true);
       try {
-        const newSongs = await fetchAllSongs(Limit, page, sortOrder);
+        const newSongs = await fetchAllSongs(Limit, page);
 
         setSongs((prev) => {
           const combined = [...prev, ...newSongs];
@@ -48,7 +47,7 @@ const MusicPage: React.FC = () => {
       }
     };
     loadSongs();
-  }, [page, sortOrder]);
+  }, [page]);
 
   // Play or pause audio based on playingSong change
   useEffect(() => {
@@ -187,31 +186,11 @@ const MusicPage: React.FC = () => {
     setPlaying(true);
   };
 
-  const handleSorting = () => {
-    if (sortOrder === "asc") {
-      setSortOrder("desc");
-    } else {
-      setSortOrder("asc");
-    }
-  };
   return (
     <main className={`max-w-5xl mx-ACauto p-4 ${playing && "mb-[192px]"}`}>
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">
-          Your Music Collection
-        </h2>
-        <button
-          onClick={handleSorting}
-          className="inline-flex items-center justify-center p-1"
-          aria-label="Sort toggle"
-        >
-          {sortOrder == "desc" ? (
-            <i className="ri-sort-asc text-3xl leading-none" />
-          ) : (
-            <i className="ri-sort-desc text-3xl leading-none" />
-          )}
-        </button>
-      </div>
+      <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">
+        Your Music Collection
+      </h2>
 
       <ul className="space-y-4">
         {songs.map((song) => {
