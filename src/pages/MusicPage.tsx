@@ -3,6 +3,8 @@ import { fetchAllSongs } from "../services/song.services";
 import type { Song } from "../services/song.services";
 import SongPlayerPanel from "../components/SongPlayerPanel";
 import { formatDuration } from "../components/formatDuration";
+import DeleteConfirmation from "../components/DeleteConfirmation";
+
 const MusicPage: React.FC = () => {
   const [playingSong, setPlayingSong] = useState<Song | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -15,6 +17,11 @@ const MusicPage: React.FC = () => {
   const [playing, setPlaying] = useState(false);
   const [panelTrigger, setPanelTrigger] = useState(0);
   const [panelOpen, setPanelOpen] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [mountDeleteConfirmation, setMountDeleteConfirmation] = useState(false);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
   const Limit = 10;
 
   // Fetch songs on page or initial load
@@ -22,7 +29,7 @@ const MusicPage: React.FC = () => {
     const loadSongs = async () => {
       setLoading(true);
       try {
-        const newSongs = await fetchAllSongs(Limit, page);
+        const newSongs = await fetchAllSongs(Limit, page, sortOrder);
 
         setSongs((prev) => {
           const combined = [...prev, ...newSongs];
@@ -41,7 +48,7 @@ const MusicPage: React.FC = () => {
       }
     };
     loadSongs();
-  }, [page]);
+  }, [page, sortOrder]);
 
   // Play or pause audio based on playingSong change
   useEffect(() => {
@@ -180,11 +187,31 @@ const MusicPage: React.FC = () => {
     setPlaying(true);
   };
 
+  const handleSorting = () => {
+    if (sortOrder === "asc") {
+      setSortOrder("desc");
+    } else {
+      setSortOrder("asc");
+    }
+  };
   return (
-    <main className={`max-w-5xl mx-auto p-4 ${playing && "mb-[192px]"}`}>
-      <h2 className="text-3xl font-extrabold mb-6 text-gray-900 tracking-tight">
-        Your Music Collection
-      </h2>
+    <main className={`max-w-5xl mx-ACauto p-4 ${playing && "mb-[192px]"}`}>
+      <div className="flex justify-between items-center">
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">
+          Your Music Collection
+        </h2>
+        <button
+          onClick={handleSorting}
+          className="inline-flex items-center justify-center p-1"
+          aria-label="Sort toggle"
+        >
+          {sortOrder == "desc" ? (
+            <i className="ri-sort-asc text-3xl leading-none" />
+          ) : (
+            <i className="ri-sort-desc text-3xl leading-none" />
+          )}
+        </button>
+      </div>
 
       <ul className="space-y-4">
         {songs.map((song) => {
@@ -280,6 +307,10 @@ const MusicPage: React.FC = () => {
           setPlaying={setPlaying}
           panelTrigger={panelTrigger}
           setPanelOpen={setPanelOpen}
+          playingSong={playingSong}
+          downloading={downloading}
+          setDownloading={setDownloading}
+          setMountDeleteConfirmation={setMountDeleteConfirmation}
           handlePlayPause={() => {
             if (!playing) {
               audioRef.current?.play();
@@ -292,6 +323,23 @@ const MusicPage: React.FC = () => {
           moveToNextSong={moveToNextSong}
           moveToPreviousSong={moveToPreviousSong}
         />
+      )}
+      {mountDeleteConfirmation && (
+        <DeleteConfirmation
+          title={playingSong!.title}
+          songId={playingSong!._id}
+          setDeleting={setDeleting}
+          setMountDeleteConfirmation={setMountDeleteConfirmation}
+          deleting={deleting}
+          setSongs={setSongs}
+          songs={songs}
+          moveToNextSong={moveToNextSong}
+        />
+      )}
+      {(downloading || deleting) && (
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+          <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />
+        </div>
       )}
     </main>
   );

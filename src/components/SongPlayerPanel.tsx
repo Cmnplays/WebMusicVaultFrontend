@@ -11,7 +11,11 @@ interface songPanelProps {
   setCurrentTime: React.Dispatch<React.SetStateAction<number>>;
   setPlaying: React.Dispatch<React.SetStateAction<boolean>>;
   setPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  downloading: boolean;
+  setDownloading: React.Dispatch<React.SetStateAction<boolean>>;
+  setMountDeleteConfirmation: React.Dispatch<React.SetStateAction<boolean>>;
   panelTrigger: number;
+  playingSong: Song | null;
   handlePlayPause: () => void;
   moveToNextSong: () => void;
   moveToPreviousSong: () => void;
@@ -30,6 +34,10 @@ const SongPlayerPanel = ({
   panelTrigger,
   moveToPreviousSong,
   setPanelOpen,
+  playingSong,
+  downloading,
+  setDownloading,
+  setMountDeleteConfirmation,
 }: songPanelProps) => {
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -45,6 +53,28 @@ const SongPlayerPanel = ({
       { y: "100%", opacity: 0 },
       { y: "0%", opacity: 1, duration: 0.5, ease: "power3.out" }
     );
+  };
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      const res = await fetch(playingSong!.fileUrl!);
+      if (!res.ok) throw new Error("Failed to fetch");
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = playingSong!.title!;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error(e);
+    }
+    setDownloading(false);
   };
 
   useEffect(() => {
@@ -77,20 +107,46 @@ const SongPlayerPanel = ({
   "
     >
       <div className="flex justify-center mb-2">
-        <i
-          className="ri-arrow-down-wide-line text-white text-3xl cursor-pointer hover:text-orange-400 transition-colors duration-300"
-          aria-label="Close player panel"
-          role="button"
-          onClick={() => {
-            if (panelRef.current && audioRef) {
-              fadeOutPanel(panelRef.current, () => {
-                setPanelOpen(false);
-              });
-              audioRef.current.pause();
+        <div className="flex w-full justify-around ">
+          <button
+            onClick={() => {
               setPlaying(false);
-            }
-          }}
-        />
+              audioRef.current.pause();
+              setMountDeleteConfirmation(true);
+            }}
+          >
+            <i
+              className="ri-delete-bin-line text-white text-2xl cursor-pointer hover:text-orange-400 transition-colors duration-300"
+              aria-label="Delete song"
+            />
+          </button>
+          <i
+            className="ri-arrow-down-wide-line text-white text-3xl cursor-pointer hover:text-orange-400 transition-colors duration-300"
+            aria-label="Close player panel"
+            role="button"
+            onClick={() => {
+              if (panelRef.current && audioRef && !downloading) {
+                fadeOutPanel(panelRef.current, () => {
+                  setPanelOpen(false);
+                });
+                audioRef.current.pause();
+                setPlaying(false);
+              }
+            }}
+          />
+          <button
+            onClick={handleDownload}
+            aria-label="Download song"
+            className="relative"
+            disabled={downloading}
+          >
+            <i
+              className={`ri-download-line ${
+                downloading && "text-gray-400"
+              } text-2xl cursor-pointer hover:text-orange-400 transition-colors duration-300`}
+            />
+          </button>
+        </div>
       </div>
       <div className="text-center sm:text-left text-lg sm:text-base font-semibold truncate px-2">
         {song.title}

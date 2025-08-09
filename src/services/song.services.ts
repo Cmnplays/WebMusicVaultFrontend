@@ -8,19 +8,21 @@ interface apiResponse<K> {
 export interface Song {
   _id: string;
   title: string;
-  fileUrl?: string; // full URL to audio file
+  fileUrl?: string;
   duration: number;
 }
 
 const fetchAllSongs = async (
   limit: number = 10,
-  page: number = 1
+  page: number = 1,
+  sortOrder: "asc" | "desc"
 ): Promise<Song[]> => {
   try {
     const response = await axios.get<apiResponse<Song[]>>(`${apiBase}/song`, {
       params: {
         limit,
         page,
+        sortOrder,
       },
       headers: {
         "ngrok-skip-browser-warning": "true",
@@ -28,7 +30,6 @@ const fetchAllSongs = async (
     });
 
     if (response.data.status !== 200) {
-      console.log(response.data);
       throw new Error(response.data.message || "Failed to fetch songs");
     }
     return response.data.data;
@@ -38,6 +39,14 @@ const fetchAllSongs = async (
   }
 };
 
-const uploadSongs = async (): Promise<void> => {};
+const deleteSong = async (id: string): Promise<number> => {
+  try {
+    const res = await axios.delete(`${apiBase}/song/${id}`);
+    return res.data.status;
+  } catch (error) {
+    console.error("Error deleting song", error);
+    return 500;
+  }
+};
 
-export { fetchAllSongs, uploadSongs };
+export { fetchAllSongs, deleteSong };
