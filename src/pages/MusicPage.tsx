@@ -128,7 +128,6 @@ const MusicPage: React.FC = () => {
   // Handle play button click
   function handlePlayClick(song: Song) {
     if (playingSong?._id === song._id) {
-      console.log(true);
       if (playing) {
         setPlaying(false);
         audioRef.current?.pause();
