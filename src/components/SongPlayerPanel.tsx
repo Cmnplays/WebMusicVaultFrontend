@@ -1,6 +1,6 @@
 import { formatDuration } from "./formatDuration";
 import type { Song } from "../services/song.services";
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 import gsap from "gsap";
 interface songPanelProps {
   song: Song;
@@ -8,6 +8,7 @@ interface songPanelProps {
   duration: number;
   currentTime: number;
   audioRef: React.RefObject<HTMLAudioElement>;
+  panelRef: React.RefObject<HTMLDivElement | null>;
   setCurrentTime: React.Dispatch<React.SetStateAction<number>>;
   setPlaying: React.Dispatch<React.SetStateAction<boolean>>;
   setPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,6 +17,8 @@ interface songPanelProps {
   setMountDeleteConfirmation: React.Dispatch<React.SetStateAction<boolean>>;
   panelTrigger: number;
   playingSong: Song | null;
+  fadeOutPanel: (panelElement: HTMLDivElement, onComplete?: () => void) => void;
+
   handlePlayPause: () => void;
   moveToNextSong: () => void;
   moveToPreviousSong: () => void;
@@ -38,6 +41,8 @@ const SongPlayerPanel = ({
   downloading,
   setDownloading,
   setMountDeleteConfirmation,
+  panelRef,
+  fadeOutPanel,
 }: songPanelProps) => {
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -46,7 +51,6 @@ const SongPlayerPanel = ({
       audioRef.current.currentTime = value;
     }
   };
-  const panelRef = useRef<HTMLDivElement>(null);
   const fadeInPanel = (panelElement: HTMLDivElement) => {
     gsap.fromTo(
       panelElement,
@@ -81,20 +85,7 @@ const SongPlayerPanel = ({
     if (panelRef.current) {
       fadeInPanel(panelRef.current);
     }
-  }, [panelTrigger]);
-
-  const fadeOutPanel = (
-    panelElement: HTMLDivElement,
-    onComplete?: () => void
-  ) => {
-    gsap.to(panelElement, {
-      y: "100%",
-      opacity: 0,
-      duration: 0.4,
-      ease: "power3.in",
-      onComplete,
-    });
-  };
+  }, [panelTrigger, panelRef]);
 
   return (
     <div
