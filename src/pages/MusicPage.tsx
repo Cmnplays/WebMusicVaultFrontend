@@ -4,6 +4,7 @@ import type { Song } from "../services/song.services";
 import SongPlayerPanel from "../components/SongPlayerPanel";
 import { formatDuration } from "../components/formatDuration";
 import DeleteConfirmation from "../components/DeleteConfirmation";
+import gsap from "gsap";
 
 const MusicPage: React.FC = () => {
   const [playingSong, setPlayingSong] = useState<Song | null>(null);
@@ -20,6 +21,8 @@ const MusicPage: React.FC = () => {
   const [downloading, setDownloading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [mountDeleteConfirmation, setMountDeleteConfirmation] = useState(false);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const Limit = 10;
 
@@ -28,8 +31,8 @@ const MusicPage: React.FC = () => {
     const loadSongs = async () => {
       setLoading(true);
       try {
-        const newSongs = await fetchAllSongs(Limit, page);
-
+        const newSongs = await fetchAllSongs(Limit, page, sortOrder);
+        if (page === 1) return setSongs(newSongs);
         setSongs((prev) => {
           const combined = [...prev, ...newSongs];
           const uniqueSongsMap = new Map<string, Song>();
@@ -185,12 +188,49 @@ const MusicPage: React.FC = () => {
     }
     setPlaying(true);
   };
+  const fadeOutPanel = (
+    panelElement: HTMLDivElement,
+    onComplete?: () => void
+  ) => {
+    gsap.to(panelElement, {
+      y: "100%",
+      opacity: 0,
+      duration: 0.4,
+      ease: "power3.in",
+      onComplete,
+    });
+  };
+  const handleSorting = () => {
+    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    setSongs([]);
+    setHasMoreSongs(true);
+    setPage(1);
+    if (panelRef.current) {
+      fadeOutPanel(panelRef.current, () => {
+        setPlayingSong(null);
+        setPanelOpen(false);
+      });
+    }
+  };
 
   return (
     <main className={`max-w-5xl mx-ACauto p-4 ${playing && "mb-[192px]"}`}>
-      <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">
-        Your Music Collection
-      </h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">
+          Your Music Collection
+        </h2>
+        <button
+          onClick={handleSorting}
+          className="inline-flex items-center justify-center p-1"
+          aria-label="Sort toggle"
+        >
+          {sortOrder == "desc" ? (
+            <i className="ri-sort-desc text-3xl leading-none" />
+          ) : (
+            <i className="ri-sort-asc text-3xl leading-none" />
+          )}
+        </button>
+      </div>
 
       <ul className="space-y-4">
         {songs.map((song) => {
@@ -290,6 +330,8 @@ const MusicPage: React.FC = () => {
           downloading={downloading}
           setDownloading={setDownloading}
           setMountDeleteConfirmation={setMountDeleteConfirmation}
+          panelRef={panelRef}
+          fadeOutPanel={fadeOutPanel}
           handlePlayPause={() => {
             if (!playing) {
               audioRef.current?.play();
