@@ -64,7 +64,7 @@ const UploadPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-4 border rounded-lg bg-white shadow-md">
+    <div className="max-w-md mx-2 mt-8 p-4 border rounded-lg bg-white shadow-md">
       <form
         onSubmit={handleSubmit}
         encType="multipart/form-data"
@@ -113,6 +113,9 @@ const UploadPage: React.FC = () => {
         {successMsg && (
           <p className="text-green-600 text-sm font-medium">{successMsg}</p>
         )}
+        <p className="text-gray-700 text-sm">
+          Click the logo to return to your music library.
+        </p>
 
         {/* Upload duration info message */}
         <p className="text-gray-500 text-sm italic mb-2">

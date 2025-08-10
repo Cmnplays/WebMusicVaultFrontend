@@ -21,8 +21,9 @@ const MusicPage: React.FC = () => {
   const [downloading, setDownloading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [mountDeleteConfirmation, setMountDeleteConfirmation] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const panelRef = useRef<HTMLDivElement>(null);
+  const [loadingText, setLoadingText] = useState("Loading more songs...");
 
   const Limit = 10;
 
@@ -31,6 +32,15 @@ const MusicPage: React.FC = () => {
     const loadSongs = async () => {
       setLoading(true);
       try {
+        if (page === 1) {
+          if (sortOrder === "asc")
+            setLoadingText("Fetching songs...Newest to Oldest");
+          else {
+            setLoadingText("Fetching songs...Oldest to Newest");
+          }
+        } else {
+          setLoadingText("Loading more songs...");
+        }
         const newSongs = await fetchAllSongs(Limit, page, sortOrder);
         if (page === 1) return setSongs(newSongs);
         setSongs((prev) => {
@@ -308,7 +318,7 @@ const MusicPage: React.FC = () => {
       />
 
       {loading && (
-        <p className="text-center mt-4 text-gray-600">Loading more songs...</p>
+        <p className="text-center mt-4 text-gray-600">{loadingText}</p>
       )}
       {!hasMoreSongs && (
         <p className="text-center mt-4 text-gray-600">
