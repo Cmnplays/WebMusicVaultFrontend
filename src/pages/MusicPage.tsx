@@ -50,7 +50,7 @@ const MusicPage: React.FC = () => {
       }
     };
     loadSongs();
-  }, [page]);
+  }, [page, sortOrder]);
 
   // Play or pause audio based on playingSong change
   useEffect(() => {
