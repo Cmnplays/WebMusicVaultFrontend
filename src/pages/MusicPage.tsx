@@ -30,7 +30,7 @@ const MusicPage: React.FC = () => {
       setLoading(true);
       try {
         const newSongs = await fetchAllSongs(Limit, page, sortOrder);
-
+        console.log(newSongs);
         setSongs((prev) => {
           const combined = [...prev, ...newSongs];
           const uniqueSongsMap = new Map<string, Song>();
