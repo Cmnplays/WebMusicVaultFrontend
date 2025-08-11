@@ -131,12 +131,18 @@ const MusicPage: React.FC = () => {
   function handlePlayClick(song: Song) {
     if (playingSong?._id === song._id) {
       if (playing) {
-        setPlaying(false);
-        audioRef.current?.pause();
+        if (panelRef.current) {
+          fadeOutPanel(panelRef.current, () => {
+            setPlayingSong(null);
+            setPanelOpen(false);
+          });
+        }
       } else {
         setPlaying(true);
         audioRef.current?.play();
-        setPanelTrigger((prev) => prev + 1);
+        if (!panelOpen) {
+          setPanelTrigger((prev) => prev + 1);
+        }
       }
     } else {
       if (!song.fileUrl) {
@@ -146,6 +152,7 @@ const MusicPage: React.FC = () => {
       }
       if (!panelOpen) {
         setPanelTrigger((prev) => prev + 1);
+        setPanelOpen(true);
       }
       setPlayingSong(song);
       setPlaying(true);
