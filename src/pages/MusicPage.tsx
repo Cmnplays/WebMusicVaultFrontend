@@ -34,7 +34,9 @@ const MusicPage: React.FC = () => {
       try {
         if (page === 1) {
           if (sortOrder === "asc")
-            setLoadingText("Fetching songs...Newest to Oldest");
+            setLoadingText(
+              "Fetching songs... Newest to Oldest.\n(First load may take up to a minute as the server wakes up)"
+            );
           else {
             setLoadingText("Fetching songs...Oldest to Newest");
           }
@@ -321,7 +323,9 @@ const MusicPage: React.FC = () => {
       />
 
       {loading && (
-        <p className="text-center mt-4 text-gray-600">{loadingText}</p>
+        <p className="text-center mt-4 text-gray-600 whitespace-pre-line">
+          {loadingText}
+        </p>
       )}
       {!hasMoreSongs && (
         <p className="text-center mt-4 text-gray-600">
