@@ -131,6 +131,11 @@ const UploadPage: React.FC = () => {
           {isUploading ? "Uploading..." : "Upload"}
         </button>
       </form>
+      {isUploading && (
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+          <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />
+        </div>
+      )}
     </div>
   );
 };

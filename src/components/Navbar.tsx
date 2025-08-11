@@ -44,7 +44,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link
           to="/musics"
@@ -52,9 +52,9 @@ const Navbar = () => {
         >
           {/* Mobile: short logo */}
           <span className="flex items-center text-blue-600 sm:hidden tracking-tight">
-            <span className="mr-0.5 font-semibold italic text-xl">WmV</span>
+            <span className="mr-0.5 font-semibold italic text-2xl">WmV</span>
             <svg
-              className="w-6 h-6 text-blue-600"
+              className="w-8 h-8 text-blue-600"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
               viewBox="0 0 24 24"
@@ -106,7 +106,7 @@ const Navbar = () => {
           aria-label="Toggle menu"
         >
           <svg
-            className="w-6 h-6"
+            className="w-9 h-9"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
