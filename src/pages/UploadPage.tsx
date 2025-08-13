@@ -44,7 +44,6 @@ const UploadPage: React.FC = () => {
       });
       if (res.data.errors?.length > 0) {
         setErrors(res.data.errors);
-        console.log(res.data.errors[0]);
       }
       setSuccessMsg("Upload successful!");
       setFiles([]);
@@ -61,7 +60,6 @@ const UploadPage: React.FC = () => {
       } else {
         setError("An unexpected error occurred. Please try again.");
       }
-      console.error("Upload error:", err);
     } finally {
       setIsUploading(false);
     }
