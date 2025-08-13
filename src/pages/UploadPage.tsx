@@ -3,12 +3,13 @@ import React, { useRef, useState } from "react";
 const apiBase = import.meta.env.VITE_API_URL;
 
 const UploadPage: React.FC = () => {
+  type error = string | null;
   const [files, setFiles] = useState<File[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<error>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
-
+  const [errors, setErrors] = useState<error[]>([]);
   const handleFileClick = () => {
     inputRef.current?.click();
   };
@@ -36,12 +37,15 @@ const UploadPage: React.FC = () => {
 
     setIsUploading(true);
     try {
-      await axios.post(`${apiBase}/song/upload`, formData, {
+      const res = await axios.post(`${apiBase}/song/upload`, formData, {
         headers: {
           "ngrok-skip-browser-warning": "true",
         },
       });
-
+      if (res.data.errors?.length > 0) {
+        setErrors(res.data.errors);
+        console.log(res.data.errors[0]);
+      }
       setSuccessMsg("Upload successful!");
       setFiles([]);
       if (inputRef.current) inputRef.current.value = "";
@@ -112,6 +116,20 @@ const UploadPage: React.FC = () => {
         {error && <p className="text-red-600 text-sm font-medium">{error}</p>}
         {successMsg && (
           <p className="text-green-600 text-sm font-medium">{successMsg}</p>
+        )}
+        {errors.length > 0 && (
+          <div className="bg-red-50 border border-red-300 p-3 rounded-md mt-2">
+            <p className="text-red-700 font-semibold mb-1">
+              Duplicate or existing songs:
+            </p>
+            <ul className="list-disc list-inside text-red-600 text-sm max-h-32 overflow-auto">
+              {errors.map((errMsg, idx) => (
+                <li key={idx} title={errMsg!} className="truncate">
+                  {errMsg}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
         <p className="text-gray-700 text-sm">
           Click the logo to return to your music library.
