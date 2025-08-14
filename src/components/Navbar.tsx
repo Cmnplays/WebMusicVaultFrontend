@@ -44,7 +44,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-5 py-2 flex items-center justify-between">
         {/* Logo */}
         <Link
           to="/musics"

@@ -1,4 +1,4 @@
-1.to reduce the padding vertically of navbar.
+//1.to reduce the padding vertically of navbar.
 2.to add a search bar for searching songs.
 3.to add a about page for the details of the app.
 4.to add 2 buttons, one for shufflle and play and one for loop/continuous play in order.
@@ -6,5 +6,6 @@
 6.to add a playlist system.
 7.after finishing point 1 and 4, firstly i would transform it from using alot of states to redux store for better state management.
 8.to add login logout system and profile system for uploading private songs, which would have like limit of 25 or 50 songs, and just like 5 to 10 people can do this.
+9.Add loading spinner when fetching songs and set loading message as it may take 2 minutes to wake up and also if it exceeds 2 minutes say there is something wrong with the backend service, please try again in some time.
 //*target -> end of this month for all these changes
 //*must make different branch for different features
