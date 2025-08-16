@@ -85,7 +85,7 @@ const Navbar = () => {
               className="text-blue-600 hover:text-purple-700 transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Musics
+              Music
             </Link>
           </li>
           <li>
