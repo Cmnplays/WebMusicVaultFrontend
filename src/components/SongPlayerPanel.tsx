@@ -99,7 +99,7 @@ const SongPlayerPanel = ({
     <div
       ref={panelRef}
       style={{ transform: "translateY(100%)", opacity: 0 }}
-      className="fixed bottom-0 left-0 w-full max-w-3xl mx-auto p-4 bg-gradient-to-tr from-purple-900 via-purple-800 to-purple-700 rounded-t-xl shadow-2xl text-white
+      className="fixed bottom-0 left-0 w-full max-w-3xl mx-auto p-2 bg-gradient-to-tr from-purple-900 via-purple-800 to-purple-700 rounded-t-xl shadow-2xl text-white
   sm:rounded-xl sm:mx-auto sm:static sm:max-w-4xl
   flex flex-col sm:flex-row sm:items-center sm:justify-between
   space-y-3 sm:space-y-0
@@ -168,7 +168,7 @@ const SongPlayerPanel = ({
           {formatDuration(currentTime)}
         </span>
 
-        <div className="w-[80%] flex items-center justify-center gap-5">
+        <div className="w-[85%] flex items-center justify-center gap-5">
           {/* shuffle button */}
           <button
             className="relative"
