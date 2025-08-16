@@ -2,6 +2,7 @@ import { formatDuration } from "./formatDuration";
 import type { Song } from "../services/song.services";
 import { useEffect } from "react";
 import gsap from "gsap";
+import type { repeatType } from "../pages/MusicPage";
 interface songPanelProps {
   song: Song;
   playing: boolean;
@@ -17,8 +18,11 @@ interface songPanelProps {
   setMountDeleteConfirmation: React.Dispatch<React.SetStateAction<boolean>>;
   panelTrigger: number;
   playingSong: Song | null;
+  repeat: repeatType;
+  setRepeat: React.Dispatch<React.SetStateAction<repeatType>>;
+  shuffle: boolean;
+  setShuffle: React.Dispatch<React.SetStateAction<boolean>>;
   fadeOutPanel: (panelElement: HTMLDivElement, onComplete?: () => void) => void;
-
   handlePlayPause: () => void;
   moveToNextSong: () => void;
   moveToPreviousSong: () => void;
@@ -43,6 +47,10 @@ const SongPlayerPanel = ({
   setMountDeleteConfirmation,
   panelRef,
   fadeOutPanel,
+  repeat,
+  setRepeat,
+  shuffle,
+  setShuffle,
 }: songPanelProps) => {
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -119,6 +127,7 @@ const SongPlayerPanel = ({
               if (panelRef.current && audioRef && !downloading) {
                 fadeOutPanel(panelRef.current, () => {
                   setPanelOpen(false);
+                  setRepeat("repeat");
                 });
                 audioRef.current.pause();
                 setPlaying(false);
@@ -154,12 +163,29 @@ const SongPlayerPanel = ({
       transition-colors duration-300"
       />
 
-      <div className="flex items-center justify-between sm:justify-center gap-8 px-2">
+      <div className="flex items-center justify-between sm:justify-between px-2">
         <span className="text-xs sm:text-sm font-mono text-purple-300 w-10 text-left select-none">
           {formatDuration(currentTime)}
         </span>
 
-        <div className="flex items-center justify-center gap-8">
+        <div className="w-[80%] flex items-center justify-center gap-5">
+          {/* shuffle button */}
+          <button
+            className="relative"
+            onClick={() => setShuffle((prev) => !prev)}
+          >
+            {/* to add icon here and also to handle icon  change on being clicked */}
+            {shuffle ? (
+              <i className="ri-shuffle-line text-2xl text-white"></i>
+            ) : (
+              <div className="relative inline-block">
+                <i className="ri-shuffle-line text-2xl text-white opacity-40" />
+                {/* Slash line overlay */}
+                <div className="absolute inset-0 m-auto w-[1.25px] h-full bg-white rotate-[-45deg] " />
+              </div>
+            )}
+          </button>
+
           <button
             aria-label="Previous"
             className="w-10 h-10 flex items-center justify-center rounded-full bg-purple-700 hover:bg-purple-600 transition-transform shadow-md hover:shadow-lg active:scale-95"
@@ -206,7 +232,6 @@ const SongPlayerPanel = ({
               </svg>
             )}
           </button>
-
           <button
             aria-label="Next"
             onClick={moveToNextSong}
@@ -222,6 +247,42 @@ const SongPlayerPanel = ({
               <path d="M13 5L20 12L13 19V5Z" />
               <rect x="8" y="5" width="2" height="14" rx="1" />
             </svg>
+          </button>
+          {/* repeat, no repeat, single button */}
+          <button
+            onClick={() => {
+              if (repeat === "repeat") {
+                setRepeat("single");
+              } else if (repeat === "single") {
+                setRepeat("noRepeat");
+              } else if (repeat === "noRepeat") {
+                setRepeat("repeat");
+              }
+            }}
+          >
+            {/* to add icons here and also to write icon logic on being clicked */}
+            {repeat === "repeat" && (
+              <i
+                className={`ri-repeat-2-line
+              text-2xl text-white`}
+              />
+            )}
+            {repeat === "single" && (
+              <i
+                className={`ri-repeat-one-line
+              text-2xl text-white`}
+              />
+            )}
+            {repeat === "noRepeat" && (
+              <div className="relative inline-block">
+                <i className="ri-repeat-2-line text-2xl text-white opacity-40" />
+                {/* Slash line overlay */}
+                <div
+                  className="absolute inset-0 m-auto w-[1.25px] h-full bg-white 
+                 rotate-[-45deg]"
+                />
+              </div>
+            )}
           </button>
         </div>
 

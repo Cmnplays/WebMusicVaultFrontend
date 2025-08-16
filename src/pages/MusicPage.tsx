@@ -5,6 +5,7 @@ import SongPlayerPanel from "../components/SongPlayerPanel";
 import { formatDuration } from "../components/formatDuration";
 import DeleteConfirmation from "../components/DeleteConfirmation";
 import gsap from "gsap";
+export type repeatType = "repeat" | "noRepeat" | "single";
 
 const MusicPage: React.FC = () => {
   const [playingSong, setPlayingSong] = useState<Song | null>(null);
@@ -24,6 +25,8 @@ const MusicPage: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const panelRef = useRef<HTMLDivElement>(null);
   const [loadingText, setLoadingText] = useState("Loading more songs...");
+  const [repeat, setRepeat] = useState<repeatType>("repeat");
+  const [shuffle, setShuffle] = useState(false);
 
   const Limit = 10;
 
@@ -158,7 +161,9 @@ const MusicPage: React.FC = () => {
       setPlaying(true);
     }
   }
-
+  function getNextShuffleSongIndex(): number {
+    return Math.floor(Math.random() * songs.length);
+  }
   // New: Handle when current song ends, play next if available
   function handleAudioEnded() {
     if (!playingSong) return;
@@ -168,13 +173,53 @@ const MusicPage: React.FC = () => {
       setPlayingSong(null);
       return;
     }
+    //All cases when shuffle is false
+    if (!shuffle) {
+      if (repeat === "single") {
+        audioRef.current!.currentTime = 0;
+        audioRef.current!.play();
+        setPlaying(true);
+        return;
+      }
+      if (repeat === "noRepeat") {
+        setPlayingSong(null);
+        setRepeat("repeat");
+        setPlaying(false);
+        return;
+      }
+      if (repeat === "repeat") {
+        const nextIndex = currentIndex + 1;
+        if (nextIndex < songs.length) {
+          setPlayingSong(songs[nextIndex]);
+        } else {
+          //in next update after shifting to like redux store ,need to fetch songs here then if if i get 0 songs then only i should go to the first song
 
-    const nextIndex = currentIndex + 1;
-    if (nextIndex < songs.length) {
-      setPlayingSong(songs[nextIndex]);
-    } else {
-      // No more songs in list
-      setPlayingSong(null);
+          setPlayingSong(songs[0]);
+        }
+        setPlaying(true);
+      }
+    }
+
+    //All cases when shuffle is true
+    if (shuffle) {
+      if (repeat === "single") {
+        audioRef.current!.currentTime = 0;
+        audioRef.current!.play();
+        setPlaying(true);
+        return;
+      }
+      if (repeat === "noRepeat") {
+        setPlayingSong(null);
+        setPlaying(false);
+        setRepeat("repeat");
+        return;
+      }
+      if (repeat === "repeat") {
+        const nextIndex = getNextShuffleSongIndex();
+        setPlayingSong(songs[nextIndex]);
+        setPlaying(true);
+        return;
+      }
     }
   }
 
@@ -182,15 +227,59 @@ const MusicPage: React.FC = () => {
     const currentIndex = songs.findIndex((s) => s._id === playingSong?._id);
     if (currentIndex === -1) {
       setPlayingSong(null);
+      setPlaying(false);
     }
-    const nextIndex = currentIndex + 1;
-    if (nextIndex < songs.length) {
-      setPlayingSong(songs[nextIndex]);
-    } else {
-      // No more songs in list
-      setPlayingSong(songs[0]);
+    //All cases when shuffle is false
+    if (!shuffle) {
+      if (repeat === "single") {
+        audioRef.current!.currentTime = 0;
+        audioRef.current!.play();
+        setPlaying(true);
+        return;
+      }
+      if (repeat === "noRepeat") {
+        const nextIndex = currentIndex + 1;
+        if (nextIndex < songs.length) {
+          setPlayingSong(songs[nextIndex]);
+        } else {
+          setPlayingSong(songs[0]);
+        }
+        setPlaying(true);
+        setRepeat("repeat");
+        return;
+      }
+      if (repeat === "repeat") {
+        const nextIndex = currentIndex + 1;
+        if (nextIndex < songs.length) {
+          setPlayingSong(songs[nextIndex]);
+        } else {
+          setPlayingSong(songs[0]);
+        }
+        setPlaying(true);
+      }
     }
-    setPlaying(true);
+
+    //All cases when shuffle is true
+    if (shuffle) {
+      if (repeat === "single") {
+        const nextIndex = getNextShuffleSongIndex();
+        setPlayingSong(songs[nextIndex]);
+        setPlaying(true);
+        return;
+      }
+      if (repeat === "noRepeat") {
+        const nextIndex = getNextShuffleSongIndex();
+        setPlayingSong(songs[nextIndex]);
+        setPlaying(true);
+        setRepeat("repeat");
+        return;
+      }
+      if (repeat === "repeat") {
+        const nextIndex = getNextShuffleSongIndex();
+        setPlayingSong(songs[nextIndex]);
+        setPlaying(true);
+      }
+    }
   };
 
   const moveToPreviousSong = () => {
@@ -233,7 +322,7 @@ const MusicPage: React.FC = () => {
   };
 
   return (
-    <main className={`max-w-5xl mx-ACauto p-4 ${playing && "mb-[192px]"}`}>
+    <main className={`max-w-5xl mx-auto p-4 ${playing && "mb-[192px]"}`}>
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight leading-tight">
           Your Music Collection
@@ -353,6 +442,10 @@ const MusicPage: React.FC = () => {
           setMountDeleteConfirmation={setMountDeleteConfirmation}
           panelRef={panelRef}
           fadeOutPanel={fadeOutPanel}
+          repeat={repeat}
+          setRepeat={setRepeat}
+          shuffle={shuffle}
+          setShuffle={setShuffle}
           handlePlayPause={() => {
             if (!playing) {
               audioRef.current?.play();
@@ -378,7 +471,7 @@ const MusicPage: React.FC = () => {
           moveToNextSong={moveToNextSong}
         />
       )}
-      {(downloading || deleting) && (
+      {(downloading || deleting || loading) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
           <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />
         </div>
