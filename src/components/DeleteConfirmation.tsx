@@ -1,28 +1,27 @@
 import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
-import { deleteSong, type Song } from "../services/song.services";
-
+import { deleteSong } from "../services/song.services";
+import { useAppDispatch, useAppSelector } from "../store/hook";
+import {
+  setDeleting,
+  setMountDeleteConfirmation,
+  setSongs,
+} from "../reduxSlices/song/songSlice";
 interface DeleteConfirmationProps {
   title: string;
   songId: string;
-  setDeleting: React.Dispatch<React.SetStateAction<boolean>>;
-  setMountDeleteConfirmation: React.Dispatch<React.SetStateAction<boolean>>;
-  deleting: boolean;
-  setSongs: React.Dispatch<React.SetStateAction<Song[]>>;
-  songs: Song[];
+
   moveToNextSong: () => void;
 }
 
 const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
   title,
   songId,
-  setDeleting,
-  setMountDeleteConfirmation,
-  deleting,
-  setSongs,
-  songs,
   moveToNextSong,
 }) => {
+  const dispatch = useAppDispatch();
+  const songs = useAppSelector((state) => state.song.songs);
+  const deleting = useAppSelector((state) => state.song.deleting);
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const realPass = import.meta.env.VITE_DELETION_PASSWORD;
@@ -45,12 +44,14 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
       opacity: 0,
       scale: 0.95,
       ease: "power2.in",
-      onComplete: () => setMountDeleteConfirmation(false),
+      onComplete: () => {
+        dispatch(setMountDeleteConfirmation(false));
+      },
     });
   };
 
   const handleDeleteClick = async () => {
-    setDeleting(true);
+    dispatch(setDeleting(true));
     if (password === realPass) {
       try {
         await deleteSong(songId);
@@ -59,7 +60,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
           closeWithAnimation();
           moveToNextSong();
         }, 1200);
-        setSongs(songs.filter((s) => s._id !== songId));
+        dispatch(setSongs(songs.filter((s) => s._id !== songId)));
       } catch (error) {
         setMessage("Failed to delete the song");
         console.error(error);
@@ -68,7 +69,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
       setMessage("Invalid Password! Cannot delete the song");
       setTimeout(closeWithAnimation, 1200);
     }
-    setDeleting(false);
+    dispatch(setDeleting(false));
   };
 
   return (

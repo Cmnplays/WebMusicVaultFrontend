@@ -12,29 +12,36 @@ import {
   setSongs,
   setLoadingText,
   setLoading,
+  setPanelOpen,
+  setPlaying,
+  setRepeat,
+  setPlayingSong,
+  setDuration,
+  setCurrentTime,
+  setPanelTrigger,
 } from "../reduxSlices/song/songSlice";
+
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const loadingText = useAppSelector((state) => state.song.loadingText);
   const songs = useAppSelector((state) => state.song.songs);
   const loading = useAppSelector((state) => state.song.loading);
-  const [playingSong, setPlayingSong] = useState<Song | null>(null);
+  const panelOpen = useAppSelector((state) => state.song.panelOpen);
+  const playing = useAppSelector((state) => state.song.playing);
+  const repeat = useAppSelector((state) => state.song.repeat);
+  const shuffle = useAppSelector((state) => state.song.shuffle);
+  const downloading = useAppSelector((state) => state.song.downloading);
+  const deleting = useAppSelector((state) => state.song.deleting);
+  const mountDeleteConfirmation = useAppSelector(
+    (state) => state.song.mountDeleteConfirmation
+  );
+  const playingSong = useAppSelector((state) => state.song.playingSong);
+
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const audioRef = useRef<HTMLAudioElement>(null);
   const [page, setPage] = useState<number>(1);
   const [hasMoreSongs, setHasMoreSongs] = useState(true);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const [panelTrigger, setPanelTrigger] = useState(0);
-  const [panelOpen, setPanelOpen] = useState(false);
-  const [downloading, setDownloading] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [mountDeleteConfirmation, setMountDeleteConfirmation] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const panelRef = useRef<HTMLDivElement>(null);
-  const [repeat, setRepeat] = useState<repeatType>("repeat");
-  const [shuffle, setShuffle] = useState(false);
-
   const Limit = 10;
 
   // Fetch songs on page or initial load
@@ -119,10 +126,10 @@ const MusicPage: React.FC = () => {
       return;
     }
     const onLoadMetadata = () => {
-      setDuration(song.duration ?? 0);
+      dispatch(setDuration(song.duration ?? 0));
     };
     const onTimeUpdate = () => {
-      setCurrentTime(song.currentTime ?? 0);
+      dispatch(setCurrentTime(song.currentTime ?? 0));
     };
     song.addEventListener("loadedmetadata", onLoadMetadata);
     song.addEventListener("timeupdate", onTimeUpdate);
@@ -139,15 +146,15 @@ const MusicPage: React.FC = () => {
       if (playing) {
         if (panelRef.current) {
           fadeOutPanel(panelRef.current, () => {
-            setPlayingSong(null);
-            setPanelOpen(false);
+            dispatch(setPlayingSong(null));
+            dispatch(setPanelOpen(false));
           });
         }
       } else {
-        setPlaying(true);
+        dispatch(setPlaying(true));
         audioRef.current?.play();
         if (!panelOpen) {
-          setPanelTrigger((prev) => prev + 1);
+          dispatch(setPanelTrigger());
         }
       }
     } else {
@@ -157,11 +164,11 @@ const MusicPage: React.FC = () => {
         return;
       }
       if (!panelOpen) {
-        setPanelTrigger((prev) => prev + 1);
-        setPanelOpen(true);
+        dispatch(setPanelTrigger());
+        dispatch(setPanelOpen(true));
       }
-      setPlayingSong(song);
-      setPlaying(true);
+      dispatch(setPlayingSong(song));
+      dispatch(setPlaying(true));
     }
   }
   function getNextShuffleSongIndex(): number {
@@ -173,7 +180,8 @@ const MusicPage: React.FC = () => {
 
     const currentIndex = songs.findIndex((s) => s._id === playingSong._id);
     if (currentIndex === -1) {
-      setPlayingSong(null);
+      dispatch(setPlayingSong(null));
+      dispatch(setPlaying(false));
       return;
     }
     //All cases when shuffle is false
@@ -181,25 +189,25 @@ const MusicPage: React.FC = () => {
       if (repeat === "single") {
         audioRef.current!.currentTime = 0;
         audioRef.current!.play();
-        setPlaying(true);
+        dispatch(setPlaying(true));
         return;
       }
       if (repeat === "noRepeat") {
-        setPlayingSong(null);
-        setRepeat("repeat");
-        setPlaying(false);
+        dispatch(setPlayingSong(null));
+        dispatch(setRepeat("repeat"));
+        dispatch(setPlaying(false));
         return;
       }
       if (repeat === "repeat") {
         const nextIndex = currentIndex + 1;
         if (nextIndex < songs.length) {
-          setPlayingSong(songs[nextIndex]);
+          dispatch(setPlayingSong(songs[nextIndex]));
         } else {
           //in next update after shifting to like redux store ,need to fetch songs here then if if i get 0 songs then only i should go to the first song
 
-          setPlayingSong(songs[0]);
+          dispatch(setPlayingSong(songs[0]));
         }
-        setPlaying(true);
+        dispatch(setPlaying(true));
       }
     }
 
@@ -208,19 +216,19 @@ const MusicPage: React.FC = () => {
       if (repeat === "single") {
         audioRef.current!.currentTime = 0;
         audioRef.current!.play();
-        setPlaying(true);
+        dispatch(setPlaying(true));
         return;
       }
       if (repeat === "noRepeat") {
-        setPlayingSong(null);
-        setPlaying(false);
-        setRepeat("repeat");
+        dispatch(setPlayingSong(null));
+        dispatch(setPlaying(false));
+        dispatch(setRepeat("repeat"));
         return;
       }
       if (repeat === "repeat") {
         const nextIndex = getNextShuffleSongIndex();
-        setPlayingSong(songs[nextIndex]);
-        setPlaying(true);
+        dispatch(setPlayingSong(songs[nextIndex]));
+        dispatch(setPlaying(true));
         return;
       }
     }
@@ -229,36 +237,36 @@ const MusicPage: React.FC = () => {
   const moveToNextSong = () => {
     const currentIndex = songs.findIndex((s) => s._id === playingSong?._id);
     if (currentIndex === -1) {
-      setPlayingSong(null);
-      setPlaying(false);
+      dispatch(setPlayingSong(null));
+      dispatch(setPlaying(false));
     }
     //All cases when shuffle is false
     if (!shuffle) {
       if (repeat === "single") {
         audioRef.current!.currentTime = 0;
         audioRef.current!.play();
-        setPlaying(true);
+        dispatch(setPlaying(true));
         return;
       }
       if (repeat === "noRepeat") {
         const nextIndex = currentIndex + 1;
         if (nextIndex < songs.length) {
-          setPlayingSong(songs[nextIndex]);
+          dispatch(setPlayingSong(songs[nextIndex]));
         } else {
-          setPlayingSong(songs[0]);
+          dispatch(setPlayingSong(songs[0]));
         }
-        setPlaying(true);
-        setRepeat("repeat");
+        dispatch(setPlaying(true));
+        dispatch(setRepeat("repeat"));
         return;
       }
       if (repeat === "repeat") {
         const nextIndex = currentIndex + 1;
         if (nextIndex < songs.length) {
-          setPlayingSong(songs[nextIndex]);
+          dispatch(setPlayingSong(songs[nextIndex]));
         } else {
-          setPlayingSong(songs[0]);
+          dispatch(setPlayingSong(songs[0]));
         }
-        setPlaying(true);
+        dispatch(setPlaying(true));
       }
     }
 
@@ -266,21 +274,21 @@ const MusicPage: React.FC = () => {
     if (shuffle) {
       if (repeat === "single") {
         const nextIndex = getNextShuffleSongIndex();
-        setPlayingSong(songs[nextIndex]);
-        setPlaying(true);
+        dispatch(setPlayingSong(songs[nextIndex]));
+        dispatch(setPlaying(true));
         return;
       }
       if (repeat === "noRepeat") {
         const nextIndex = getNextShuffleSongIndex();
-        setPlayingSong(songs[nextIndex]);
-        setPlaying(true);
-        setRepeat("repeat");
+        dispatch(setPlayingSong(songs[nextIndex]));
+        dispatch(setPlaying(true));
+        dispatch(setRepeat("repeat"));
         return;
       }
       if (repeat === "repeat") {
         const nextIndex = getNextShuffleSongIndex();
-        setPlayingSong(songs[nextIndex]);
-        setPlaying(true);
+        dispatch(setPlayingSong(songs[nextIndex]));
+        dispatch(setPlaying(true));
       }
     }
   };
@@ -288,16 +296,16 @@ const MusicPage: React.FC = () => {
   const moveToPreviousSong = () => {
     const currentIndex = songs.findIndex((s) => s._id === playingSong?._id);
     if (currentIndex === -1) {
-      setPlayingSong(null);
+      dispatch(setPlayingSong(null));
     }
     const previousSong = currentIndex - 1;
     if (previousSong < 0) {
-      setPlayingSong(songs[songs.length - 1]);
+      dispatch(setPlayingSong(songs[songs.length - 1]));
     } else {
       // No more songs in list
-      setPlayingSong(songs[previousSong]);
+      dispatch(setPlayingSong(songs[previousSong]));
     }
-    setPlaying(true);
+    dispatch(setPlaying(true));
   };
   const fadeOutPanel = (
     panelElement: HTMLDivElement,
@@ -313,13 +321,13 @@ const MusicPage: React.FC = () => {
   };
   const handleSorting = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-    setSongs([]);
+    dispatch(setSongs([]));
     setHasMoreSongs(true);
     setPage(1);
     if (panelRef.current) {
       fadeOutPanel(panelRef.current, () => {
-        setPlayingSong(null);
-        setPanelOpen(false);
+        dispatch(setPlayingSong(null));
+        dispatch(setPanelOpen(false));
       });
     }
   };
@@ -430,33 +438,17 @@ const MusicPage: React.FC = () => {
       )}
       {playingSong && (
         <SongPlayerPanel
-          song={playingSong}
-          currentTime={currentTime}
-          setCurrentTime={setCurrentTime}
           audioRef={audioRef as React.RefObject<HTMLAudioElement>}
-          duration={duration}
-          playing={playing}
-          setPlaying={setPlaying}
-          panelTrigger={panelTrigger}
-          setPanelOpen={setPanelOpen}
-          playingSong={playingSong}
-          downloading={downloading}
-          setDownloading={setDownloading}
-          setMountDeleteConfirmation={setMountDeleteConfirmation}
           panelRef={panelRef}
           fadeOutPanel={fadeOutPanel}
-          repeat={repeat}
-          setRepeat={setRepeat}
-          shuffle={shuffle}
-          setShuffle={setShuffle}
           handlePlayPause={() => {
             if (!playing) {
               audioRef.current?.play();
-              setPlaying(true);
+              dispatch(setPlaying(true));
               return;
             }
             audioRef.current?.pause();
-            setPlaying(false);
+            dispatch(setPlaying(false));
           }}
           moveToNextSong={moveToNextSong}
           moveToPreviousSong={moveToPreviousSong}
@@ -466,11 +458,6 @@ const MusicPage: React.FC = () => {
         <DeleteConfirmation
           title={playingSong!.title}
           songId={playingSong!._id}
-          setDeleting={setDeleting}
-          setMountDeleteConfirmation={setMountDeleteConfirmation}
-          deleting={deleting}
-          setSongs={setSongs}
-          songs={songs}
           moveToNextSong={moveToNextSong}
         />
       )}

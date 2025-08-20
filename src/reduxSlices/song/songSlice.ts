@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { Song } from "../../services/song.services";
 import type { repeatType } from "../../pages/MusicPage";
-
 interface initialStateType {
   //only add the states which is to be shared in other file/files, other wise use it as a normal use state not as redux state
   songs: Song[];
@@ -17,10 +16,10 @@ interface initialStateType {
   downloading: boolean;
   deleting: boolean;
   mountDeleteConfirmation: boolean;
-  sortOrder: string;
   loadingText: string;
   repeat: repeatType;
   shuffle: boolean;
+  playingSong: Song | null;
 }
 const initialState: initialStateType = {
   songs: [],
@@ -35,10 +34,10 @@ const initialState: initialStateType = {
   downloading: false,
   deleting: false,
   mountDeleteConfirmation: false,
-  sortOrder: "asc",
   loadingText: "Loading more songs...",
   repeat: "repeat",
   shuffle: false,
+  playingSong: null,
 };
 
 const songSlice = createSlice({
@@ -87,6 +86,19 @@ const songSlice = createSlice({
     setLoadingText: (state, action: PayloadAction<string>) => {
       state.loadingText = action.payload;
     },
+    setDeleting: (state, action: PayloadAction<boolean>) => {
+      state.downloading = action.payload;
+    },
+    setPlayingSong: (state, action: PayloadAction<Song | null>) => {
+      state.playingSong = action.payload;
+    },
+
+    setDuration: (state, action: PayloadAction<number>) => {
+      state.duration = action.payload;
+    },
+    setPanelTrigger: (state) => {
+      state.panelTrigger = state.panelTrigger + 1;
+    },
   },
 });
 export const {
@@ -100,5 +112,9 @@ export const {
   setLoading,
   setLoadingText,
   setPlaying,
+  setPlayingSong,
+  setDuration,
+  setPanelTrigger,
+  setDeleting,
 } = songSlice.actions;
 export default songSlice.reducer;
