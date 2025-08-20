@@ -6,14 +6,22 @@ import { formatDuration } from "../components/formatDuration";
 import DeleteConfirmation from "../components/DeleteConfirmation";
 import gsap from "gsap";
 export type repeatType = "repeat" | "noRepeat" | "single";
+import { useAppDispatch, useAppSelector } from "../store/hook";
 
+import {
+  setSongs,
+  setLoadingText,
+  setLoading,
+} from "../reduxSlices/song/songSlice";
 const MusicPage: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const loadingText = useAppSelector((state) => state.song.loadingText);
+  const songs = useAppSelector((state) => state.song.songs);
+  const loading = useAppSelector((state) => state.song.loading);
   const [playingSong, setPlayingSong] = useState<Song | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [songs, setSongs] = useState<Song[]>([]);
   const [page, setPage] = useState<number>(1);
   const [hasMoreSongs, setHasMoreSongs] = useState(true);
-  const [loading, setLoading] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -24,7 +32,6 @@ const MusicPage: React.FC = () => {
   const [mountDeleteConfirmation, setMountDeleteConfirmation] = useState(false);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const panelRef = useRef<HTMLDivElement>(null);
-  const [loadingText, setLoadingText] = useState("Loading more songs...");
   const [repeat, setRepeat] = useState<repeatType>("repeat");
   const [shuffle, setShuffle] = useState(false);
 
@@ -37,23 +44,19 @@ const MusicPage: React.FC = () => {
       try {
         if (page === 1) {
           if (sortOrder === "asc")
-            setLoadingText(
-              "Fetching songs... Newest to Oldest.\n(First load may take up to a minute as the server wakes up)"
+            dispatch(
+              setLoadingText(
+                "Fetching songs... Newest to Oldest.\n(First load may take up to a minute as the server wakes up)"
+              )
             );
           else {
-            setLoadingText("Fetching songs...Oldest to Newest");
+            dispatch(setLoadingText("Fetching songs...Oldest to Newest"));
           }
         } else {
-          setLoadingText("Loading more songs...");
+          dispatch(setLoadingText("Loading more songs..."));
         }
-        const newSongs = await fetchAllSongs(Limit, page, sortOrder);
-        if (page === 1) return setSongs(newSongs);
-        setSongs((prev) => {
-          const combined = [...prev, ...newSongs];
-          const uniqueSongsMap = new Map<string, Song>();
-          combined.forEach((song) => uniqueSongsMap.set(song._id, song));
-          return Array.from(uniqueSongsMap.values());
-        });
+        const newSongs: Song[] = await fetchAllSongs(Limit, page, sortOrder);
+        dispatch(setSongs(newSongs));
 
         if (newSongs.length < Limit) {
           setHasMoreSongs(false);
@@ -61,7 +64,7 @@ const MusicPage: React.FC = () => {
       } catch (error) {
         console.error("Failed to load songs", error);
       } finally {
-        setLoading(false);
+        dispatch(setLoading(false));
       }
     };
     loadSongs();

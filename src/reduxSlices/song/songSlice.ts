@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { Song } from "../../services/song.services";
+import type { repeatType } from "../../pages/MusicPage";
+
 interface initialStateType {
   //only add the states which is to be shared in other file/files, other wise use it as a normal use state not as redux state
   songs: Song[];
@@ -17,7 +19,7 @@ interface initialStateType {
   mountDeleteConfirmation: boolean;
   sortOrder: string;
   loadingText: string;
-  repeat: string;
+  repeat: repeatType;
   shuffle: boolean;
 }
 const initialState: initialStateType = {
@@ -44,8 +46,59 @@ const songSlice = createSlice({
   initialState,
   reducers: {
     setSongs: (state, action: PayloadAction<Song[]>) => {
-      state.songs = action.payload;
+      if (state.songs.length === 0) {
+        state.songs = action.payload;
+      } else {
+        const allSongs = [...state.songs, ...action.payload];
+        const uniqueSongMap = new Map<string, Song>();
+
+        allSongs.forEach((song: Song) => {
+          uniqueSongMap.set(song._id, song);
+        });
+
+        const finalSongs = Array.from(uniqueSongMap.values());
+        state.songs = finalSongs;
+      }
+    },
+    setCurrentTime: (state, action: PayloadAction<number>) => {
+      state.currentTime = action.payload;
+    },
+    setDownloading: (state, action: PayloadAction<boolean>) => {
+      state.downloading = action.payload;
+    },
+    setPlaying: (state, action: PayloadAction<boolean>) => {
+      state.playing = action.payload;
+    },
+    setMountDeleteConfirmation: (state, action: PayloadAction<boolean>) => {
+      state.mountDeleteConfirmation = action.payload;
+    },
+    setPanelOpen: (state, action: PayloadAction<boolean>) => {
+      state.panelOpen = action.payload;
+    },
+    setRepeat: (state, action: PayloadAction<repeatType>) => {
+      state.repeat = action.payload;
+    },
+    setShuffle: (state) => {
+      state.shuffle = !state.shuffle;
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setLoadingText: (state, action: PayloadAction<string>) => {
+      state.loadingText = action.payload;
     },
   },
 });
+export const {
+  setSongs,
+  setCurrentTime,
+  setDownloading,
+  setMountDeleteConfirmation,
+  setPanelOpen,
+  setRepeat,
+  setShuffle,
+  setLoading,
+  setLoadingText,
+  setPlaying,
+} = songSlice.actions;
 export default songSlice.reducer;
