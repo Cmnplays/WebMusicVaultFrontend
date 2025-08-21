@@ -24,9 +24,6 @@ const fetchAllSongs = async (
         page,
         sortOrder,
       },
-      headers: {
-        "ngrok-skip-browser-warning": "true",
-      },
     });
 
     if (response.data.status !== 200) {
