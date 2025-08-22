@@ -19,6 +19,7 @@ import {
   setDuration,
   setCurrentTime,
   setPanelTrigger,
+  handleSortByChange,
 } from "../reduxSlices/song/songSlice";
 
 const MusicPage: React.FC = () => {
@@ -42,12 +43,13 @@ const MusicPage: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [hasMoreSongs, setHasMoreSongs] = useState(true);
   const panelRef = useRef<HTMLDivElement>(null);
+  const [sortChanged, setSortChanged] = useState(false);
   const Limit = 10;
 
   // Fetch songs on page or initial load
   useEffect(() => {
     const loadSongs = async () => {
-      setLoading(true);
+      dispatch(setLoading(true));
       try {
         if (page === 1) {
           if (sortOrder === "asc")
@@ -57,13 +59,22 @@ const MusicPage: React.FC = () => {
               )
             );
           else {
-            dispatch(setLoadingText("Fetching songs...Oldest to Newest"));
+            dispatch(
+              setLoadingText(
+                "Fetching songs...Oldest to Newest.\n(First load may take up to a minute as the server wakes up"
+              )
+            );
           }
         } else {
           dispatch(setLoadingText("Loading more songs..."));
         }
         const newSongs: Song[] = await fetchAllSongs(Limit, page, sortOrder);
-        dispatch(setSongs(newSongs));
+        if (sortChanged) {
+          dispatch(handleSortByChange(newSongs));
+          setSortChanged(false);
+        } else {
+          dispatch(setSongs(newSongs));
+        }
 
         if (newSongs.length < Limit) {
           setHasMoreSongs(false);
@@ -321,6 +332,7 @@ const MusicPage: React.FC = () => {
   };
   const handleSorting = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    setSortChanged(true);
     dispatch(setSongs([]));
     setHasMoreSongs(true);
     setPage(1);

@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useRef, useState } from "react";
 const apiBase = import.meta.env.VITE_API_URL;
+import { useAppDispatch, useAppSelector } from "../store/hook";
+import { setLoading } from "../reduxSlices/song/songSlice";
 
 const UploadPage: React.FC = () => {
   type error = string | null;
@@ -10,6 +12,10 @@ const UploadPage: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [errors, setErrors] = useState<error[]>([]);
+  const dispatch = useAppDispatch();
+
+  const loading = useAppSelector((state) => state.song.loading);
+
   const handleFileClick = () => {
     inputRef.current?.click();
   };
@@ -34,16 +40,13 @@ const UploadPage: React.FC = () => {
 
     const formData = new FormData();
     files.forEach((file) => formData.append("songs", file));
-
+    dispatch(setLoading(true));
     setIsUploading(true);
     try {
-      const res = await axios.post(`${apiBase}/song/upload`, formData, {
-        headers: {
-          "ngrok-skip-browser-warning": "true",
-        },
-      });
+      const res = await axios.post(`${apiBase}/song/upload`, formData);
       if (res.data.errors?.length > 0) {
         setErrors(res.data.errors);
+        console.log(res.data.errors);
       }
       setSuccessMsg("Upload successful!");
       setFiles([]);
@@ -62,6 +65,7 @@ const UploadPage: React.FC = () => {
       }
     } finally {
       setIsUploading(false);
+      dispatch(setLoading(false));
     }
   };
 
@@ -142,12 +146,12 @@ const UploadPage: React.FC = () => {
         <button
           type="submit"
           className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={isUploading}
+          disabled={loading}
         >
           {isUploading ? "Uploading..." : "Upload"}
         </button>
       </form>
-      {isUploading && (
+      {loading && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
           <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />
         </div>

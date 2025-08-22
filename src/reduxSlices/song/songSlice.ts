@@ -5,8 +5,6 @@ import type { repeatType } from "../../pages/MusicPage";
 interface initialStateType {
   //only add the states which is to be shared in other file/files, other wise use it as a normal use state not as redux state
   songs: Song[];
-  page: number;
-  hasMoreSongs: boolean;
   loading: boolean;
   duration: number;
   currentTime: number;
@@ -23,8 +21,6 @@ interface initialStateType {
 }
 const initialState: initialStateType = {
   songs: [],
-  page: 1,
-  hasMoreSongs: true,
   loading: false,
   duration: 0,
   currentTime: 0,
@@ -59,6 +55,9 @@ const songSlice = createSlice({
         state.songs = finalSongs;
       }
     },
+    handleSortByChange: (state, action: PayloadAction<Song[]>) => {
+      state.songs = action.payload;
+    },
     setCurrentTime: (state, action: PayloadAction<number>) => {
       state.currentTime = action.payload;
     },
@@ -87,7 +86,7 @@ const songSlice = createSlice({
       state.loadingText = action.payload;
     },
     setDeleting: (state, action: PayloadAction<boolean>) => {
-      state.downloading = action.payload;
+      state.deleting = action.payload;
     },
     setPlayingSong: (state, action: PayloadAction<Song | null>) => {
       state.playingSong = action.payload;
@@ -116,5 +115,6 @@ export const {
   setDuration,
   setPanelTrigger,
   setDeleting,
+  handleSortByChange,
 } = songSlice.actions;
 export default songSlice.reducer;
