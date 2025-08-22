@@ -24,6 +24,7 @@ import {
   setSortChanged,
   setPage,
   incrPage,
+  setSortOrder,
 } from "../reduxSlices/song/songSlice";
 
 const MusicPage: React.FC = () => {
@@ -41,10 +42,10 @@ const MusicPage: React.FC = () => {
   const mountDeleteConfirmation = useAppSelector(
     (state) => state.song.mountDeleteConfirmation
   );
+  const sortOrder = useAppSelector((state) => state.song.sortOrder);
   const page = useAppSelector((state) => state.song.page);
   const playingSong = useAppSelector((state) => state.song.playingSong);
   const [error, setError] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const audioRef = useRef<HTMLAudioElement>(null);
   const [hasMoreSongs, setHasMoreSongs] = useState(true);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -356,11 +357,15 @@ const MusicPage: React.FC = () => {
     });
   };
   const handleSorting = () => {
-    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
     dispatch(setSortChanged(true));
     dispatch(setSongs([]));
-    setHasMoreSongs(true);
     dispatch(setPage(1));
+    if (sortOrder === "asc") {
+      dispatch(setSortOrder("desc"));
+    } else {
+      dispatch(setSortOrder("asc"));
+    }
+    setHasMoreSongs(true);
     if (panelRef.current) {
       fadeOutPanel(panelRef.current, () => {
         dispatch(setPlayingSong(null));

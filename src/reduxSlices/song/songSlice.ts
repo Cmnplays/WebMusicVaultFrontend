@@ -20,6 +20,7 @@ interface initialStateType {
   playingSong: Song | null;
   sortChanged: boolean;
   page: number;
+  sortOrder: "asc" | "desc";
 }
 const initialState: initialStateType = {
   songs: [],
@@ -38,6 +39,7 @@ const initialState: initialStateType = {
   playingSong: null,
   sortChanged: false,
   page: 1,
+  sortOrder: "asc",
 };
 
 const songSlice = createSlice({
@@ -111,6 +113,9 @@ const songSlice = createSlice({
     setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload;
     },
+    setSortOrder: (state, action: PayloadAction<"asc" | "desc">) => {
+      state.sortOrder = action.payload;
+    },
   },
 });
 export const {
@@ -132,5 +137,6 @@ export const {
   setSortChanged,
   incrPage,
   setPage,
+  setSortOrder,
 } = songSlice.actions;
 export default songSlice.reducer;
