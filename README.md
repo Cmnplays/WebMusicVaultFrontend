@@ -1,69 +1,157 @@
-# React + TypeScript + Vite
+# WebMusicVault 🎵
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern web-based music player application built with React, TypeScript, and Redux Toolkit.
 
-Currently, two official plugins are available:
+## Features ✨
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Available Now
 
-## Expanding the ESLint configuration
+- 🎵 Music playback with play/pause controls
+- ⏭️ Next/Previous track navigation
+- 🔄 Repeat modes (single track, playlist, no repeat)
+- 🔀 Shuffle play functionality
+- 📜 Infinite scroll for song listing
+- ↕️ Song sorting (ascending/descending)
+- 🎚️ Animated player panel
+- ⬆️ Music upload capabilities
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Authentication System 🔐
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- User registration with email verification
+- Secure login with JWT tokens
+- Password reset functionality
+- Protected routes for authenticated users
+- Persistent login state
+- Auto logout on token expiration
+- Session management
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### Coming Soon
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- 📑 Playlist management
+- 🔍 Advanced search functionality
+- 📱 Mobile responsive design
+- 🎨 Theme customization
+- 📊 Music analytics
+- 💾 Offline mode
+
+## Getting Started 🚀
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/WebMusicVaultFrontend.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Install dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd WebMusicVaultFrontend
+npm install
 ```
+
+3. Set up environment variables
+   Create a `.env` file in the root directory:
+
+```env
+VITE_API_URL=your_backend_url
+VITE_JWT_SECRET=your_jwt_secret
+```
+
+4. Start the development server
+
+```bash
+npm run dev
+```
+
+## Authentication Flow 🔒
+
+### Registration
+
+```typescript
+POST /api/auth/register
+Body: {
+  email: string,
+  password: string,
+  username: string
+}
+```
+
+### Login
+
+```typescript
+POST /api/auth/login
+Body: {
+  email: string,
+  password: string
+}
+```
+
+### Password Reset
+
+```typescript
+POST / api / auth / reset - password;
+Body: {
+  email: string;
+}
+```
+
+### Protected Routes
+
+All music-related features require authentication. Protected routes are wrapped with `AuthGuard` component:
+
+```typescript
+<AuthGuard>
+  <MusicPage />
+</AuthGuard>
+```
+
+## Project Structure 📁
+
+```
+src/
+├── components/         # Reusable components
+├── pages/             # Page components
+│   ├── Login.tsx     # Login page
+│   ├── SignUp.tsx    # Registration page
+│   └── ...other pages
+├── reduxSlices/       # Redux state management
+│   ├── auth/         # Authentication slice
+│   └── song/         # Music player slice
+├── services/          # API services
+└── store/             # Redux store configuration
+```
+
+## State Management 📊
+
+Using Redux Toolkit (RTK) for:
+
+- Authentication state
+- Music playback state
+- Song queue management
+- Application UI state
+
+## Contributing 🤝
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License 📝
+
+[MIT License](LICENSE)
+
+## Acknowledgments 🙏
+
+- [React Documentation](https://reactjs.org/)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [GSAP](https://greensock.com/gsap/)
