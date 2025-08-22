@@ -43,25 +43,36 @@ const UploadPage: React.FC = () => {
     dispatch(setLoading(true));
     setIsUploading(true);
     try {
-      const res = await axios.post(`${apiBase}/song/upload`, formData);
+      const res = await axios.post(`${apiBase}/song/upload`, formData, {
+        timeout: 1000 * 100,
+      });
       if (res.data.errors?.length > 0) {
         setErrors(res.data.errors);
-        console.log(res.data.errors);
       }
       setSuccessMsg("Upload successful!");
       setFiles([]);
       if (inputRef.current) inputRef.current.value = "";
-    } catch (err) {
-      if (axios.isAxiosError(err) && err.response) {
-        if (err.response.status === 409) {
-          setError("Upload failed: File already exists.");
+    } catch (err: unknown) {
+      setError("Upload failed. Please try again."); // generic fallback
+      if (axios.isAxiosError(err)) {
+        if (err.code === "ECONNABORTED") {
+          setError("Request timed out. Please try again later.");
+        } else if (err.response) {
+          const status = err.response.status;
+          if (status === 409) {
+            setError("Upload failed: File already exists.");
+          } else {
+            setError(
+              `Upload failed: ${err.response.data?.message || "Unknown error"}`
+            );
+          }
         } else {
-          setError(
-            `Upload failed: ${err.response.data?.message || "Unknown error"}`
-          );
+          setError("Something went wrong. Please try again.");
         }
+      } else if (err instanceof Error) {
+        setError("Unexpected error occurred. Please try again.");
       } else {
-        setError("An unexpected error occurred. Please try again.");
+        setError("An unknown error occurred.");
       }
     } finally {
       setIsUploading(false);
