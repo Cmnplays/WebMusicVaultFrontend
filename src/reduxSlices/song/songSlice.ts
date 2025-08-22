@@ -18,6 +18,8 @@ interface initialStateType {
   repeat: repeatType;
   shuffle: boolean;
   playingSong: Song | null;
+  sortChanged: boolean;
+  page: number;
 }
 const initialState: initialStateType = {
   songs: [],
@@ -34,6 +36,8 @@ const initialState: initialStateType = {
   repeat: "repeat",
   shuffle: false,
   playingSong: null,
+  sortChanged: false,
+  page: 1,
 };
 
 const songSlice = createSlice({
@@ -98,6 +102,15 @@ const songSlice = createSlice({
     setPanelTrigger: (state) => {
       state.panelTrigger = state.panelTrigger + 1;
     },
+    setSortChanged: (state, action: PayloadAction<boolean>) => {
+      state.sortChanged = action.payload;
+    },
+    incrPage: (state) => {
+      state.page = state.page + 1;
+    },
+    setPage: (state, action: PayloadAction<number>) => {
+      state.page = action.payload;
+    },
   },
 });
 export const {
@@ -116,5 +129,8 @@ export const {
   setPanelTrigger,
   setDeleting,
   handleSortByChange,
+  setSortChanged,
+  incrPage,
+  setPage,
 } = songSlice.actions;
 export default songSlice.reducer;

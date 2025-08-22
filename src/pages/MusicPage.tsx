@@ -20,6 +20,9 @@ import {
   setCurrentTime,
   setPanelTrigger,
   handleSortByChange,
+  setSortChanged,
+  setPage,
+  incrPage,
 } from "../reduxSlices/song/songSlice";
 
 const MusicPage: React.FC = () => {
@@ -33,17 +36,17 @@ const MusicPage: React.FC = () => {
   const shuffle = useAppSelector((state) => state.song.shuffle);
   const downloading = useAppSelector((state) => state.song.downloading);
   const deleting = useAppSelector((state) => state.song.deleting);
+  const sortChanged = useAppSelector((state) => state.song.sortChanged);
   const mountDeleteConfirmation = useAppSelector(
     (state) => state.song.mountDeleteConfirmation
   );
+  const page = useAppSelector((state) => state.song.page);
   const playingSong = useAppSelector((state) => state.song.playingSong);
 
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [page, setPage] = useState<number>(1);
   const [hasMoreSongs, setHasMoreSongs] = useState(true);
   const panelRef = useRef<HTMLDivElement>(null);
-  const [sortChanged, setSortChanged] = useState(false);
   const Limit = 10;
 
   // Fetch songs on page or initial load
@@ -71,7 +74,7 @@ const MusicPage: React.FC = () => {
         const newSongs: Song[] = await fetchAllSongs(Limit, page, sortOrder);
         if (sortChanged) {
           dispatch(handleSortByChange(newSongs));
-          setSortChanged(false);
+          dispatch(setSortChanged(false));
         } else {
           dispatch(setSongs(newSongs));
         }
@@ -85,8 +88,13 @@ const MusicPage: React.FC = () => {
         dispatch(setLoading(false));
       }
     };
-    loadSongs();
-  }, [page, sortOrder]);
+    //Here i need to add a logic condition to check the songs doesn't get fetched again if i move from other page to this page, because i am using redux store so songs doesn't get lost upon navigation.So if songs are already present in the redux store and if i am not changing the sort order then i should not fetch the songs again
+    if (songs.length === 0 || songs.length < page * Limit || sortChanged) {
+      loadSongs();
+      return;
+    }
+    console.log("Skipping load songs");
+  }, [page, sortOrder, dispatch, songs, sortChanged]);
 
   // Play or pause audio based on playingSong change
   useEffect(() => {
@@ -119,7 +127,7 @@ const MusicPage: React.FC = () => {
         const bottomPosition = document.documentElement.offsetHeight;
 
         if (bottomPosition - scrollPosition < 150) {
-          setPage((prev) => prev + 1);
+          dispatch(incrPage());
         }
       }, 200);
     };
@@ -332,10 +340,10 @@ const MusicPage: React.FC = () => {
   };
   const handleSorting = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-    setSortChanged(true);
+    dispatch(setSortChanged(true));
     dispatch(setSongs([]));
     setHasMoreSongs(true);
-    setPage(1);
+    dispatch(setPage(1));
     if (panelRef.current) {
       fadeOutPanel(panelRef.current, () => {
         dispatch(setPlayingSong(null));

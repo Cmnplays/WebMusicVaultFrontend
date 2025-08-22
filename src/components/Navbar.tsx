@@ -176,15 +176,6 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              to="/playlists"
-              className="block text-gray-800 font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Playlists
-            </Link>
-          </li>{" "}
-          <li>
-            <Link
               to="/sign-up"
               className="block text-gray-800 font-medium"
               onClick={() => setIsOpen(false)}
