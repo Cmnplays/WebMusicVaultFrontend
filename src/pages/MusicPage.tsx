@@ -7,10 +7,11 @@ import DeleteConfirmation from "../components/DeleteConfirmation";
 import gsap from "gsap";
 export type repeatType = "repeat" | "noRepeat" | "single";
 import { useAppDispatch, useAppSelector } from "../store/hook";
+import axios from "axios";
 
 import {
   setSongs,
-  setLoadingText,
+  setStatusText,
   setLoading,
   setPanelOpen,
   setPlaying,
@@ -27,7 +28,7 @@ import {
 
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const loadingText = useAppSelector((state) => state.song.loadingText);
+  const statusText = useAppSelector((state) => state.song.statusText);
   const songs = useAppSelector((state) => state.song.songs);
   const loading = useAppSelector((state) => state.song.loading);
   const panelOpen = useAppSelector((state) => state.song.panelOpen);
@@ -42,7 +43,7 @@ const MusicPage: React.FC = () => {
   );
   const page = useAppSelector((state) => state.song.page);
   const playingSong = useAppSelector((state) => state.song.playingSong);
-
+  const [error, setError] = useState(false);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const audioRef = useRef<HTMLAudioElement>(null);
   const [hasMoreSongs, setHasMoreSongs] = useState(true);
@@ -54,24 +55,27 @@ const MusicPage: React.FC = () => {
     const loadSongs = async () => {
       dispatch(setLoading(true));
       try {
+        setError(false);
+
         if (page === 1) {
           if (sortOrder === "asc")
             dispatch(
-              setLoadingText(
+              setStatusText(
                 "Fetching songs... Newest to Oldest.\n(First load may take up to a minute as the server wakes up)"
               )
             );
-          else {
+          else
             dispatch(
-              setLoadingText(
-                "Fetching songs...Oldest to Newest.\n(First load may take up to a minute as the server wakes up"
+              setStatusText(
+                "Fetching songs... Oldest to Newest.\n(First load may take up to a minute as the server wakes up)"
               )
             );
-          }
         } else {
-          dispatch(setLoadingText("Loading more songs..."));
+          dispatch(setStatusText("Loading more songs..."));
         }
+
         const newSongs: Song[] = await fetchAllSongs(Limit, page, sortOrder);
+
         if (sortChanged) {
           dispatch(handleSortByChange(newSongs));
           dispatch(setSortChanged(false));
@@ -82,18 +86,34 @@ const MusicPage: React.FC = () => {
         if (newSongs.length < Limit) {
           setHasMoreSongs(false);
         }
-      } catch (error) {
-        console.error("Failed to load songs", error);
+      } catch (err: unknown) {
+        setError(true);
+
+        if (axios.isAxiosError(err)) {
+          if (err.code === "ECONNABORTED") {
+            dispatch(
+              setStatusText("Request timed out. Please try again later.")
+            );
+          } else {
+            dispatch(setStatusText("Something went wrong. Please try again."));
+          }
+        } else if (err instanceof Error) {
+          dispatch(
+            setStatusText("Unexpected error occurred. Please try again.")
+          );
+        } else {
+          dispatch(setStatusText("An unknown error occurred."));
+        }
       } finally {
         dispatch(setLoading(false));
       }
     };
-    //Here i need to add a logic condition to check the songs doesn't get fetched again if i move from other page to this page, because i am using redux store so songs doesn't get lost upon navigation.So if songs are already present in the redux store and if i am not changing the sort order then i should not fetch the songs again
+
+    // Prevent refetch if songs already exist and sort order hasn't changed
     if (songs.length === 0 || songs.length < page * Limit || sortChanged) {
       loadSongs();
       return;
     }
-    console.log("Skipping load songs");
   }, [page, sortOrder, dispatch, songs, sortChanged]);
 
   // Play or pause audio based on playingSong change
@@ -137,7 +157,7 @@ const MusicPage: React.FC = () => {
       window.removeEventListener("scroll", handleScroll);
       if (debounceTimer) clearTimeout(debounceTimer);
     };
-  }, [loading, hasMoreSongs]);
+  }, [loading, hasMoreSongs, dispatch]);
 
   useEffect(() => {
     const song = audioRef.current;
@@ -157,7 +177,7 @@ const MusicPage: React.FC = () => {
       song.removeEventListener("loadedmetadata", onLoadMetadata);
       song.removeEventListener("timeupdate", onTimeUpdate);
     };
-  }, []);
+  }, [dispatch]);
 
   // Handle play button click
   function handlePlayClick(song: Song) {
@@ -222,9 +242,7 @@ const MusicPage: React.FC = () => {
         if (nextIndex < songs.length) {
           dispatch(setPlayingSong(songs[nextIndex]));
         } else {
-          //in next update after shifting to like redux store ,need to fetch songs here then if if i get 0 songs then only i should go to the first song
-
-          dispatch(setPlayingSong(songs[0]));
+          //in next update after shifting to like redux store ,need to fetch songs here then if if i get 0 songs then only i should go to the first song          dispatch(setPlayingSong(songs[0]));
         }
         dispatch(setPlaying(true));
       }
@@ -321,7 +339,6 @@ const MusicPage: React.FC = () => {
     if (previousSong < 0) {
       dispatch(setPlayingSong(songs[songs.length - 1]));
     } else {
-      // No more songs in list
       dispatch(setPlayingSong(songs[previousSong]));
     }
     dispatch(setPlaying(true));
@@ -446,9 +463,9 @@ const MusicPage: React.FC = () => {
         hidden
       />
 
-      {loading && (
+      {(loading || error) && (
         <p className="text-center mt-4 text-gray-600 whitespace-pre-line">
-          {loadingText}
+          {statusText}
         </p>
       )}
       {!hasMoreSongs && (

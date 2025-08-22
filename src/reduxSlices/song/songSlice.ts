@@ -14,7 +14,7 @@ interface initialStateType {
   downloading: boolean;
   deleting: boolean;
   mountDeleteConfirmation: boolean;
-  loadingText: string;
+  statusText: string;
   repeat: repeatType;
   shuffle: boolean;
   playingSong: Song | null;
@@ -32,7 +32,7 @@ const initialState: initialStateType = {
   downloading: false,
   deleting: false,
   mountDeleteConfirmation: false,
-  loadingText: "Loading more songs...",
+  statusText: "status more songs...",
   repeat: "repeat",
   shuffle: false,
   playingSong: null,
@@ -86,8 +86,8 @@ const songSlice = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
-    setLoadingText: (state, action: PayloadAction<string>) => {
-      state.loadingText = action.payload;
+    setStatusText: (state, action: PayloadAction<string>) => {
+      state.statusText = action.payload;
     },
     setDeleting: (state, action: PayloadAction<boolean>) => {
       state.deleting = action.payload;
@@ -122,7 +122,7 @@ export const {
   setRepeat,
   setShuffle,
   setLoading,
-  setLoadingText,
+  setStatusText,
   setPlaying,
   setPlayingSong,
   setDuration,

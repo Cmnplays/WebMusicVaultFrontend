@@ -17,26 +17,19 @@ const fetchAllSongs = async (
   page: number = 1,
   sortOrder: "asc" | "desc" = "asc"
 ): Promise<Song[]> => {
-  try {
-    const response = await axios.get<apiResponse<Song[]>>(`${apiBase}/song`, {
-      params: {
-        limit,
-        page,
-        sortOrder,
-      },
-      headers: {
-        "ngrok-skip-browser-warning": "true",
-      },
-    });
+  const response = await axios.get<apiResponse<Song[]>>(`${apiBase}/song`, {
+    params: {
+      limit,
+      page,
+      sortOrder,
+    },
+    timeout: 120,
+  });
 
-    if (response.data.status !== 200) {
-      throw new Error(response.data.message || "Failed to fetch songs");
-    }
-    return response.data.data;
-  } catch (error) {
-    console.error("Error fetching songs:", error);
-    return [];
+  if (response.data.status !== 200) {
+    throw new Error(response.data.message || "Failed to fetch songs");
   }
+  return response.data.data;
 };
 
 const deleteSong = async (id: string): Promise<number> => {
