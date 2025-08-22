@@ -23,7 +23,7 @@ const fetchAllSongs = async (
       page,
       sortOrder,
     },
-    timeout: 120,
+    timeout: 1000 * 100, //120seconds
   });
 
   if (response.data.status !== 200) {
