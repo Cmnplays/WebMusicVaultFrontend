@@ -6,6 +6,7 @@ import SearchSongs from "./pages/SearchSongs.tsx";
 import Playlists from "./pages/Playlists.tsx";
 import SignUp from "./pages/SignUp.tsx";
 import Login from "./pages/Login.tsx";
+import About from "./pages/About.tsx";
 export default function App() {
   return (
     <>
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/playlists" element={<Playlists />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/about" element={<About />} />
       </Routes>
     </>
   );

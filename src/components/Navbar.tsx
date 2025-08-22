@@ -192,6 +192,15 @@ const Navbar = () => {
               Login
             </Link>
           </li>
+          <li>
+            <Link
+              to="/about"
+              className="block text-gray-800 font-medium"
+              onClick={() => setIsOpen(false)}
+            >
+              About
+            </Link>
+          </li>
         </ul>
       </div>
     </nav>
