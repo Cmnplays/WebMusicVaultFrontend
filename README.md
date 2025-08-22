@@ -1,157 +1,142 @@
 # WebMusicVault 🎵
 
-A modern web-based music player application built with React, TypeScript, and Redux Toolkit.
+A modern web music player built with React and TypeScript. Stream your music, create playlists, and enjoy a seamless listening experience.
 
-## Features ✨
+![App Screenshot](./screenshots/app-preview.png) <!-- You should add screenshots -->
 
-### Available Now
-
-- 🎵 Music playback with play/pause controls
-- ⏭️ Next/Previous track navigation
-- 🔄 Repeat modes (single track, playlist, no repeat)
-- 🔀 Shuffle play functionality
-- 📜 Infinite scroll for song listing
-- ↕️ Song sorting (ascending/descending)
-- 🎚️ Animated player panel
-- ⬆️ Music upload capabilities
-
-### Authentication System 🔐
-
-- User registration with email verification
-- Secure login with JWT tokens
-- Password reset functionality
-- Protected routes for authenticated users
-- Persistent login state
-- Auto logout on token expiration
-- Session management
-
-### Coming Soon
-
-- 📑 Playlist management
-- 🔍 Advanced search functionality
-- 📱 Mobile responsive design
-- 🎨 Theme customization
-- 📊 Music analytics
-- 💾 Offline mode
-
-## Getting Started 🚀
-
-### Prerequisites
-
-- Node.js (v16 or higher)
-- npm or yarn
-
-### Installation
-
-1. Clone the repository
+## 🚀 Quick Start
 
 ```bash
+# Clone the repository
 git clone https://github.com/yourusername/WebMusicVaultFrontend.git
-```
 
-2. Install dependencies
-
-```bash
-cd WebMusicVaultFrontend
+# Install dependencies
 npm install
-```
 
-3. Set up environment variables
-   Create a `.env` file in the root directory:
-
-```env
-VITE_API_URL=your_backend_url
-VITE_JWT_SECRET=your_jwt_secret
-```
-
-4. Start the development server
-
-```bash
+# Start development server
 npm run dev
 ```
 
-## Authentication Flow 🔒
+Visit `http://localhost:5173` to view the app.
 
-### Registration
+## 🛠️ Tech Stack
 
-```typescript
-POST /api/auth/register
-Body: {
-  email: string,
-  password: string,
-  username: string
-}
-```
+- **Framework:** React 18 with TypeScript
+- **State Management:** Redux Toolkit
+- **Routing:** React Router v6
+- **Styling:** TailwindCSS
+- **Animations:** GSAP
+- **Build Tool:** Vite
+- **Testing:** Vitest + React Testing Library
+- **API Client:** Axios
 
-### Login
+## 📚 Core Features
 
-```typescript
-POST /api/auth/login
-Body: {
-  email: string,
-  password: string
-}
-```
+### Music Player
 
-### Password Reset
+- Full audio playback controls
+- Real-time progress bar
+- Shuffle and repeat modes
+- Volume control with mute option
 
-```typescript
-POST / api / auth / reset - password;
-Body: {
-  email: string;
-}
-```
+### Library Management
 
-### Protected Routes
+- Infinite scroll song list
+- Sort by title, artist, duration
+- Quick search functionality
+- Upload new tracks
 
-All music-related features require authentication. Protected routes are wrapped with `AuthGuard` component:
+### Authentication
 
-```typescript
-<AuthGuard>
-  <MusicPage />
-</AuthGuard>
-```
+- JWT-based auth flow
+- Protected routes
+- Persistent sessions
 
-## Project Structure 📁
+## 🏗️ Project Structure
 
 ```
 src/
-├── components/         # Reusable components
-├── pages/             # Page components
-│   ├── Login.tsx     # Login page
-│   ├── SignUp.tsx    # Registration page
-│   └── ...other pages
-├── reduxSlices/       # Redux state management
-│   ├── auth/         # Authentication slice
-│   └── song/         # Music player slice
-├── services/          # API services
-└── store/             # Redux store configuration
+├── assets/           # Static assets (images, icons)
+├── components/       # Reusable UI components
+├── hooks/           # Custom React hooks
+├── pages/           # Page components
+├── redux/           # Redux store and slices
+├── services/        # API services
+├── types/           # TypeScript definitions
+└── utils/           # Helper functions
 ```
 
-## State Management 📊
+## 💻 Development
 
-Using Redux Toolkit (RTK) for:
+```bash
+# Run development server
+npm run dev
 
-- Authentication state
-- Music playback state
-- Song queue management
-- Application UI state
+# Run tests
+npm run test
 
-## Contributing 🤝
+# Build for production
+npm run build
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+# Preview production build
+npm run preview
+```
 
-## License 📝
+## 🔧 Configuration
 
-[MIT License](LICENSE)
+Create `.env` file in project root:
 
-## Acknowledgments 🙏
+```env
+VITE_API_URL=http://localhost:3000
+VITE_JWT_SECRET=your_secret
+```
 
-- [React Documentation](https://reactjs.org/)
+## 📱 Responsive Design
+
+- Mobile-first approach
+- Breakpoints:
+  - Mobile: < 768px
+  - Tablet: 768px - 1024px
+  - Desktop: > 1024px
+
+## ⚡ Performance
+
+- Lazy loading for routes
+- Image optimization
+- Debounced search
+- Virtualized lists for large datasets
+
+## 🔒 Security
+
+- JWT token refresh mechanism
+- XSS protection
+- CORS configured
+- Secure cookie usage
+
+## 🌟 Coming Soon
+
+- [ ] Dark/Light theme toggle
+- [ ] Playlist management
+- [ ] Social sharing
+- [ ] Offline support
+
+## 🤝 Contributing
+
+1. Fork the repo
+2. Create feature branch (`git checkout -b feature/NewFeature`)
+3. Commit changes (`git commit -am 'Add NewFeature'`)
+4. Push branch (`git push origin feature/NewFeature`)
+5. Open Pull Request
+
+## 📝 License
+
+MIT © [Aaditya Chaurasiya]
+
+## 🙏 Credits
+
+Built with:
+
+- [React](https://reactjs.org/)
 - [Redux Toolkit](https://redux-toolkit.js.org/)
 - [TailwindCSS](https://tailwindcss.com/)
 - [GSAP](https://greensock.com/gsap/)
