@@ -1,5 +1,6 @@
+import UnavailableYet from "../components/UnavailableYet";
 const About = () => {
-  return <div>About</div>;
+  return <UnavailableYet />;
 };
 
 export default About;

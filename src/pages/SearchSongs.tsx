@@ -1,8 +1,8 @@
-import { useState, useRef } from "react";
-import type { Song } from "../services/song.services";
+import { useRef, useState } from "react";
 import { searchSong } from "../services/song.services";
+import type { Song } from "../services/song.services";
 const SearchSongs = () => {
-  const [resultantSongs, setResultantSongs] = useState<Song[]>([]);
+  const [searchedSongs, setSearchedSongs] = useState<Song[]>([]);
   const timerRef = useRef<number | null>(null);
   const debounceSearch = (query: string) => {
     if (timerRef.current) {
@@ -10,12 +10,12 @@ const SearchSongs = () => {
     }
     timerRef.current = window.setTimeout(async () => {
       if (!query || query == "") {
-        setResultantSongs([]);
+        setSearchedSongs([]);
         return;
       }
 
       const songs = await searchSong(query);
-      setResultantSongs(songs);
+      setSearchedSongs(songs);
     }, 300);
   };
 
@@ -35,7 +35,7 @@ const SearchSongs = () => {
         <h2 className="text-2xl mb-2 font-bold text-gray-900 tracking-tight leading-tight my-2"></h2>
 
         <ul className="space-y-4">
-          {resultantSongs.map((song) => {
+          {searchedSongs.map((song) => {
             return (
               <li
                 key={song._id}
