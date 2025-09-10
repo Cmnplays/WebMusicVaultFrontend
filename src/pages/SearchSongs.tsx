@@ -15,9 +15,6 @@ const SearchSongs = () => {
       }
 
       const songs = await searchSong(query);
-      if (!songs) {
-        setMessage("No songs found");
-      }
       setResultantSongs(songs);
     }, 300);
   };

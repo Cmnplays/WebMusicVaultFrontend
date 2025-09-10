@@ -42,4 +42,20 @@ const deleteSong = async (id: string): Promise<number> => {
   }
 };
 
-export { fetchAllSongs, deleteSong };
+const searchSong = async (query: string): Promise<Song[]> => {
+  const response = await axios.get<apiResponse<Song[]>>(
+    `${apiBase}/song/search`,
+    {
+      params: {
+        searchQuery: query,
+      },
+      timeout: 1000 * 100, //120seconds
+    }
+  );
+  console.log(response.data.data);
+  if (response.data.status !== 200) {
+    throw new Error(response.data.message || "Failed to fetch songs");
+  }
+  return response.data.data;
+};
+export { fetchAllSongs, deleteSong, searchSong };
