@@ -42,12 +42,18 @@ const deleteSong = async (id: string): Promise<number> => {
   }
 };
 
-const searchSong = async (query: string): Promise<Song[]> => {
+const searchSong = async (
+  query: string,
+  page: number,
+  limit: number
+): Promise<Song[]> => {
   const response = await axios.get<apiResponse<Song[]>>(
     `${apiBase}/song/search`,
     {
       params: {
         searchQuery: query,
+        page: page,
+        limit: limit,
       },
       timeout: 1000 * 100, //120seconds
     }

@@ -1,8 +1,8 @@
-import { formatDuration } from "./formatDuration";
+import { formatDuration } from "./../MusicPageComponents/formatDuration";
 import { useEffect } from "react";
 import gsap from "gsap";
-import { useAppSelector } from "../store/hook";
-import { useAppDispatch } from "../store/hook";
+import { useAppSelector } from "../../store/hook";
+import { useAppDispatch } from "../../store/hook";
 import {
   setCurrentTime,
   setPanelOpen,
@@ -11,7 +11,7 @@ import {
   setShuffle,
   setDownloading,
   setMountDeleteConfirmation,
-} from "../reduxSlices/song/songSlice";
+} from "../../reduxSlices/song/songSlice";
 
 interface songPanelProps {
   audioRef: React.RefObject<HTMLAudioElement>;
