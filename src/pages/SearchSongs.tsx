@@ -3,7 +3,7 @@ import { searchSong } from "../services/song.services";
 import type { Song } from "../services/song.services";
 import SongList from "../components/MusicPageComponents/SongList";
 import { useAppSelector, useAppDispatch } from "../store/hook";
-import SongPlayerPanel from "../components/MusicPageComponents/SongPlayerPanel";
+import SongPlayerPanel from "../components/SongPlayerPanel";
 import { fadeOutPanel } from "../hooks/useAudioPlayer";
 import { setLoading, setPlaying } from "../reduxSlices/song/songSlice";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
@@ -46,6 +46,7 @@ const SearchSongs = () => {
     }
     timerRef.current = window.setTimeout(async () => {
       setLoading(true);
+      setStatusText("loading");
       try {
         if (!query || query == "") {
           setSearchedSongs([]);
@@ -54,7 +55,9 @@ const SearchSongs = () => {
         const songs: Song[] = await searchSong(query, page, Limit);
         if (songs.length < Limit) {
           setHasMoreSongs(false);
-          console.log("has more songs");
+        }
+        if (songs.length === 0) {
+          setStatusText("No song found");
         }
         setSearchedSongs((prev) => {
           if (prev.length === 0 && page === 1) {
@@ -145,11 +148,15 @@ const SearchSongs = () => {
           {statusText}
         </p>
       )}
-      {!hasMoreSongs && (
+      {!hasMoreSongs && searchedSongs.length > 0 && !loading && (
         <p className="text-center mt-4 text-gray-600">
           You have reached the end of the list.
         </p>
       )}
+      {searchedSongs.length === 0 && (
+        <p className="text-center mt-4 text-gray-600">No songs found.</p>
+      )}
+
       {mountDeleteConfirmation && (
         <DeleteConfirmation
           title={playingSong!.title}

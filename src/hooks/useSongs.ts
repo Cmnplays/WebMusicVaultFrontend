@@ -90,11 +90,15 @@ export const useSongs = () => {
     };
 
     // Prevent refetch if songs already exist and sort order hasn't changed
-    if (songs.length === 0 || songs.length < page * Limit || sortChanged) {
+    if (
+      hasMoreSongs &&
+      (songs.length === 0 || songs.length < page * Limit || sortChanged)
+    ) {
       loadSongs();
       return;
     }
   }, [page, sortOrder, dispatch, songs, sortChanged, setError]);
+
   // Infinite scroll: load more songs when near bottom
   useEffect(() => {
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;

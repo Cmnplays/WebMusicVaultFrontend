@@ -1,8 +1,8 @@
-import { formatDuration } from "./../MusicPageComponents/formatDuration";
+import { formatDuration } from "./MusicPageComponents/formatDuration";
 import { useEffect } from "react";
 import gsap from "gsap";
-import { useAppSelector } from "../../store/hook";
-import { useAppDispatch } from "../../store/hook";
+import { useAppSelector } from "../store/hook";
+import { useAppDispatch } from "../store/hook";
 import {
   setCurrentTime,
   setPanelOpen,
@@ -11,7 +11,7 @@ import {
   setShuffle,
   setDownloading,
   setMountDeleteConfirmation,
-} from "../../reduxSlices/song/songSlice";
+} from "../reduxSlices/song/songSlice";
 
 interface songPanelProps {
   audioRef: React.RefObject<HTMLAudioElement>;
@@ -155,6 +155,7 @@ const SongPlayerPanel = ({
         />
 
         <div className="flex items-center justify-between sm:justify-between px-2">
+          {/* Duration normal */}
           <span className="text-xs sm:text-sm font-mono text-purple-300 w-10 text-left select-none">
             {formatDuration(currentTime)}
           </span>
@@ -173,6 +174,7 @@ const SongPlayerPanel = ({
                 </div>
               )}
             </button>
+            {/* Move to previous song */}
 
             <button
               aria-label="Previous"
@@ -190,6 +192,8 @@ const SongPlayerPanel = ({
                 <rect x="14" y="5" width="2" height="14" rx="1" />
               </svg>
             </button>
+            {/* Play / Pause */}
+
             <button
               aria-label={playing ? "Pause" : "Play"}
               onClick={handlePlayPause}
@@ -220,6 +224,8 @@ const SongPlayerPanel = ({
                 </svg>
               )}
             </button>
+            {/* Move to next song */}
+
             <button
               aria-label="Next"
               onClick={moveToNextSong}
@@ -273,7 +279,7 @@ const SongPlayerPanel = ({
               )}
             </button>
           </div>
-
+          {/* Duration reverse */}
           <span className="text-xs sm:text-sm font-mono text-purple-300 w-10 text-right select-none">
             {formatDuration(duration - currentTime)}
           </span>

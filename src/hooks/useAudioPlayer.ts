@@ -141,7 +141,7 @@ export const useAudioPlayer = ({
         if (nextIndex < songs.length) {
           dispatch(setPlayingSong(songs[nextIndex]));
         } else {
-          //in next update after shifting to like redux store ,need to fetch songs here then if if i get 0 songs then only i should go to the first song          dispatch(setPlayingSong(songs[0]));
+          //in next update after shifting to redux store ,need to fetch songs here then if if i get 0 songs then only i should go to the first song          dispatch(setPlayingSong(songs[0]));
         }
         dispatch(setPlaying(true));
       }

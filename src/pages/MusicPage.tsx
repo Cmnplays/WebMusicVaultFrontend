@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import SongPlayerPanel from "../components/MusicPageComponents/SongPlayerPanel";
+import SongPlayerPanel from "../components/SongPlayerPanel";
 import DeleteConfirmation from "../components/MusicPageComponents/DeleteConfirmation";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { useSongs } from "../hooks/useSongs";
@@ -8,7 +8,6 @@ import { fadeOutPanel } from "../hooks/useAudioPlayer";
 import { setPlaying } from "../reduxSlices/song/songSlice";
 import MusicHeader from "../components/MusicPageComponents/MusicHeader";
 import SongList from "../components/MusicPageComponents/SongList";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const statusText = useAppSelector((state) => state.song.statusText);
@@ -32,7 +31,6 @@ const MusicPage: React.FC = () => {
     moveToPreviousSong,
   } = useAudioPlayer({ panelRef, audioRef });
   const { error, handleSorting, hasMoreSongs } = useSongs();
-  useInfiniteScroll({ hasMoreSongs });
   return (
     <main className={`max-w-5xl mx-auto p-4 ${playing && "mb-[192px]"}`}>
       <MusicHeader handleSorting={handleSorting} sortOrder={sortOrder} />
