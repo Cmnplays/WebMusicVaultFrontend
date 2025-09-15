@@ -111,7 +111,10 @@ const MusicPage: React.FC = () => {
     };
 
     // Prevent refetch if songs already exist and sort order hasn't changed
-    if (songs.length === 0 || songs.length < page * Limit || sortChanged) {
+    if (
+      hasMoreSongs &&
+      (songs.length === 0 || songs.length < page * Limit || sortChanged)
+    ) {
       loadSongs();
       return;
     }
