@@ -55,6 +55,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
     if (password === realPass) {
       try {
         await deleteSong(songId);
+
         setMessage("Successfully deleted song");
         setTimeout(() => {
           closeWithAnimation();
