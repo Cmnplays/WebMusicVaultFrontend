@@ -116,6 +116,12 @@ const songSlice = createSlice({
     setSortOrder: (state, action: PayloadAction<"asc" | "desc">) => {
       state.sortOrder = action.payload;
     },
+    deleteSong: (state, action: PayloadAction<string>) => {
+      const filteredSongs = state.songs.filter(
+        (song) => song._id !== action.payload
+      );
+      state.songs = filteredSongs;
+    },
   },
 });
 export const {
@@ -138,5 +144,6 @@ export const {
   incrPage,
   setPage,
   setSortOrder,
+  deleteSong,
 } = songSlice.actions;
 export default songSlice.reducer;

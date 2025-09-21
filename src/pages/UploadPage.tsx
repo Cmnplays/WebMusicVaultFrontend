@@ -42,9 +42,9 @@ const UploadPage: React.FC = () => {
     setIsUploading(true);
     try {
       const res = await axios.post(`${apiBase}/song/upload`, formData, {
-        timeout: 1000 * 250,
+        timeout: 1000 * 300,
       });
-      console.log(res.data);
+
       if (res.data.messages.length > 0) {
         setAlreadyExistingSongs(res.data.messages);
       }
@@ -125,9 +125,7 @@ const UploadPage: React.FC = () => {
           />
         </div>
 
-        {statusText && (
-          <p className="text-red-600 text-sm font-medium">{statusText}</p>
-        )}
+        {statusText && <p className="text-sm font-medium">{statusText}</p>}
         {alreadyExistingSongs.length > 0 && (
           <div className="bg-red-50 border border-red-300 p-3 rounded-md mt-2">
             <p className="text-red-700 font-semibold mb-1">

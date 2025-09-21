@@ -6,6 +6,7 @@ import {
   setDeleting,
   setMountDeleteConfirmation,
   setSongs,
+  deleteSong as excludeSong,
 } from "../../reduxSlices/song/songSlice";
 interface DeleteConfirmationProps {
   title: string;
@@ -55,6 +56,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
     if (password === realPass) {
       try {
         await deleteSong(songId);
+        dispatch(excludeSong(songId));
         setMessage("Successfully deleted song");
         setTimeout(() => {
           closeWithAnimation();
