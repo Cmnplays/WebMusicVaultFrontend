@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
-import { deleteSong } from "../services/song.services";
-import { useAppDispatch, useAppSelector } from "../store/hook";
+import { deleteSong } from "../../services/song.services";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
 import {
   setDeleting,
   setMountDeleteConfirmation,
   setSongs,
-} from "../reduxSlices/song/songSlice";
+  deleteSong as excludeSong,
+} from "../../reduxSlices/song/songSlice";
 interface DeleteConfirmationProps {
   title: string;
   songId: string;
@@ -24,7 +25,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
   const deleting = useAppSelector((state) => state.song.deleting);
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const realPass = import.meta.env.VITE_DELETION_PASSWORD;
+  const realPass = "test";
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -55,7 +56,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
     if (password === realPass) {
       try {
         await deleteSong(songId);
-
+        dispatch(excludeSong(songId));
         setMessage("Successfully deleted song");
         setTimeout(() => {
           closeWithAnimation();

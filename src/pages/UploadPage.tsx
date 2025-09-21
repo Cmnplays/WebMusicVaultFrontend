@@ -5,14 +5,14 @@ import { useAppDispatch, useAppSelector } from "../store/hook";
 import { setLoading } from "../reduxSlices/song/songSlice";
 
 const UploadPage: React.FC = () => {
-  type error = string | null;
   const [files, setFiles] = useState<File[]>([]);
-  const [error, setError] = useState<error>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [statusText, setStatusText] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [errors, setErrors] = useState<error[]>([]);
   const dispatch = useAppDispatch();
+  const [alreadyExistingSongs, setAlreadyExistingSongs] = useState<string[]>(
+    []
+  );
 
   const loading = useAppSelector((state) => state.song.loading);
 
@@ -21,8 +21,7 @@ const UploadPage: React.FC = () => {
   };
 
   const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setError(null);
-    setSuccessMsg(null);
+    setStatusText("");
     if (e.target.files) {
       setFiles(Array.from(e.target.files));
     }
@@ -30,11 +29,10 @@ const UploadPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setSuccessMsg(null);
+    setStatusText("");
 
     if (files.length === 0) {
-      setError("Please select at least one file.");
+      setStatusText("Please select at least one file.");
       return;
     }
 
@@ -44,35 +42,36 @@ const UploadPage: React.FC = () => {
     setIsUploading(true);
     try {
       const res = await axios.post(`${apiBase}/song/upload`, formData, {
-        timeout: 1000 * 100,
+        timeout: 1000 * 300,
       });
-      if (res.data.errors?.length > 0) {
-        setErrors(res.data.errors);
+
+      if (res.data.messages.length > 0) {
+        setAlreadyExistingSongs(res.data.messages);
       }
-      setSuccessMsg("Upload successful!");
+      setStatusText(res.data.message);
       setFiles([]);
       if (inputRef.current) inputRef.current.value = "";
     } catch (err: unknown) {
-      setError("Upload failed. Please try again."); // generic fallback
+      setStatusText("Upload failed. Please try again."); // generic fallback
       if (axios.isAxiosError(err)) {
         if (err.code === "ECONNABORTED") {
-          setError("Request timed out. Please try again later.");
+          setStatusText("Request timed out. Please try again later.");
         } else if (err.response) {
           const status = err.response.status;
           if (status === 409) {
-            setError("Upload failed: File already exists.");
+            setStatusText("Upload failed: File already exists.");
           } else {
-            setError(
+            setStatusText(
               `Upload failed: ${err.response.data?.message || "Unknown error"}`
             );
           }
         } else {
-          setError("Something went wrong. Please try again.");
+          setStatusText("Something went wrong. Please try again.");
         }
       } else if (err instanceof Error) {
-        setError("Unexpected error occurred. Please try again.");
+        setStatusText("Unexpected error occurred. Please try again.");
       } else {
-        setError("An unknown error occurred.");
+        setStatusText("An unknown error occurred.");
       }
     } finally {
       setIsUploading(false);
@@ -126,19 +125,16 @@ const UploadPage: React.FC = () => {
           />
         </div>
 
-        {error && <p className="text-red-600 text-sm font-medium">{error}</p>}
-        {successMsg && (
-          <p className="text-green-600 text-sm font-medium">{successMsg}</p>
-        )}
-        {errors.length > 0 && (
+        {statusText && <p className="text-sm font-medium">{statusText}</p>}
+        {alreadyExistingSongs.length > 0 && (
           <div className="bg-red-50 border border-red-300 p-3 rounded-md mt-2">
             <p className="text-red-700 font-semibold mb-1">
-              Duplicate or existing songs:
+              Already existing songs:
             </p>
             <ul className="list-disc list-inside text-red-600 text-sm max-h-32 overflow-auto">
-              {errors.map((errMsg, idx) => (
-                <li key={idx} title={errMsg!} className="truncate">
-                  {errMsg}
+              {alreadyExistingSongs.map((title, idx) => (
+                <li key={idx} title={title!} className="truncate">
+                  {title}
                 </li>
               ))}
             </ul>
@@ -150,8 +146,8 @@ const UploadPage: React.FC = () => {
 
         {/* Upload duration info message */}
         <p className="text-gray-500 text-sm italic mb-2">
-          Upload might take up to 2 minutes depending on file size and
-          connection.
+          Upload might take up to 2 minutes depending upon no. of songs, songs
+          size and connection.
         </p>
 
         <button

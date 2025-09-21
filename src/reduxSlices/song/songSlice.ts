@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { Song } from "../../services/song.services";
-import type { repeatType } from "../../pages/MusicPage";
+export type repeatType = "repeat" | "noRepeat" | "single";
 interface initialStateType {
   //only add the states which is to be shared in other file/files, other wise use it as a normal use state not as redux state
   songs: Song[];
@@ -33,7 +33,7 @@ const initialState: initialStateType = {
   downloading: false,
   deleting: false,
   mountDeleteConfirmation: false,
-  statusText: "status more songs...",
+  statusText: "loading more songs...",
   repeat: "repeat",
   shuffle: false,
   playingSong: null,
@@ -117,7 +117,10 @@ const songSlice = createSlice({
       state.sortOrder = action.payload;
     },
     deleteSong: (state, action: PayloadAction<string>) => {
-      state.songs.filter((song) => song._id === action.payload);
+      const filteredSongs = state.songs.filter(
+        (song) => song._id !== action.payload
+      );
+      state.songs = filteredSongs;
     },
   },
 });
@@ -141,5 +144,6 @@ export const {
   incrPage,
   setPage,
   setSortOrder,
+  deleteSong,
 } = songSlice.actions;
 export default songSlice.reducer;

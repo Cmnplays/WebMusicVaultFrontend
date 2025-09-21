@@ -1,76 +1,174 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { searchSong } from "../services/song.services";
 import type { Song } from "../services/song.services";
+import SongList from "../components/MusicPageComponents/SongList";
+import { useAppSelector, useAppDispatch } from "../store/hook";
+import SongPlayerPanel from "../components/SongPlayerPanel";
+import { fadeOutPanel } from "../hooks/useAudioPlayer";
+import { setLoading, setPlaying } from "../reduxSlices/song/songSlice";
+import { useAudioPlayer } from "../hooks/useAudioPlayer";
+import DeleteConfirmation from "../components/MusicPageComponents/DeleteConfirmation";
+import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
+import axios from "axios";
+
 const SearchSongs = () => {
   const [searchedSongs, setSearchedSongs] = useState<Song[]>([]);
+  const playing = useAppSelector((state) => state.song.playing);
+  const playingSong = useAppSelector((state) => state.song.playingSong);
+  const loading = useAppSelector((state) => state.song.loading);
+  const [statusText, setStatusText] = useState("");
+  const [error, setError] = useState(false);
+  const [query, setQuery] = useState("");
+
+  const downloading = useAppSelector((state) => state.song.downloading);
+  const deleting = useAppSelector((state) => state.song.deleting);
+  const mountDeleteConfirmation = useAppSelector(
+    (state) => state.song.mountDeleteConfirmation
+  );
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const dispatch = useAppDispatch();
+  const {
+    handlePlayClick,
+    handleAudioEnded,
+    moveToNextSong,
+    moveToPreviousSong,
+  } = useAudioPlayer({ panelRef, audioRef });
   const timerRef = useRef<number | null>(null);
-  const debounceSearch = (query: string) => {
+  const Limit = 10;
+  const [page, setPage] = useState(1);
+  const [hasMoreSongs, setHasMoreSongs] = useState(true);
+  useInfiniteScroll({ hasMoreSongs, setPage, page });
+
+  const debounceSearch = (query: string, delay: number) => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
     timerRef.current = window.setTimeout(async () => {
-      if (!query || query == "") {
-        setSearchedSongs([]);
-        return;
+      setLoading(true);
+      setStatusText("loading");
+      try {
+        if (!query || query == "") {
+          setSearchedSongs([]);
+          return;
+        }
+        const songs: Song[] = await searchSong(query, page, Limit);
+        if (songs.length < Limit) {
+          setHasMoreSongs(false);
+        }
+        if (songs.length === 0) {
+          setStatusText("No song found");
+        }
+        setSearchedSongs((prev) => {
+          if (prev.length === 0 && page === 1) {
+            return songs;
+          }
+          const allSongs = [...prev, ...songs];
+          const songMap = new Map<string, Song>();
+          allSongs.forEach((song) => {
+            songMap.set(song._id, song);
+          });
+          return Array.from(songMap.values());
+        });
+      } catch (err: unknown) {
+        setError(true);
+        if (axios.isAxiosError(err)) {
+          if (err.code === "ECONNABORTED") {
+            setStatusText("Request timed out. Please try again later.");
+          } else {
+            setStatusText("Something went wrong. Please try again.");
+          }
+        } else if (err instanceof Error) {
+          setStatusText("Unexpected error occurred. Please try again.");
+        } else {
+          setStatusText("An unknown error occurred.");
+        }
+      } finally {
+        dispatch(setLoading(false));
       }
-
-      const songs = await searchSong(query);
-      setSearchedSongs(songs);
-    }, 300);
+    }, delay);
   };
 
+  useEffect(() => {
+    if (!hasMoreSongs) {
+      return;
+    }
+    debounceSearch(query, 0);
+  }, [page]);
   return (
     <div className="max-w-5xl mx-auto p-4">
       <div className="flex justify-center">
         <input
           onChange={(e) => {
-            debounceSearch(e.target.value);
+            const value = e.target.value;
+            setQuery(value);
+            setPage(1);
+            setHasMoreSongs(true);
+            setSearchedSongs([]);
+            debounceSearch(value, 250);
           }}
           className="w-full p-3 border-2 rounded-lg"
           type="text"
           placeholder="Write Song Title here!"
         />
       </div>
-      <div>
-        <h2 className="text-2xl mb-2 font-bold text-gray-900 tracking-tight leading-tight my-2"></h2>
+      <SongList
+        handlePlayClick={handlePlayClick}
+        playing={playing}
+        playingSong={playingSong}
+        songs={searchedSongs}
+      />
+      <audio
+        ref={audioRef}
+        onEnded={handleAudioEnded}
+        preload="metadata"
+        hidden
+      />
 
-        <ul className="space-y-4">
-          {searchedSongs.map((song) => {
-            return (
-              <li
-                key={song._id}
-                role="button"
-                tabIndex={0}
-                className="flex items-center gap-4 p-3 bg-white rounded-lg shadow hover:shadow-md transition-shadow duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2"
-              >
-                <div
-                  className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-white shadow focus:outline-none
-                          bg-gradient-to-tr from-blue-400 to-purple-600
-                        `}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-6 h-6"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
-                  </svg>
-                </div>
+      {playingSong && (
+        <SongPlayerPanel
+          audioRef={audioRef as React.RefObject<HTMLAudioElement>}
+          panelRef={panelRef}
+          fadeOutPanel={fadeOutPanel}
+          handlePlayPause={() => {
+            if (!playing) {
+              audioRef.current?.play();
+              dispatch(setPlaying(true));
+              return;
+            }
+            audioRef.current?.pause();
+            dispatch(setPlaying(false));
+          }}
+          moveToNextSong={moveToNextSong}
+          moveToPreviousSong={moveToPreviousSong}
+        />
+      )}
+      {(loading || error) && (
+        <p className="text-center mt-4 text-gray-600 whitespace-pre-line">
+          {statusText}
+        </p>
+      )}
+      {!hasMoreSongs && searchedSongs.length > 0 && !loading && (
+        <p className="text-center mt-4 text-gray-600">
+          You have reached the end of the list.
+        </p>
+      )}
+      {searchedSongs.length === 0 && (
+        <p className="text-center mt-4 text-gray-600">No songs found.</p>
+      )}
 
-                <div className="flex-grow overflow-hidden">
-                  <h3
-                    className="text-lg font-semibold text-gray-900 truncate"
-                    title={song.title}
-                  >
-                    {song.title}
-                  </h3>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      {mountDeleteConfirmation && (
+        <DeleteConfirmation
+          title={playingSong!.title}
+          songId={playingSong!._id}
+          moveToNextSong={moveToNextSong}
+        />
+      )}
+      {(downloading || deleting || loading) && (
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+          <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />
+        </div>
+      )}
     </div>
   );
 };
