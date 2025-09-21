@@ -16,6 +16,7 @@ import {
   setPage,
   incrPage,
   setSortOrder,
+  setHasMoreSongs,
 } from "../reduxSlices/song/songSlice";
 
 export const useSongs = () => {
@@ -25,7 +26,7 @@ export const useSongs = () => {
   const sortChanged = useAppSelector((state) => state.song.sortChanged);
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
   const page = useAppSelector((state) => state.song.page);
-  const [hasMoreSongs, setHasMoreSongs] = useState(true);
+  const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
   const panelRef = useRef<HTMLDivElement>(null);
   const Limit = 10;
   const [error, setError] = useState(false);
@@ -64,7 +65,7 @@ export const useSongs = () => {
         }
 
         if (newSongs.length < Limit) {
-          setHasMoreSongs(false);
+          dispatch(setHasMoreSongs(false));
         }
       } catch (err: unknown) {
         setError(true);
@@ -134,7 +135,7 @@ export const useSongs = () => {
     } else {
       dispatch(setSortOrder("asc"));
     }
-    setHasMoreSongs(true);
+    dispatch(setHasMoreSongs(true));
     if (panelRef.current) {
       fadeOutPanel(panelRef.current, () => {
         dispatch(setPlayingSong(null));

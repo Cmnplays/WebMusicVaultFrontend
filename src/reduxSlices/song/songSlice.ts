@@ -21,6 +21,7 @@ interface initialStateType {
   sortChanged: boolean;
   page: number;
   sortOrder: "asc" | "desc";
+  hasMoreSongs: boolean;
 }
 const initialState: initialStateType = {
   songs: [],
@@ -40,6 +41,7 @@ const initialState: initialStateType = {
   sortChanged: false,
   page: 1,
   sortOrder: "asc",
+  hasMoreSongs: true,
 };
 
 const songSlice = createSlice({
@@ -122,6 +124,9 @@ const songSlice = createSlice({
       );
       state.songs = filteredSongs;
     },
+    setHasMoreSongs: (state, action: PayloadAction<boolean>) => {
+      state.hasMoreSongs = action.payload;
+    },
   },
 });
 export const {
@@ -145,5 +150,6 @@ export const {
   setPage,
   setSortOrder,
   deleteSong,
+  setHasMoreSongs,
 } = songSlice.actions;
 export default songSlice.reducer;

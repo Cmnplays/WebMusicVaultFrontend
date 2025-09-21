@@ -69,7 +69,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
       }
     } else {
       setMessage("Invalid Password! Cannot delete the song");
-      setTimeout(closeWithAnimation, 1200);
+      setTimeout(closeWithAnimation, 600);
     }
     dispatch(setDeleting(false));
   };
