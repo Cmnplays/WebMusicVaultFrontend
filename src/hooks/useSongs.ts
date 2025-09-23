@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { fetchAllSongs } from "../services/song.services";
 import type { Song } from "../services/song.services";
 export type repeatType = "repeat" | "noRepeat" | "single";
@@ -19,7 +19,7 @@ import {
   setHasMoreSongs,
 } from "../reduxSlices/song/songSlice";
 
-export const useSongs = () => {
+export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
   const dispatch = useAppDispatch();
   const songs = useAppSelector((state) => state.song.songs);
   const loading = useAppSelector((state) => state.song.loading);
@@ -27,12 +27,12 @@ export const useSongs = () => {
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
   const page = useAppSelector((state) => state.song.page);
   const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
-  const panelRef = useRef<HTMLDivElement>(null);
   const Limit = 10;
   const [error, setError] = useState(false);
 
   // Fetch songs on page or initial load
   useEffect(() => {
+    if (!hasMoreSongs) return;
     const loadSongs = async () => {
       dispatch(setLoading(true));
       try {
@@ -91,14 +91,11 @@ export const useSongs = () => {
     };
 
     // Prevent refetch if songs already exist and sort order hasn't changed
-    if (
-      hasMoreSongs &&
-      (songs.length === 0 || songs.length < page * Limit || sortChanged)
-    ) {
+    if (songs.length === 0 || songs.length < page * Limit || sortChanged) {
       loadSongs();
       return;
     }
-  }, [page, sortOrder, dispatch, songs, sortChanged, setError]);
+  }, [page, sortOrder, dispatch, sortChanged, setError, hasMoreSongs]);
 
   // Infinite scroll: load more songs when near bottom
   useEffect(() => {

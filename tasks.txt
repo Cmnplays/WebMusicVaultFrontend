@@ -1,4 +1,18 @@
-ISSUES:
-1. [Frontend] New uploads don’t appear at top of public feed instantly
-   - Current behavior: Feed is paginated, newest songs come from backend. Newly uploaded song only visible after refresh.
-   - Possible fix: Optimistically insert new upload at top of frontend feed.
+# ISSUES
+
+--- HIGH PRIORITY ---
+1. Infinite loading on MusicPage after returning from UploadPage with successful song upload
+   - Loading indicator shows infinitely
+   - New songs don’t appear until refresh
+   - ✅ Completed
+
+--- MEDIUM PRIORITY ---
+1. New uploads don’t appear at top of public feed instantly
+   - Current behavior: Feed is paginated, newest songs come from backend
+   - Newly uploaded songs only visible after refresh
+
+--- LOW PRIORITY ---
+1. Minor UI/UX tweaks (animations, spacing, button feedback, etc.)
+2. Deletion UI issue:
+   - After deleting a song, both "Cancel" and "Delete" buttons still appear
+   - Expected: once deleted, show only deletion confirmation message + a single "Close" button

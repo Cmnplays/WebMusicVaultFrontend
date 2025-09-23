@@ -1,20 +1,16 @@
 import axios from "axios";
 import React, { useRef, useState } from "react";
 const apiBase = import.meta.env.VITE_API_URL;
-import { useAppDispatch, useAppSelector } from "../store/hook";
-import { setLoading } from "../reduxSlices/song/songSlice";
 
 const UploadPage: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [statusText, setStatusText] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
   const [alreadyExistingSongs, setAlreadyExistingSongs] = useState<string[]>(
     []
   );
-
-  const loading = useAppSelector((state) => state.song.loading);
 
   const handleFileClick = () => {
     inputRef.current?.click();
@@ -38,7 +34,7 @@ const UploadPage: React.FC = () => {
 
     const formData = new FormData();
     files.forEach((file) => formData.append("songs", file));
-    dispatch(setLoading(true));
+    setLoading(true);
     setIsUploading(true);
     try {
       const res = await axios.post(`${apiBase}/song/upload`, formData, {
@@ -75,7 +71,7 @@ const UploadPage: React.FC = () => {
       }
     } finally {
       setIsUploading(false);
-      dispatch(setLoading(false));
+      setLoading(false);
     }
   };
 

@@ -30,7 +30,7 @@ const MusicPage: React.FC = () => {
     moveToNextSong,
     moveToPreviousSong,
   } = useAudioPlayer({ panelRef, audioRef });
-  const { error, handleSorting, hasMoreSongs } = useSongs();
+  const { error, handleSorting, hasMoreSongs } = useSongs(panelRef);
   return (
     <main className={`max-w-5xl mx-auto p-4 ${playing && "mb-[192px]"}`}>
       <MusicHeader handleSorting={handleSorting} sortOrder={sortOrder} />
