@@ -10,12 +10,13 @@ import {
   setPanelOpen,
   setPlaying,
   setPlayingSong,
+  setTempSongs,
+  replaceTempSongs,
 } from "../reduxSlices/song/songSlice";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import DeleteConfirmation from "../components/MusicPageComponents/DeleteConfirmation";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import axios from "axios";
-import { setTempSongs } from "../reduxSlices/song/songSlice";
 
 const SearchSongs = () => {
   const searchedSongs = useAppSelector((state) => state.song.tempSongs);
@@ -56,7 +57,7 @@ const SearchSongs = () => {
       try {
         if (!query || query === "") {
           setStatusText("");
-          dispatch(setTempSongs([]));
+          dispatch(replaceTempSongs([]));
           return;
         }
         const songs: Song[] = await searchSong(query, page, Limit);
@@ -66,17 +67,6 @@ const SearchSongs = () => {
         if (songs.length === 0) {
           setStatusText("No song found.");
         }
-        // setSearchedSongs((prev) => {
-        //   if (prev.length === 0 && page === 1) {
-        //     return songs;
-        //   }
-        //   const allSongs = [...prev, ...songs];
-        //   const songMap = new Map<string, Song>();
-        //   allSongs.forEach((song) => {
-        //     songMap.set(song._id, song);
-        //   });
-        //   return Array.from(songMap.values());
-        // });
         dispatch(setTempSongs(songs));
       } catch (err: unknown) {
         setError(true);
@@ -106,7 +96,7 @@ const SearchSongs = () => {
 
   useEffect(() => {
     return () => {
-      dispatch(setTempSongs([]));
+      dispatch(replaceTempSongs([]));
       dispatch(setPlaying(false));
       dispatch(setPlayingSong(null));
       dispatch(setPanelOpen(false));

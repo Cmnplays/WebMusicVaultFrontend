@@ -46,11 +46,8 @@ const initialState: initialStateType = {
   hasMoreSongs: true,
 };
 const setSongsFn =
-  (key: "songs" | "tempSongs", replace = false) =>
+  (key: "songs" | "tempSongs") =>
   (state: initialStateType, action: PayloadAction<Song[]>) => {
-    if (replace) {
-      state[key] = action.payload;
-    }
     if (state.songs.length === 0) {
       state[key] = action.payload;
     } else {
@@ -70,7 +67,10 @@ const songSlice = createSlice({
   initialState,
   reducers: {
     setSongs: setSongsFn("songs"),
-    setTempSongs: setSongsFn("tempSongs", true),
+    setTempSongs: setSongsFn("tempSongs"),
+    replaceTempSongs: (state, action: PayloadAction<Song[]>) => {
+      state.tempSongs = action.payload;
+    },
     handleSortByChange: (state, action: PayloadAction<Song[]>) => {
       state.songs = action.payload;
     },
@@ -140,6 +140,7 @@ const songSlice = createSlice({
 export const {
   setSongs,
   setTempSongs,
+  replaceTempSongs,
   setCurrentTime,
   setDownloading,
   setMountDeleteConfirmation,
