@@ -37,7 +37,6 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
       dispatch(setLoading(true));
       try {
         setError(false);
-
         if (page === 1) {
           if (sortOrder === "asc")
             dispatch(
@@ -140,5 +139,6 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
       });
     }
   };
+
   return { handleSorting, error, hasMoreSongs };
 };

@@ -29,12 +29,13 @@ export const fadeOutPanel = (
 export const useAudioPlayer = ({
   panelRef,
   audioRef,
+  songs,
 }: {
   panelRef: React.RefObject<HTMLDivElement | null>;
   audioRef: React.RefObject<HTMLAudioElement | null>;
+  songs: Song[];
 }) => {
   const dispatch = useAppDispatch();
-  const songs = useAppSelector((state) => state.song.songs);
   const panelOpen = useAppSelector((state) => state.song.panelOpen);
   const playing = useAppSelector((state) => state.song.playing);
   const repeat = useAppSelector((state) => state.song.repeat);

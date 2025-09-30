@@ -5,6 +5,7 @@ export type repeatType = "repeat" | "noRepeat" | "single";
 interface initialStateType {
   //only add the states which is to be shared in other file/files, other wise use it as a normal use state not as redux state
   songs: Song[];
+  tempSongs: Song[];
   loading: boolean;
   duration: number;
   currentTime: number;
@@ -25,6 +26,7 @@ interface initialStateType {
 }
 const initialState: initialStateType = {
   songs: [],
+  tempSongs: [],
   loading: false,
   duration: 0,
   currentTime: 0,
@@ -43,26 +45,32 @@ const initialState: initialStateType = {
   sortOrder: "asc",
   hasMoreSongs: true,
 };
+const setSongsFn =
+  (key: "songs" | "tempSongs", replace = false) =>
+  (state: initialStateType, action: PayloadAction<Song[]>) => {
+    if (replace) {
+      state[key] = action.payload;
+    }
+    if (state.songs.length === 0) {
+      state[key] = action.payload;
+    } else {
+      const allSongs = [...state[key], ...action.payload];
+      const uniqueSongMap = new Map<string, Song>();
 
+      allSongs.forEach((song: Song) => {
+        uniqueSongMap.set(song._id, song);
+      });
+
+      const finalSongs = Array.from(uniqueSongMap.values());
+      state[key] = finalSongs;
+    }
+  };
 const songSlice = createSlice({
   name: "song",
   initialState,
   reducers: {
-    setSongs: (state, action: PayloadAction<Song[]>) => {
-      if (state.songs.length === 0) {
-        state.songs = action.payload;
-      } else {
-        const allSongs = [...state.songs, ...action.payload];
-        const uniqueSongMap = new Map<string, Song>();
-
-        allSongs.forEach((song: Song) => {
-          uniqueSongMap.set(song._id, song);
-        });
-
-        const finalSongs = Array.from(uniqueSongMap.values());
-        state.songs = finalSongs;
-      }
-    },
+    setSongs: setSongsFn("songs"),
+    setTempSongs: setSongsFn("tempSongs", true),
     handleSortByChange: (state, action: PayloadAction<Song[]>) => {
       state.songs = action.payload;
     },
@@ -131,6 +139,7 @@ const songSlice = createSlice({
 });
 export const {
   setSongs,
+  setTempSongs,
   setCurrentTime,
   setDownloading,
   setMountDeleteConfirmation,

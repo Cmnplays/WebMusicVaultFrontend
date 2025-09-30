@@ -1,13 +1,19 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import SongPlayerPanel from "../components/SongPlayerPanel";
 import DeleteConfirmation from "../components/MusicPageComponents/DeleteConfirmation";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { useSongs } from "../hooks/useSongs";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import { fadeOutPanel } from "../hooks/useAudioPlayer";
-import { setPlaying } from "../reduxSlices/song/songSlice";
 import MusicHeader from "../components/MusicPageComponents/MusicHeader";
 import SongList from "../components/MusicPageComponents/SongList";
+import {
+  setTempSongs,
+  setPlaying,
+  setPanelOpen,
+  setPlayingSong,
+} from "../reduxSlices/song/songSlice";
+
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const statusText = useAppSelector((state) => state.song.statusText);
@@ -23,14 +29,22 @@ const MusicPage: React.FC = () => {
   const playingSong = useAppSelector((state) => state.song.playingSong);
   const audioRef = useRef<HTMLAudioElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-
   const {
     handlePlayClick,
     handleAudioEnded,
     moveToNextSong,
     moveToPreviousSong,
-  } = useAudioPlayer({ panelRef, audioRef });
+  } = useAudioPlayer({ panelRef, audioRef, songs });
   const { error, handleSorting, hasMoreSongs } = useSongs(panelRef);
+  useEffect(() => {
+    return () => {
+      dispatch(setTempSongs([]));
+      dispatch(setPlaying(false));
+      dispatch(setPlayingSong(null));
+      dispatch(setPanelOpen(false));
+    };
+  }, []);
+
   return (
     <main className={`max-w-5xl mx-auto p-4 ${playing && "mb-[192px]"}`}>
       <MusicHeader handleSorting={handleSorting} sortOrder={sortOrder} />

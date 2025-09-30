@@ -5,14 +5,20 @@ import SongList from "../components/MusicPageComponents/SongList";
 import { useAppSelector, useAppDispatch } from "../store/hook";
 import SongPlayerPanel from "../components/SongPlayerPanel";
 import { fadeOutPanel } from "../hooks/useAudioPlayer";
-import { setLoading, setPlaying } from "../reduxSlices/song/songSlice";
+import {
+  setLoading,
+  setPanelOpen,
+  setPlaying,
+  setPlayingSong,
+} from "../reduxSlices/song/songSlice";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import DeleteConfirmation from "../components/MusicPageComponents/DeleteConfirmation";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import axios from "axios";
+import { setTempSongs } from "../reduxSlices/song/songSlice";
 
 const SearchSongs = () => {
-  const [searchedSongs, setSearchedSongs] = useState<Song[]>([]);
+  const searchedSongs = useAppSelector((state) => state.song.tempSongs);
   const playing = useAppSelector((state) => state.song.playing);
   const playingSong = useAppSelector((state) => state.song.playingSong);
   const loading = useAppSelector((state) => state.song.loading);
@@ -33,7 +39,7 @@ const SearchSongs = () => {
     handleAudioEnded,
     moveToNextSong,
     moveToPreviousSong,
-  } = useAudioPlayer({ panelRef, audioRef });
+  } = useAudioPlayer({ panelRef, audioRef, songs: searchedSongs });
   const timerRef = useRef<number | null>(null);
   const Limit = 10;
   const [page, setPage] = useState(1);
@@ -41,15 +47,16 @@ const SearchSongs = () => {
   useInfiniteScroll({ hasMoreSongs, setPage, page });
 
   const debounceSearch = (query: string, delay: number) => {
+    dispatch(setLoading(true));
+    setStatusText("Loading...");
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
     timerRef.current = window.setTimeout(async () => {
-      setLoading(true);
-      setStatusText("loading");
       try {
-        if (!query || query == "") {
-          setSearchedSongs([]);
+        if (!query || query === "") {
+          setStatusText("");
+          dispatch(setTempSongs([]));
           return;
         }
         const songs: Song[] = await searchSong(query, page, Limit);
@@ -57,19 +64,20 @@ const SearchSongs = () => {
           setHasMoreSongs(false);
         }
         if (songs.length === 0) {
-          setStatusText("No song found");
+          setStatusText("No song found.");
         }
-        setSearchedSongs((prev) => {
-          if (prev.length === 0 && page === 1) {
-            return songs;
-          }
-          const allSongs = [...prev, ...songs];
-          const songMap = new Map<string, Song>();
-          allSongs.forEach((song) => {
-            songMap.set(song._id, song);
-          });
-          return Array.from(songMap.values());
-        });
+        // setSearchedSongs((prev) => {
+        //   if (prev.length === 0 && page === 1) {
+        //     return songs;
+        //   }
+        //   const allSongs = [...prev, ...songs];
+        //   const songMap = new Map<string, Song>();
+        //   allSongs.forEach((song) => {
+        //     songMap.set(song._id, song);
+        //   });
+        //   return Array.from(songMap.values());
+        // });
+        dispatch(setTempSongs(songs));
       } catch (err: unknown) {
         setError(true);
         if (axios.isAxiosError(err)) {
@@ -95,6 +103,16 @@ const SearchSongs = () => {
     }
     debounceSearch(query, 0);
   }, [page]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(setTempSongs([]));
+      dispatch(setPlaying(false));
+      dispatch(setPlayingSong(null));
+      dispatch(setPanelOpen(false));
+    };
+  }, []);
+
   return (
     <div className="max-w-5xl mx-auto p-4">
       <div className="flex justify-center">
@@ -104,12 +122,12 @@ const SearchSongs = () => {
             setQuery(value);
             setPage(1);
             setHasMoreSongs(true);
-            setSearchedSongs([]);
+            dispatch(setTempSongs([]));
             debounceSearch(value, 250);
           }}
           className="w-full p-3 border-2 rounded-lg"
           type="text"
-          placeholder="Write Song Title here!"
+          placeholder="Start typing to find your favorite songs!"
         />
       </div>
       <SongList
@@ -144,19 +162,17 @@ const SearchSongs = () => {
         />
       )}
       {(loading || error) && (
-        <p className="text-center mt-4 text-gray-600 whitespace-pre-line">
-          {statusText}
-        </p>
+        <p className="text-center mt-4 text-gray-600">{statusText}</p>
       )}
+      {!loading && searchedSongs.length === 0 && query && (
+        <p className="text-center mt-4 text-gray-600">{statusText}</p>
+      )}
+
       {!hasMoreSongs && searchedSongs.length > 0 && !loading && (
         <p className="text-center mt-4 text-gray-600">
           You have reached the end of the list.
         </p>
       )}
-      {searchedSongs.length === 0 && (
-        <p className="text-center mt-4 text-gray-600">No songs found.</p>
-      )}
-
       {mountDeleteConfirmation && (
         <DeleteConfirmation
           title={playingSong!.title}
