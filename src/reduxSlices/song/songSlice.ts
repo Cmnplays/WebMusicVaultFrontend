@@ -48,7 +48,7 @@ const initialState: initialStateType = {
 const setSongsFn =
   (key: "songs" | "tempSongs") =>
   (state: initialStateType, action: PayloadAction<Song[]>) => {
-    if (state.songs.length === 0) {
+    if (state[key].length === 0) {
       state[key] = action.payload;
     } else {
       const allSongs = [...state[key], ...action.payload];

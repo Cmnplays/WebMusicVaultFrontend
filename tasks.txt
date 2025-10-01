@@ -11,6 +11,8 @@
    - Current behavior: Feed is paginated, newest songs come from backend
    - Newly uploaded songs only visible after refresh
 
+2.Fix deleting thing in search page, when we delete song from search page searched songs, it should be filtered out of the list.
+
 --- LOW PRIORITY ---
 1. Minor UI/UX tweaks (animations, spacing, button feedback, etc.)
 2. Deletion UI issue:

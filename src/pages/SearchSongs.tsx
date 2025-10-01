@@ -67,7 +67,10 @@ const SearchSongs = () => {
         if (songs.length === 0) {
           setStatusText("No song found.");
         }
+        console.log({ OldSearchedSongs: searchedSongs });
+        console.log({ newFetchedSongs: songs });
         dispatch(setTempSongs(songs));
+        console.log({ newSearchedSongs: searchedSongs });
       } catch (err: unknown) {
         setError(true);
         if (axios.isAxiosError(err)) {
@@ -112,7 +115,7 @@ const SearchSongs = () => {
             setQuery(value);
             setPage(1);
             setHasMoreSongs(true);
-            dispatch(setTempSongs([]));
+            dispatch(replaceTempSongs([]));
             debounceSearch(value, 250);
           }}
           className="w-full p-3 border-2 rounded-lg"
