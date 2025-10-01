@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { deleteSong } from "../../services/song.services";
-import type { Song } from "../../services/song.services";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import {
   setDeleting,
@@ -13,7 +12,6 @@ interface DeleteConfirmationProps {
   title: string;
   songId: string;
   moveToNextSong: () => void;
-  songs: Song[];
   temp?: boolean;
 }
 
