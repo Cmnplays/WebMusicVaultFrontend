@@ -1,32 +1,35 @@
 import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { deleteSong } from "../../services/song.services";
+import type { Song } from "../../services/song.services";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import {
   setDeleting,
   setMountDeleteConfirmation,
-  setSongs,
   deleteSong as excludeSong,
+  deleteTempSong as excludeTempSong,
 } from "../../reduxSlices/song/songSlice";
 interface DeleteConfirmationProps {
   title: string;
   songId: string;
-
   moveToNextSong: () => void;
+  songs: Song[];
+  temp?: boolean;
 }
 
 const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
   title,
   songId,
   moveToNextSong,
+  temp = false,
 }) => {
   const dispatch = useAppDispatch();
-  const songs = useAppSelector((state) => state.song.songs);
   const deleting = useAppSelector((state) => state.song.deleting);
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const realPass = "test";
   const containerRef = useRef<HTMLDivElement>(null);
+  const [close, setClose] = useState<boolean>(false);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -53,23 +56,28 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
 
   const handleDeleteClick = async () => {
     dispatch(setDeleting(true));
-    if (password === realPass) {
-      try {
-        await deleteSong(songId);
-        dispatch(excludeSong(songId));
-        setMessage("Successfully deleted song");
-        setTimeout(() => {
-          closeWithAnimation();
-          moveToNextSong();
-        }, 1200);
-        dispatch(setSongs(songs.filter((s) => s._id !== songId)));
-      } catch (error) {
-        setMessage("Failed to delete the song");
-        console.error(error);
-      }
-    } else {
+    if (password !== realPass) {
       setMessage("Invalid Password! Cannot delete the song");
-      setTimeout(closeWithAnimation, 600);
+      setClose(true);
+      return;
+    }
+    try {
+      await deleteSong(songId);
+      if (temp) {
+        dispatch(excludeTempSong(songId));
+      } else {
+        dispatch(excludeSong(songId));
+      }
+      setMessage("Successfully deleted song");
+      setTimeout(() => {
+        closeWithAnimation();
+        moveToNextSong();
+      }, 1200);
+    } catch (error) {
+      setMessage("Failed to delete the song");
+      console.error(error);
+    } finally {
+      setClose(true);
     }
     dispatch(setDeleting(false));
   };
@@ -109,30 +117,43 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
           </div>
         )}
         <div className="flex justify-end gap-3">
-          <button
-            onClick={closeWithAnimation}
-            disabled={deleting}
-            className={`px-4 py-2 rounded transition 
-      ${
-        deleting
-          ? "bg-gray-300 cursor-not-allowed opacity-60"
-          : "bg-gray-300 hover:bg-gray-400 shadow-sm hover:shadow-md"
-      }`}
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleDeleteClick}
-            disabled={deleting}
-            className={`px-4 py-2 rounded text-white transition 
-      ${
-        deleting
-          ? "bg-purple-400 cursor-not-allowed opacity-60"
-          : "bg-purple-600 hover:bg-purple-700 shadow-sm hover:shadow-md"
-      }`}
-          >
-            Delete
-          </button>
+          <div className="flex justify-end gap-3">
+            {!close ? (
+              <>
+                <button
+                  onClick={closeWithAnimation}
+                  disabled={deleting}
+                  className={`px-4 py-2 rounded text-black transition 
+          ${
+            deleting
+              ? "bg-gray-200 opacity-50 cursor-not-allowed shadow-none"
+              : "bg-gray-300 hover:bg-gray-400 shadow-sm hover:shadow-md"
+          }`}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteClick}
+                  disabled={deleting}
+                  className={`px-4 py-2 rounded text-white transition 
+          ${
+            deleting
+              ? "bg-purple-400 opacity-50 cursor-not-allowed shadow-none"
+              : "bg-purple-600 hover:bg-purple-700 shadow-sm hover:shadow-md"
+          }`}
+                >
+                  Delete
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={closeWithAnimation}
+                className="px-4 py-2 rounded text-white bg-purple-600 hover:bg-purple-700 shadow-sm hover:shadow-md"
+              >
+                Close
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -62,6 +62,13 @@ const setSongsFn =
       state[key] = finalSongs;
     }
   };
+
+const deleteSongFn =
+  (key: "songs" | "tempSongs") =>
+  (state: initialStateType, action: PayloadAction<string>) => {
+    state[key] = state[key].filter((song) => song._id !== action.payload);
+  };
+
 const songSlice = createSlice({
   name: "song",
   initialState,
@@ -126,12 +133,8 @@ const songSlice = createSlice({
     setSortOrder: (state, action: PayloadAction<"asc" | "desc">) => {
       state.sortOrder = action.payload;
     },
-    deleteSong: (state, action: PayloadAction<string>) => {
-      const filteredSongs = state.songs.filter(
-        (song) => song._id !== action.payload
-      );
-      state.songs = filteredSongs;
-    },
+    deleteSong: deleteSongFn("songs"),
+    deleteTempSong: deleteSongFn("tempSongs"),
     setHasMoreSongs: (state, action: PayloadAction<boolean>) => {
       state.hasMoreSongs = action.payload;
     },
@@ -160,6 +163,7 @@ export const {
   setPage,
   setSortOrder,
   deleteSong,
+  deleteTempSong,
   setHasMoreSongs,
 } = songSlice.actions;
 export default songSlice.reducer;

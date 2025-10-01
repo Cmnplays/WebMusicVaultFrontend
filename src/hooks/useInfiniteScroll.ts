@@ -27,7 +27,6 @@ export function useInfiniteScroll({
 
         if (bottomPosition - scrollPosition < 150) {
           setPage(page + 1);
-          console.log("more available");
         }
       }, 200);
     };

@@ -58,7 +58,6 @@ const searchSong = async (
       timeout: 1000 * 100, //120seconds
     }
   );
-  console.log(response.data.data);
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to fetch songs");
   }

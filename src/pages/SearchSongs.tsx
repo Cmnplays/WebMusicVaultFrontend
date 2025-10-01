@@ -67,10 +67,7 @@ const SearchSongs = () => {
         if (songs.length === 0) {
           setStatusText("No song found.");
         }
-        console.log({ OldSearchedSongs: searchedSongs });
-        console.log({ newFetchedSongs: songs });
         dispatch(setTempSongs(songs));
-        console.log({ newSearchedSongs: searchedSongs });
       } catch (err: unknown) {
         setError(true);
         if (axios.isAxiosError(err)) {
@@ -118,9 +115,10 @@ const SearchSongs = () => {
             dispatch(replaceTempSongs([]));
             debounceSearch(value, 250);
           }}
-          className="w-full p-3 border-2 rounded-lg"
+          className="w-full p-3 border-2 rounded-lg mb-[14px]"
           type="text"
           placeholder="Start typing to find your favorite songs!"
+          id="songQuery"
         />
       </div>
       <SongList
@@ -171,6 +169,7 @@ const SearchSongs = () => {
           title={playingSong!.title}
           songId={playingSong!._id}
           moveToNextSong={moveToNextSong}
+          songs={searchedSongs}
         />
       )}
       {(downloading || deleting || loading) && (
