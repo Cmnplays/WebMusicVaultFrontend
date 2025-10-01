@@ -31,6 +31,9 @@ const UploadPage: React.FC = () => {
       setStatusText("Please select at least one file.");
       return;
     }
+    if (files.length > 3) {
+      setStatusText("Please select less than 3 files.");
+    }
 
     const formData = new FormData();
     files.forEach((file) => formData.append("songs", file));
