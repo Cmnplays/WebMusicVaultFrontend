@@ -169,7 +169,6 @@ const SearchSongs = () => {
           title={playingSong!.title}
           songId={playingSong!._id}
           moveToNextSong={moveToNextSong}
-          songs={searchedSongs}
         />
       )}
       {(downloading || deleting || loading) && (
