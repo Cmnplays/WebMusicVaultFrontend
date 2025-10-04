@@ -33,13 +33,11 @@ const fetchAllSongs = async (
 };
 
 const deleteSong = async (id: string): Promise<number> => {
-  try {
-    const res = await axios.delete(`${apiBase}/song/${id}`);
-    return res.data.status;
-  } catch (error) {
-    console.error("Error deleting song", error);
-    return 500;
+  const response = await axios.delete(`${apiBase}/song/${id}`);
+  if (response.data.status !== 200) {
+    throw new Error(response.data.message || "Failed to fetch songs");
   }
+  return response.data.data;
 };
 
 const searchSong = async (
@@ -63,4 +61,12 @@ const searchSong = async (
   }
   return response.data.data;
 };
-export { fetchAllSongs, deleteSong, searchSong };
+
+const getSongsLength = async (): Promise<number> => {
+  const response = await axios.get(`${apiBase}/about`);
+  if (response.data.status !== 200) {
+    throw new Error(response.data.message || "Failed to get songs length");
+  }
+  return response.data.totalNumOfSongs;
+};
+export { fetchAllSongs, deleteSong, searchSong, getSongsLength };
