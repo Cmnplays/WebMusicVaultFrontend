@@ -12,10 +12,11 @@ import {
   setPlayingSong,
   setTempSongs,
   replaceTempSongs,
+  setTempPage,
+  setTempHasMoreSongs,
 } from "../reduxSlices/song/songSlice";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import DeleteConfirmation from "../components/MusicPageComponents/DeleteConfirmation";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import axios from "axios";
 
 const SearchSongs = () => {
@@ -23,6 +24,7 @@ const SearchSongs = () => {
   const playing = useAppSelector((state) => state.song.playing);
   const playingSong = useAppSelector((state) => state.song.playingSong);
   const loading = useAppSelector((state) => state.song.loading);
+  const page = useAppSelector((state) => state.song.tempPage);
   const [statusText, setStatusText] = useState("");
   const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
@@ -43,16 +45,15 @@ const SearchSongs = () => {
   } = useAudioPlayer({ panelRef, audioRef, songs: searchedSongs });
   const timerRef = useRef<number | null>(null);
   const Limit = 10;
-  const [page, setPage] = useState(1);
-  const [hasMoreSongs, setHasMoreSongs] = useState(true);
-  useInfiniteScroll({ hasMoreSongs, setPage, page });
+  const hasMoreSongs = useAppSelector((state) => state.song.tempHasMoreSongs);
 
-  const debounceSearch = (query: string, delay: number) => {
+  const debounceSearch = (query: string, delay: number, pageArg?: number) => {
     dispatch(setLoading(true));
     setStatusText("Loading...");
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
+    const pg = pageArg ?? page;
     timerRef.current = window.setTimeout(async () => {
       try {
         if (!query || query === "") {
@@ -60,9 +61,9 @@ const SearchSongs = () => {
           dispatch(replaceTempSongs([]));
           return;
         }
-        const songs: Song[] = await searchSong(query, page, Limit);
+        const songs: Song[] = await searchSong(query, pg, Limit);
         if (songs.length < Limit) {
-          setHasMoreSongs(false);
+          dispatch(setTempHasMoreSongs(false));
         }
         if (songs.length === 0) {
           setStatusText("No song found.");
@@ -109,11 +110,12 @@ const SearchSongs = () => {
         <input
           onChange={(e) => {
             const value = e.target.value;
-            setQuery(value);
-            setPage(1);
-            setHasMoreSongs(true);
+            setQuery(value.trim());
+            dispatch(setTempPage(1));
+            dispatch(setTempHasMoreSongs(true));
             dispatch(replaceTempSongs([]));
-            debounceSearch(value, 250);
+            //giving page as 1 even after setting temp page as 1 is because redux actions are asynchronous
+            debounceSearch(value, 250, 1);
           }}
           className="w-full p-3 border-2 rounded-lg mb-[14px]"
           type="text"
@@ -126,6 +128,7 @@ const SearchSongs = () => {
         playing={playing}
         playingSong={playingSong}
         songs={searchedSongs}
+        isTemp={true}
       />
       <audio
         ref={audioRef}
@@ -158,16 +161,15 @@ const SearchSongs = () => {
       {!loading && searchedSongs.length === 0 && query && (
         <p className="text-center mt-4 text-gray-600">{statusText}</p>
       )}
-
       {!hasMoreSongs && searchedSongs.length > 0 && !loading && (
         <p className="text-center mt-4 text-gray-600">
           You have reached the end of the list.
         </p>
       )}
-      {mountDeleteConfirmation && (
+      {mountDeleteConfirmation && playingSong && (
         <DeleteConfirmation
-          title={playingSong!.title}
-          songId={playingSong!._id}
+          title={playingSong.title}
+          songId={playingSong._id}
           moveToNextSong={moveToNextSong}
           temp={true}
         />

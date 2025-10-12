@@ -1,51 +1,22 @@
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import type { Song } from "../../services/song.services";
 import { formatDuration } from "../MusicPageComponents/formatDuration";
-import { useAppDispatch, useAppSelector } from "../../store/hook";
-import { incrPage } from "../../reduxSlices/song/songSlice";
+import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 const SongList = ({
   songs,
   handlePlayClick,
   playingSong,
   playing,
+  isTemp = false,
 }: {
   songs: Song[];
   handlePlayClick: (song: Song) => void;
   playingSong: Song | null;
   playing: boolean;
+  isTemp?: boolean;
 }) => {
-  const loading = useAppSelector((state) => state.song.loading);
-  const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
-  const dispatch = useAppDispatch();
   const sentinelRef = useRef<HTMLDivElement | null>(null);
-  const firstIntersectionDone = useRef(false);
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      const target = entries[0];
-      if (!firstIntersectionDone.current) {
-        firstIntersectionDone.current = true;
-        console.log("Ignoring first intersection");
-        return;
-      }
-      if (target.isIntersecting) {
-        if (loading || !hasMoreSongs) {
-          return;
-        }
-        //trigger next fetch
-        dispatch(incrPage());
-      }
-    });
-    const sentinel = sentinelRef.current;
-    if (sentinel) {
-      observer.observe(sentinel);
-    }
-    return () => {
-      if (sentinel) {
-        observer.unobserve(sentinel);
-      }
-      observer.disconnect();
-    };
-  }, []);
+  useInfiniteScroll({ isTemp, sentinelRef });
 
   return (
     <div>
@@ -115,8 +86,8 @@ const SongList = ({
             </li>
           );
         })}
-        <div ref={sentinelRef} className="h-[1px] w-full bg-transparent"></div>
       </ul>
+      <div ref={sentinelRef} className="h-[1px] w-full bg-transparent"></div>
     </div>
   );
 };

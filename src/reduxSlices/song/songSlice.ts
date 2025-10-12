@@ -21,8 +21,10 @@ interface initialStateType {
   playingSong: Song | null;
   sortChanged: boolean;
   page: number;
+  tempPage: number;
   sortOrder: "asc" | "desc";
   hasMoreSongs: boolean;
+  tempHasMoreSongs: boolean;
 }
 const initialState: initialStateType = {
   songs: [],
@@ -42,8 +44,10 @@ const initialState: initialStateType = {
   playingSong: null,
   sortChanged: false,
   page: 1,
+  tempPage: 1,
   sortOrder: "asc",
   hasMoreSongs: true,
+  tempHasMoreSongs: true,
 };
 const setSongsFn =
   (key: "songs" | "tempSongs") =>
@@ -127,6 +131,12 @@ const songSlice = createSlice({
     incrPage: (state) => {
       state.page = state.page + 1;
     },
+    incrTempPage: (state) => {
+      state.tempPage = state.tempPage + 1;
+    },
+    setTempPage: (state, action: PayloadAction<number>) => {
+      state.tempPage = action.payload;
+    },
     setPage: (state, action: PayloadAction<number>) => {
       state.page = action.payload;
     },
@@ -137,6 +147,9 @@ const songSlice = createSlice({
     deleteTempSong: deleteSongFn("tempSongs"),
     setHasMoreSongs: (state, action: PayloadAction<boolean>) => {
       state.hasMoreSongs = action.payload;
+    },
+    setTempHasMoreSongs: (state, action: PayloadAction<boolean>) => {
+      state.tempHasMoreSongs = action.payload;
     },
   },
 });
@@ -160,10 +173,13 @@ export const {
   handleSortByChange,
   setSortChanged,
   incrPage,
+  incrTempPage,
   setPage,
   setSortOrder,
   deleteSong,
   deleteTempSong,
   setHasMoreSongs,
+  setTempPage,
+  setTempHasMoreSongs,
 } = songSlice.actions;
 export default songSlice.reducer;

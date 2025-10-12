@@ -1,40 +1,51 @@
-import { useAppDispatch } from "../store/hook";
-import { useAppSelector } from "../store/hook";
-import { useEffect } from "react";
-export function useInfiniteScroll({
-  hasMoreSongs,
-  setPage,
-  page,
+import { useRef, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../store/hook";
+import { incrPage, incrTempPage } from "../reduxSlices/song/songSlice";
+const useInfiniteScroll = ({
+  isTemp = false,
+  sentinelRef,
 }: {
-  hasMoreSongs: boolean;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
-  page: number;
-}) {
-  const dispatch = useAppDispatch();
+  isTemp?: boolean;
+  sentinelRef: React.RefObject<HTMLDivElement | null>;
+}) => {
   const loading = useAppSelector((state) => state.song.loading);
-
+  const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
+  const tempHasMoreSongs = useAppSelector(
+    (state) => state.song.tempHasMoreSongs
+  );
+  const dispatch = useAppDispatch();
+  const firstIntersectionDone = useRef(false);
   useEffect(() => {
-    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-
-    const handleScroll = () => {
-      if (loading || !hasMoreSongs) return;
-
-      if (debounceTimer) clearTimeout(debounceTimer);
-
-      debounceTimer = setTimeout(() => {
-        const scrollPosition = window.innerHeight + window.scrollY;
-        const bottomPosition = document.documentElement.offsetHeight;
-
-        if (bottomPosition - scrollPosition < 150) {
-          setPage(page + 1);
+    const observer = new IntersectionObserver((entries) => {
+      const target = entries[0];
+      if (!firstIntersectionDone.current) {
+        firstIntersectionDone.current = true;
+        return;
+      }
+      if (target.isIntersecting) {
+        if (loading) {
+          return;
         }
-      }, 200);
-    };
-
-    window.addEventListener("scroll", handleScroll);
+        if (isTemp) {
+          if (!tempHasMoreSongs) return;
+          dispatch(incrTempPage());
+          return;
+        }
+        if (!hasMoreSongs) return;
+        dispatch(incrPage());
+      }
+    });
+    const sentinel = sentinelRef.current;
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (debounceTimer) clearTimeout(debounceTimer);
+      if (sentinel) {
+        observer.unobserve(sentinel);
+      }
+      observer.disconnect();
     };
-  }, [loading, hasMoreSongs, dispatch, page, setPage]);
-}
+  }, []);
+};
+
+export default useInfiniteScroll;
