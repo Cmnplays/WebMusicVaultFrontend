@@ -1,5 +1,8 @@
+import { useRef, useEffect } from "react";
 import type { Song } from "../../services/song.services";
 import { formatDuration } from "../MusicPageComponents/formatDuration";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
+import { incrPage } from "../../reduxSlices/song/songSlice";
 const SongList = ({
   songs,
   handlePlayClick,
@@ -11,6 +14,35 @@ const SongList = ({
   playingSong: Song | null;
   playing: boolean;
 }) => {
+  const loading = useAppSelector((state) => state.song.loading);
+  const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
+  const dispatch = useAppDispatch();
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const target = entries[0];
+      if (target.isIntersecting) {
+        if (loading || !hasMoreSongs) {
+          console.log("loading bro , please wait a bit.");
+          return;
+        }
+        //trigger next fetch
+        dispatch(incrPage());
+        console.log("Fetched new patch of songs");
+      }
+    });
+    const sentinel = sentinelRef.current;
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+    return () => {
+      if (sentinel) {
+        observer.unobserve(sentinel);
+      }
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <div>
       <ul className="space-y-4">
@@ -79,6 +111,7 @@ const SongList = ({
             </li>
           );
         })}
+        <div ref={sentinelRef} className="h-[1px] w-full bg-transparent"></div>
       </ul>
     </div>
   );

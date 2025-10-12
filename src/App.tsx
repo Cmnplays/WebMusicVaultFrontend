@@ -3,12 +3,14 @@ import UploadPage from "./pages/UploadPage";
 import Navbar from "./components/Navbar";
 import MusicPage from "./pages/MusicPage.tsx";
 import SearchSongs from "./pages/SearchSongs.tsx";
+import ScrollToTop from "./components/ScrollToTop.tsx";
 
 import About from "./pages/About.tsx";
 export default function App() {
   return (
     <>
       <Navbar />
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Navigate replace to="/musics" />} />
         <Route path="/musics" element={<MusicPage />} />

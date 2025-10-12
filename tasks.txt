@@ -1,21 +1,13 @@
 # ISSUES
-
 --- HIGH PRIORITY ---
-1. Infinite loading on MusicPage after returning from UploadPage with successful song upload
-   - Loading indicator shows infinitely - ✅ Completed
-   - New songs don’t appear until refresh
+2.When song is deleted from search or main page and then if try to scroll then it wont happen
+Solution: To add a sentinal div at the end of songs list which, if i see it i fetch new songs and then issue is solved(also for backend add cursor based pagination cuz after deletion one issue is the mentioned above and one is that i get only 9 songs and it decreases by every fetch req)
 
 --- MEDIUM PRIORITY ---
 1. New uploads don’t appear at top of public feed instantly
    - Current behavior: Feed is paginated, newest songs come from backend
    - Newly uploaded songs only visible after refresh
 
-2.Fix deleting thing in search page, when we delete song from search page searched songs, it should be filtered out of the list.
-   - ✅ Completed
-
 --- LOW PRIORITY ---
-1. Deletion UI issue:
-   - After deleting a song, both "Cancel" and "Delete" buttons still appear
-   - Expected: once deleted, show only deletion confirmation message + a single "Close" button
-   - ✅ Completed
+
 
