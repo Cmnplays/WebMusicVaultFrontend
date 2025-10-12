@@ -94,32 +94,6 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
     }
   }, [page, sortOrder, dispatch, sortChanged, setError, hasMoreSongs]);
 
-  // Infinite scroll: load more songs when near bottom
-  // useEffect(() => {
-  //   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-
-  //   const handleScroll = () => {
-  //     if (loading || !hasMoreSongs) return;
-
-  //     if (debounceTimer) clearTimeout(debounceTimer);
-
-  //     debounceTimer = setTimeout(() => {
-  //       const scrollPosition = window.innerHeight + window.scrollY;
-  //       const bottomPosition = document.documentElement.offsetHeight;
-
-  //       if (bottomPosition - scrollPosition < 150) {
-  //         dispatch(incrPage());
-  //       }
-  //     }, 200);
-  //   };
-
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //     if (debounceTimer) clearTimeout(debounceTimer);
-  //   };
-  // }, [loading, hasMoreSongs, dispatch]);
-
   const handleSorting = () => {
     dispatch(setSortChanged(true));
     dispatch(setSongs([]));
