@@ -18,17 +18,21 @@ const SongList = ({
   const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
   const dispatch = useAppDispatch();
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const firstIntersectionDone = useRef(false);
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       const target = entries[0];
+      if (!firstIntersectionDone.current) {
+        firstIntersectionDone.current = true;
+        console.log("Ignoring first intersection");
+        return;
+      }
       if (target.isIntersecting) {
         if (loading || !hasMoreSongs) {
-          console.log("loading bro , please wait a bit.");
           return;
         }
         //trigger next fetch
         dispatch(incrPage());
-        console.log("Fetched new patch of songs");
       }
     });
     const sentinel = sentinelRef.current;

@@ -20,7 +20,6 @@ import {
 
 export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
   const dispatch = useAppDispatch();
-  const songs = useAppSelector((state) => state.song.songs);
   const sortChanged = useAppSelector((state) => state.song.sortChanged);
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
   const page = useAppSelector((state) => state.song.page);
@@ -87,12 +86,14 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
       }
     };
 
+    //*feel that there is no need of this here at all on using sentinel div fetching, lets test it in some time
     // Prevent refetch if songs already exist and sort order hasn't changed
-    if (songs.length === 0 || songs.length < page * Limit || sortChanged) {
-      loadSongs();
-      return;
-    }
-  }, [page, sortOrder, dispatch, sortChanged, setError, hasMoreSongs]);
+    // if (sortChanged) {
+    //   loadSongs();
+    //   return;
+    // }
+    loadSongs();
+  }, [page, sortOrder, sortChanged, hasMoreSongs]);
 
   const handleSorting = () => {
     dispatch(setSortChanged(true));
