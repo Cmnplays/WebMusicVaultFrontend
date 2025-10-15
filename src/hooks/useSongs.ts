@@ -85,15 +85,8 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
         dispatch(setLoading(false));
       }
     };
-
-    //*feel that there is no need of this here at all on using sentinel div fetching, lets test it in some time
-    // Prevent refetch if songs already exist and sort order hasn't changed
-    // if (sortChanged) {
-    //   loadSongs();
-    //   return;
-    // }
     loadSongs();
-  }, [page, sortOrder, sortChanged, hasMoreSongs]);
+  }, [page, sortOrder, sortChanged, hasMoreSongs, dispatch]);
 
   const handleSorting = () => {
     dispatch(setSortChanged(true));
