@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchAllSongs } from "../services/song.services";
-import type { fetchReturnType } from "../services/song.services";
+import type { songsReturnType } from "../services/song.services";
 export type repeatType = "repeat" | "noRepeat" | "single";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import axios from "axios";
@@ -50,7 +50,7 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
 
         dispatch(setStatusText("Loading more songs..."));
 
-        const response: fetchReturnType = await fetchAllSongs({
+        const response: songsReturnType = await fetchAllSongs({
           sortOrder,
           cursor: nextCursor,
         });

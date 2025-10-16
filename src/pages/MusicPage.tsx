@@ -28,7 +28,6 @@ const MusicPage: React.FC = () => {
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
   const playingSong = useAppSelector((state) => state.song.playingSong);
   const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
-  console.log(hasMoreSongs);
   const audioRef = useRef<HTMLAudioElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const {

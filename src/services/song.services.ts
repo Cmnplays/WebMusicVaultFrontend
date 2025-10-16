@@ -12,7 +12,7 @@ export interface Song {
   duration: number;
 }
 
-export interface fetchReturnType {
+export interface songsReturnType {
   songs: Song[];
   hasMoreSongs: boolean;
   nextCursor: string;
@@ -23,12 +23,17 @@ interface fetchParams {
   cursor?: string | undefined;
   sortOrder?: "asc" | "desc";
 }
+interface searchParams {
+  limit?: number;
+  cursor?: string | undefined;
+  query: string;
+}
 const fetchAllSongs = async ({
   limit = 10,
   cursor,
   sortOrder = "asc",
-}: fetchParams): Promise<fetchReturnType> => {
-  const response = await axios.get<apiResponse<fetchReturnType>>(
+}: fetchParams): Promise<songsReturnType> => {
+  const response = await axios.get<apiResponse<songsReturnType>>(
     `${apiBase}/song`,
     {
       params: {
@@ -54,18 +59,18 @@ const deleteSong = async (id: string): Promise<number> => {
   return response.data.data;
 };
 
-const searchSong = async (
-  query: string,
-  page: number,
-  limit: number
-): Promise<Song[]> => {
-  const response = await axios.get<apiResponse<Song[]>>(
+const searchSong = async ({
+  limit = 10,
+  query,
+  cursor,
+}: searchParams): Promise<songsReturnType> => {
+  const response = await axios.get<apiResponse<songsReturnType>>(
     `${apiBase}/song/search`,
     {
       params: {
         searchQuery: query,
-        page: page,
-        limit: limit,
+        cursor,
+        limit,
       },
       timeout: 1000 * 100, //120seconds
     }

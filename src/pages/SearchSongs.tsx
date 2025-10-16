@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { searchSong } from "../services/song.services";
-import type { Song } from "../services/song.services";
+import type { songsReturnType } from "../services/song.services";
 import SongList from "../components/MusicPageComponents/SongList";
 import { useAppSelector, useAppDispatch } from "../store/hook";
 import SongPlayerPanel from "../components/SongPlayerPanel";
@@ -12,8 +12,8 @@ import {
   setPlayingSong,
   setTempSongs,
   replaceTempSongs,
-  setTempPage,
   setTempHasMoreSongs,
+  setTempNextCursor,
 } from "../reduxSlices/song/songSlice";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import DeleteConfirmation from "../components/MusicPageComponents/DeleteConfirmation";
@@ -24,7 +24,11 @@ const SearchSongs = () => {
   const playing = useAppSelector((state) => state.song.playing);
   const playingSong = useAppSelector((state) => state.song.playingSong);
   const loading = useAppSelector((state) => state.song.loading);
-  const page = useAppSelector((state) => state.song.tempPage);
+  const tempTriggerFetch = useAppSelector(
+    (state) => state.song.tempTriggerFetch
+  );
+  const hasMoreSongs = useAppSelector((state) => state.song.tempHasMoreSongs);
+  const tempNextCursor = useAppSelector((state) => state.song.tempNextCursor);
   const [statusText, setStatusText] = useState("");
   const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
@@ -44,16 +48,13 @@ const SearchSongs = () => {
     moveToPreviousSong,
   } = useAudioPlayer({ panelRef, audioRef, songs: searchedSongs });
   const timerRef = useRef<number | null>(null);
-  const Limit = 10;
-  const hasMoreSongs = useAppSelector((state) => state.song.tempHasMoreSongs);
 
-  const debounceSearch = (query: string, delay: number, pageArg?: number) => {
+  const debounceSearch = (query: string, delay: number) => {
     dispatch(setLoading(true));
     setStatusText("Loading...");
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
-    const pg = pageArg ?? page;
     timerRef.current = window.setTimeout(async () => {
       try {
         if (!query || query === "") {
@@ -61,13 +62,17 @@ const SearchSongs = () => {
           dispatch(replaceTempSongs([]));
           return;
         }
-        const songs: Song[] = await searchSong(query, pg, Limit);
-        if (songs.length < Limit) {
-          dispatch(setTempHasMoreSongs(false));
-        }
+        const response: songsReturnType = await searchSong({
+          query,
+          cursor: tempNextCursor,
+        });
+        const songs = response.songs;
+        console.log(songs);
         if (songs.length === 0) {
           setStatusText("No song found.");
         }
+        dispatch(setTempNextCursor(response.nextCursor));
+        dispatch(setTempHasMoreSongs(response.hasMoreSongs));
         dispatch(setTempSongs(songs));
       } catch (err: unknown) {
         setError(true);
@@ -89,11 +94,13 @@ const SearchSongs = () => {
   };
 
   useEffect(() => {
+    console.log("received msg to get new patch of songs");
     if (!hasMoreSongs) {
       return;
     }
+    console.log("started the process, didn't terminate it");
     debounceSearch(query, 0);
-  }, [page]);
+  }, [tempTriggerFetch]);
 
   useEffect(() => {
     return () => {
@@ -111,11 +118,9 @@ const SearchSongs = () => {
           onChange={(e) => {
             const value = e.target.value;
             setQuery(value.trim());
-            dispatch(setTempPage(1));
-            dispatch(setTempHasMoreSongs(true));
+            dispatch(setTempNextCursor(undefined));
             dispatch(replaceTempSongs([]));
-            //giving page as 1 even after setting temp page as 1 is because redux actions are asynchronous
-            debounceSearch(value, 250, 1);
+            debounceSearch(value, 250);
           }}
           className="w-full p-3 border-2 rounded-lg mb-[14px]"
           type="text"
