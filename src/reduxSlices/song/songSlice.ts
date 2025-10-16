@@ -20,11 +20,13 @@ interface initialStateType {
   shuffle: boolean;
   playingSong: Song | null;
   sortChanged: boolean;
-  page: number;
-  tempPage: number;
   sortOrder: "asc" | "desc";
   hasMoreSongs: boolean;
   tempHasMoreSongs: boolean;
+  nextCursor: string | undefined;
+  tempNextCursor: string | undefined;
+  triggerFetch: boolean;
+  tempTriggerFetch: boolean;
 }
 const initialState: initialStateType = {
   songs: [],
@@ -43,11 +45,13 @@ const initialState: initialStateType = {
   shuffle: false,
   playingSong: null,
   sortChanged: false,
-  page: 1,
-  tempPage: 1,
   sortOrder: "asc",
   hasMoreSongs: true,
   tempHasMoreSongs: true,
+  nextCursor: undefined,
+  tempNextCursor: undefined,
+  triggerFetch: false,
+  tempTriggerFetch: false,
 };
 const setSongsFn =
   (key: "songs" | "tempSongs") =>
@@ -128,18 +132,6 @@ const songSlice = createSlice({
     setSortChanged: (state, action: PayloadAction<boolean>) => {
       state.sortChanged = action.payload;
     },
-    incrPage: (state) => {
-      state.page = state.page + 1;
-    },
-    incrTempPage: (state) => {
-      state.tempPage = state.tempPage + 1;
-    },
-    setTempPage: (state, action: PayloadAction<number>) => {
-      state.tempPage = action.payload;
-    },
-    setPage: (state, action: PayloadAction<number>) => {
-      state.page = action.payload;
-    },
     setSortOrder: (state, action: PayloadAction<"asc" | "desc">) => {
       state.sortOrder = action.payload;
     },
@@ -150,6 +142,18 @@ const songSlice = createSlice({
     },
     setTempHasMoreSongs: (state, action: PayloadAction<boolean>) => {
       state.tempHasMoreSongs = action.payload;
+    },
+    setNextCursor: (state, action: PayloadAction<string | undefined>) => {
+      state.nextCursor = action.payload;
+    },
+    setTempNextCursor: (state, action: PayloadAction<string | undefined>) => {
+      state.tempNextCursor = action.payload;
+    },
+    setTriggerFetch: (state) => {
+      state.triggerFetch = !state.triggerFetch;
+    },
+    settempTriggerFetch: (state) => {
+      state.tempTriggerFetch = !state.tempTriggerFetch;
     },
   },
 });
@@ -172,14 +176,14 @@ export const {
   setDeleting,
   handleSortByChange,
   setSortChanged,
-  incrPage,
-  incrTempPage,
-  setPage,
   setSortOrder,
   deleteSong,
   deleteTempSong,
   setHasMoreSongs,
-  setTempPage,
   setTempHasMoreSongs,
+  setNextCursor,
+  setTempNextCursor,
+  setTriggerFetch,
+  settempTriggerFetch,
 } = songSlice.actions;
 export default songSlice.reducer;

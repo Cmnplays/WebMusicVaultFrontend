@@ -1,6 +1,9 @@
 import { useRef, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hook";
-import { incrPage, incrTempPage } from "../reduxSlices/song/songSlice";
+import {
+  setTriggerFetch,
+  settempTriggerFetch,
+} from "../reduxSlices/song/songSlice";
 const useInfiniteScroll = ({
   isTemp = false,
   sentinelRef,
@@ -28,11 +31,11 @@ const useInfiniteScroll = ({
         }
         if (isTemp) {
           if (!tempHasMoreSongs) return;
-          dispatch(incrTempPage());
+          dispatch(settempTriggerFetch());
           return;
         }
         if (!hasMoreSongs) return;
-        dispatch(incrPage());
+        dispatch(setTriggerFetch());
       }
     });
     const sentinel = sentinelRef.current;

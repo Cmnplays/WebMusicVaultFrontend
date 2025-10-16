@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchAllSongs } from "../services/song.services";
-import type { Song } from "../services/song.services";
+import type { fetchReturnType } from "../services/song.services";
 export type repeatType = "repeat" | "noRepeat" | "single";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import axios from "axios";
@@ -13,55 +13,56 @@ import {
   setPlayingSong,
   handleSortByChange,
   setSortChanged,
-  setPage,
   setSortOrder,
   setHasMoreSongs,
+  setNextCursor,
 } from "../reduxSlices/song/songSlice";
 
 export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
   const dispatch = useAppDispatch();
   const sortChanged = useAppSelector((state) => state.song.sortChanged);
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
-  const page = useAppSelector((state) => state.song.page);
-  const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
-  const Limit = 10;
   const [error, setError] = useState(false);
+  const triggerFetch = useAppSelector((state) => state.song.triggerFetch);
+  const nextCursor = useAppSelector((state) => state.song.nextCursor);
 
   // Fetch songs on page or initial load
   useEffect(() => {
-    if (!hasMoreSongs) return;
     const loadSongs = async () => {
       dispatch(setLoading(true));
       try {
         setError(false);
-        if (page === 1) {
-          if (sortOrder === "asc")
+        if (!nextCursor) {
+          if (sortOrder === "asc") {
             dispatch(
               setStatusText(
                 "Fetching songs... Newest to Oldest.\n(First load may take up to a minute as the server wakes up)"
               )
             );
-          else
+          } else {
             dispatch(
               setStatusText(
                 "Fetching songs... Oldest to Newest.\n(First load may take up to a minute as the server wakes up)"
               )
             );
-        } else {
-          dispatch(setStatusText("Loading more songs..."));
+          }
         }
 
-        const newSongs: Song[] = await fetchAllSongs(Limit, page, sortOrder);
+        dispatch(setStatusText("Loading more songs..."));
+
+        const response: fetchReturnType = await fetchAllSongs({
+          sortOrder,
+          cursor: nextCursor,
+        });
+        const newSongs = response.songs;
+        dispatch(setNextCursor(response.nextCursor));
+        dispatch(setHasMoreSongs(response.hasMoreSongs));
 
         if (sortChanged) {
           dispatch(handleSortByChange(newSongs));
           dispatch(setSortChanged(false));
         } else {
           dispatch(setSongs(newSongs));
-        }
-
-        if (newSongs.length < Limit) {
-          dispatch(setHasMoreSongs(false));
         }
       } catch (err: unknown) {
         setError(true);
@@ -86,12 +87,12 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
       }
     };
     loadSongs();
-  }, [page, sortOrder, sortChanged, hasMoreSongs, dispatch]);
+  }, [triggerFetch, sortOrder, sortChanged, dispatch]);
 
   const handleSorting = () => {
     dispatch(setSortChanged(true));
     dispatch(setSongs([]));
-    dispatch(setPage(1));
+    dispatch(setNextCursor(undefined));
     if (sortOrder === "asc") {
       dispatch(setSortOrder("desc"));
     } else {
@@ -106,5 +107,5 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
     }
   };
 
-  return { handleSorting, error, hasMoreSongs };
+  return { handleSorting, error };
 };

@@ -12,19 +12,33 @@ export interface Song {
   duration: number;
 }
 
-const fetchAllSongs = async (
-  limit: number = 10,
-  page: number = 1,
-  sortOrder: "asc" | "desc" = "asc"
-): Promise<Song[]> => {
-  const response = await axios.get<apiResponse<Song[]>>(`${apiBase}/song`, {
-    params: {
-      limit,
-      page,
-      sortOrder,
-    },
-    timeout: 1000 * 100, //120seconds
-  });
+export interface fetchReturnType {
+  songs: Song[];
+  hasMoreSongs: boolean;
+  nextCursor: string;
+}
+
+interface fetchParams {
+  limit?: number;
+  cursor?: string | undefined;
+  sortOrder?: "asc" | "desc";
+}
+const fetchAllSongs = async ({
+  limit = 10,
+  cursor,
+  sortOrder = "asc",
+}: fetchParams): Promise<fetchReturnType> => {
+  const response = await axios.get<apiResponse<fetchReturnType>>(
+    `${apiBase}/song`,
+    {
+      params: {
+        limit,
+        cursor,
+        sortOrder,
+      },
+      timeout: 1000 * 100, //120seconds
+    }
+  );
 
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to fetch songs");

@@ -27,6 +27,8 @@ const MusicPage: React.FC = () => {
   );
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
   const playingSong = useAppSelector((state) => state.song.playingSong);
+  const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
+  console.log(hasMoreSongs);
   const audioRef = useRef<HTMLAudioElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const {
@@ -35,7 +37,7 @@ const MusicPage: React.FC = () => {
     moveToNextSong,
     moveToPreviousSong,
   } = useAudioPlayer({ panelRef, audioRef, songs });
-  const { error, handleSorting, hasMoreSongs } = useSongs(panelRef);
+  const { error, handleSorting } = useSongs(panelRef);
   useEffect(() => {
     return () => {
       dispatch(setTempSongs([]));
@@ -43,7 +45,7 @@ const MusicPage: React.FC = () => {
       dispatch(setPlayingSong(null));
       dispatch(setPanelOpen(false));
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <main className={`max-w-5xl mx-auto p-4 ${playing && "mb-[192px]"}`}>
@@ -61,16 +63,6 @@ const MusicPage: React.FC = () => {
         hidden
       />
 
-      {(loading || error) && (
-        <p className="text-center mt-4 text-gray-600 whitespace-pre-line">
-          {statusText}
-        </p>
-      )}
-      {!hasMoreSongs && (
-        <p className="text-center mt-4 text-gray-600">
-          You have reached the end of the list.
-        </p>
-      )}
       {playingSong && (
         <SongPlayerPanel
           audioRef={audioRef as React.RefObject<HTMLAudioElement>}
@@ -95,6 +87,16 @@ const MusicPage: React.FC = () => {
           songId={playingSong!._id}
           moveToNextSong={moveToNextSong}
         />
+      )}
+      {(loading || error) && (
+        <p className="text-center mt-4 text-gray-600 whitespace-pre-line">
+          {statusText}
+        </p>
+      )}
+      {!hasMoreSongs && (
+        <p className="text-center mt-4 text-gray-600">
+          You have reached the end of the list.
+        </p>
       )}
       {(downloading || deleting || loading) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
