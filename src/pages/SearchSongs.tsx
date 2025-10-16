@@ -67,7 +67,6 @@ const SearchSongs = () => {
           cursor: tempNextCursor,
         });
         const songs = response.songs;
-        console.log(songs);
         if (songs.length === 0) {
           setStatusText("No song found.");
         }
@@ -94,11 +93,9 @@ const SearchSongs = () => {
   };
 
   useEffect(() => {
-    console.log("received msg to get new patch of songs");
     if (!hasMoreSongs) {
       return;
     }
-    console.log("started the process, didn't terminate it");
     debounceSearch(query, 0);
   }, [tempTriggerFetch]);
 
