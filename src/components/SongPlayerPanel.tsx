@@ -3,13 +3,13 @@ import { useEffect } from "react";
 import gsap from "gsap";
 import { useAppSelector } from "../store/hook";
 import { useAppDispatch } from "../store/hook";
+import { useHandleDownload } from "../hooks/useHandleDownload";
+import { useHandleSliderChange } from "./useHanldeSliderChange";
 import {
-  setCurrentTime,
   setPanelOpen,
   setPlaying,
   setRepeat,
   setShuffle,
-  setDownloading,
   setMountDeleteConfirmation,
 } from "../reduxSlices/song/songSlice";
 
@@ -39,43 +39,15 @@ const SongPlayerPanel = ({
   const downloading = useAppSelector((state) => state.song.downloading);
   const repeat = useAppSelector((state) => state.song.repeat);
   const shuffle = useAppSelector((state) => state.song.shuffle);
-  const song = useAppSelector((state) => state.song.playingSong);
+  const handleSliderChange = useHandleSliderChange(audioRef);
+  const handleDownload = useHandleDownload();
 
-  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    dispatch(setCurrentTime(value));
-    if (audioRef.current) {
-      audioRef.current.currentTime = value;
-    }
-  };
   const fadeInPanel = (panelElement: HTMLDivElement) => {
     gsap.fromTo(
       panelElement,
       { y: "100%", opacity: 0 },
       { y: "0%", opacity: 1, duration: 0.5, ease: "power3.out" }
     );
-  };
-  const handleDownload = async () => {
-    dispatch(setDownloading(true));
-    try {
-      const res = await fetch(playingSong!.fileUrl!);
-      if (!res.ok) throw new Error("Failed to fetch");
-
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = playingSong!.title!;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      window.URL.revokeObjectURL(url);
-    } catch (e) {
-      console.error(e);
-    }
-    dispatch(setDownloading(false));
   };
 
   useEffect(() => {
@@ -85,7 +57,7 @@ const SongPlayerPanel = ({
   }, [panelTrigger, panelRef]);
 
   return (
-    song && (
+    playingSong && (
       <div
         ref={panelRef}
         style={{ transform: "translateY(100%)", opacity: 0 }}
@@ -140,14 +112,14 @@ const SongPlayerPanel = ({
         </div>
         <hr />
         <div className="text-center sm:text-left text-lg sm:text-base font-semibold truncate px-2">
-          {song.title}
+          {playingSong.title}
         </div>
         <input
           type="range"
           min={0}
           max={Math.floor(duration)}
           value={Math.floor(currentTime)}
-          onChange={handleSliderChange}
+          onChange={(e) => handleSliderChange(e)}
           className="w-full sm:w-64 h-2 bg-purple-600 rounded-full appearance-none cursor-pointer
       accent-orange-400
       hover:accent-orange-500

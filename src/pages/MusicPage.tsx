@@ -55,30 +55,33 @@ const MusicPage: React.FC = () => {
         playingSong={playingSong}
         songs={songs}
       />
-      <audio
-        ref={audioRef}
-        onEnded={handleAudioEnded}
-        preload="metadata"
-        hidden
-      />
 
       {playingSong && (
-        <SongPlayerPanel
-          audioRef={audioRef as React.RefObject<HTMLAudioElement>}
-          panelRef={panelRef}
-          fadeOutPanel={fadeOutPanel}
-          handlePlayPause={() => {
-            if (!playing) {
-              audioRef.current?.play();
-              dispatch(setPlaying(true));
-              return;
-            }
-            audioRef.current?.pause();
-            dispatch(setPlaying(false));
-          }}
-          moveToNextSong={moveToNextSong}
-          moveToPreviousSong={moveToPreviousSong}
-        />
+        <>
+          {" "}
+          <audio
+            ref={audioRef}
+            onEnded={handleAudioEnded}
+            preload="metadata"
+            hidden
+          />
+          <SongPlayerPanel
+            audioRef={audioRef as React.RefObject<HTMLAudioElement>}
+            panelRef={panelRef}
+            fadeOutPanel={fadeOutPanel}
+            handlePlayPause={() => {
+              if (!playing) {
+                audioRef.current?.play();
+                dispatch(setPlaying(true));
+                return;
+              }
+              audioRef.current?.pause();
+              dispatch(setPlaying(false));
+            }}
+            moveToNextSong={moveToNextSong}
+            moveToPreviousSong={moveToPreviousSong}
+          />
+        </>
       )}
       {mountDeleteConfirmation && (
         <DeleteConfirmation

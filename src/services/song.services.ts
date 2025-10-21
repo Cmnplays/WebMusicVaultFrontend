@@ -88,4 +88,12 @@ const getSongsLength = async (): Promise<number> => {
   }
   return response.data.totalNumOfSongs;
 };
-export { fetchAllSongs, deleteSong, searchSong, getSongsLength };
+
+const getRandomSong = async (): Promise<Song> => {
+  const response = await axios.get(`${apiBase}/song/rand`);
+  if (response.data.status !== 200) {
+    throw new Error(response.data.message || "Failed to get random song");
+  }
+  return response.data.data;
+};
+export { fetchAllSongs, deleteSong, searchSong, getSongsLength, getRandomSong };

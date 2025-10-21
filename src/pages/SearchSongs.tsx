@@ -48,6 +48,7 @@ const SearchSongs = () => {
     moveToPreviousSong,
   } = useAudioPlayer({ panelRef, audioRef, songs: searchedSongs });
   const timerRef = useRef<number | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const debounceSearch = (query: string, delay: number) => {
     dispatch(setLoading(true));
@@ -100,6 +101,7 @@ const SearchSongs = () => {
   }, [tempTriggerFetch]);
 
   useEffect(() => {
+    //write code for focusing on input upon opening this page
     return () => {
       dispatch(replaceTempSongs([]));
       dispatch(setPlaying(false));
@@ -118,11 +120,13 @@ const SearchSongs = () => {
             dispatch(setTempNextCursor(undefined));
             dispatch(replaceTempSongs([]));
             debounceSearch(value, 250);
+            //i think because of this 250 second param, when i type too fast the last text doesnt get searched in db, the previous one captured text might only be searched in db and the results of that show there at the page.
           }}
           className="w-full p-3 border-2 rounded-lg mb-[14px]"
           type="text"
           placeholder="Start typing to find your favorite songs!"
           id="songQuery"
+          ref={inputRef}
         />
       </div>
       <SongList
@@ -132,30 +136,32 @@ const SearchSongs = () => {
         songs={searchedSongs}
         isTemp={true}
       />
-      <audio
-        ref={audioRef}
-        onEnded={handleAudioEnded}
-        preload="metadata"
-        hidden
-      />
 
       {playingSong && (
-        <SongPlayerPanel
-          audioRef={audioRef as React.RefObject<HTMLAudioElement>}
-          panelRef={panelRef}
-          fadeOutPanel={fadeOutPanel}
-          handlePlayPause={() => {
-            if (!playing) {
-              audioRef.current?.play();
-              dispatch(setPlaying(true));
-              return;
-            }
-            audioRef.current?.pause();
-            dispatch(setPlaying(false));
-          }}
-          moveToNextSong={moveToNextSong}
-          moveToPreviousSong={moveToPreviousSong}
-        />
+        <>
+          <audio
+            ref={audioRef}
+            onEnded={handleAudioEnded}
+            preload="metadata"
+            hidden
+          />
+          <SongPlayerPanel
+            audioRef={audioRef as React.RefObject<HTMLAudioElement>}
+            panelRef={panelRef}
+            fadeOutPanel={fadeOutPanel}
+            handlePlayPause={() => {
+              if (!playing) {
+                audioRef.current?.play();
+                dispatch(setPlaying(true));
+                return;
+              }
+              audioRef.current?.pause();
+              dispatch(setPlaying(false));
+            }}
+            moveToNextSong={moveToNextSong}
+            moveToPreviousSong={moveToPreviousSong}
+          />
+        </>
       )}
       {(loading || error) && (
         <p className="text-center mt-4 text-gray-600">{statusText}</p>

@@ -162,7 +162,16 @@ const Navbar = () => {
               className="block text-gray-800 font-medium"
               onClick={() => setIsOpen(false)}
             >
-              Search Songs
+              Search
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/random-player"
+              className="block text-gray-800 font-medium"
+              onClick={() => setIsOpen(false)}
+            >
+              Shuffle Play
             </Link>
           </li>
 

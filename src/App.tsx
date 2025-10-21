@@ -6,6 +6,7 @@ import SearchSongs from "./pages/SearchSongs.tsx";
 import ScrollToTop from "./components/ScrollToTop.tsx";
 
 import About from "./pages/About.tsx";
+import RandomPlayer from "./pages/randomPlayer.tsx";
 export default function App() {
   return (
     <>
@@ -16,6 +17,8 @@ export default function App() {
         <Route path="/musics" element={<MusicPage />} />
         <Route path="/upload" element={<UploadPage />} />
         <Route path="/search-songs" element={<SearchSongs />} />
+        <Route path="/random-player" element={<RandomPlayer />} />
+
         <Route path="/about" element={<About />} />
       </Routes>
     </>
