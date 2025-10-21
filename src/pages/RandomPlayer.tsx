@@ -22,6 +22,12 @@ const RandomPlayer = () => {
   const [previousSongs, setPreviousSongs] = useState<Song[]>([]);
   const handleDownload = useHandleDownload();
   const handleSliderChange = useHandleSliderChange(audioRef);
+
+  const { handlePlayClick } = useAudioPlayer({
+    panelRef,
+    audioRef,
+    songs: previousSongs,
+  });
   useEffect(() => {
     const returnRandSong = async () => {
       const randomSong = await getRandomSong();
@@ -54,11 +60,6 @@ const RandomPlayer = () => {
     dispatch(setPlayingSong(previousSongs[posOfCurrentSong - 1]));
   };
 
-  const { handlePlayClick } = useAudioPlayer({
-    panelRef,
-    audioRef,
-    songs: previousSongs,
-  });
   return (
     <>
       {playingSong && audioRef && (
