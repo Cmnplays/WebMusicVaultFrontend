@@ -55,16 +55,15 @@ const MusicPage: React.FC = () => {
         playingSong={playingSong}
         songs={songs}
       />
-
+      <audio
+        ref={audioRef}
+        onEnded={handleAudioEnded}
+        preload="metadata"
+        hidden
+      />
       {playingSong && (
         <>
           {" "}
-          <audio
-            ref={audioRef}
-            onEnded={handleAudioEnded}
-            preload="metadata"
-            hidden
-          />
           <SongPlayerPanel
             audioRef={audioRef as React.RefObject<HTMLAudioElement>}
             panelRef={panelRef}
