@@ -6,7 +6,7 @@ import SearchSongs from "./pages/SearchSongs.tsx";
 import ScrollToTop from "./components/ScrollToTop.tsx";
 
 import About from "./pages/About.tsx";
-import RandomPlayer from "./pages/randomPlayer.tsx";
+import RandomPlayer from "./pages/RandomPlayer.tsx";
 export default function App() {
   return (
     <>
