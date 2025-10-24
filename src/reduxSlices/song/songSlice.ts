@@ -27,6 +27,7 @@ interface initialStateType {
   tempNextCursor: string | undefined;
   triggerFetch: boolean;
   tempTriggerFetch: boolean;
+  navHeight: number;
 }
 const initialState: initialStateType = {
   songs: [],
@@ -52,6 +53,7 @@ const initialState: initialStateType = {
   tempNextCursor: undefined,
   triggerFetch: false,
   tempTriggerFetch: false,
+  navHeight: 0,
 };
 const setSongsFn =
   (key: "songs" | "tempSongs") =>
@@ -155,6 +157,9 @@ const songSlice = createSlice({
     settempTriggerFetch: (state) => {
       state.tempTriggerFetch = !state.tempTriggerFetch;
     },
+    setNavHeight: (state, action: PayloadAction<number>) => {
+      state.navHeight = action.payload;
+    },
   },
 });
 export const {
@@ -185,5 +190,6 @@ export const {
   setTempNextCursor,
   setTriggerFetch,
   settempTriggerFetch,
+  setNavHeight,
 } = songSlice.actions;
 export default songSlice.reducer;

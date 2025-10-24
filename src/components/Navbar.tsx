@@ -1,11 +1,23 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
-
+import { setNavHeight } from "../reduxSlices/song/songSlice.ts";
+import { useAppDispatch } from "../store/hook.ts";
 const Navbar = () => {
+  const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
+  const navRef = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    const updateHeight = () => {
+      if (navRef.current) {
+        dispatch(setNavHeight(navRef.current.offsetHeight));
+      }
+    };
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  });
   useEffect(() => {
     if (!menuRef.current) return;
 
@@ -43,7 +55,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <nav className="bg-white shadow-md sticky top-0 z-50" ref={navRef}>
       <div className="max-w-7xl mx-auto px-5 py-2 flex items-center justify-between">
         {/* Logo */}
         <Link

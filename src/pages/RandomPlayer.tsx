@@ -24,6 +24,10 @@ const RandomPlayer = () => {
   const [previousSongs, setPreviousSongs] = useState<Song[]>([]);
   const handleDownload = useHandleDownload();
   const handleSliderChange = useHandleSliderChange(audioRef);
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
+  const [loading, setLoading] = useState(false);
+  const navHeight = useAppSelector((state) => state.song.navHeight);
 
   const { handlePlayClick } = useAudioPlayer({
     panelRef,
@@ -32,78 +36,154 @@ const RandomPlayer = () => {
   });
   useEffect(() => {
     const returnRandSong = async () => {
-      const randomSong = await getRandomSong();
-      dispatch(setPlayingSong(randomSong));
-      handlePlayClick(randomSong);
-      setPreviousSongs((prev) => [...prev, randomSong]);
+      setLoading(true);
+      try {
+        const randomSong = await getRandomSong();
+        if (
+          previousSongs.findIndex((song) => song._id == randomSong._id) !== -1
+        ) {
+          setTriggerNext(!triggerNext);
+          return;
+        }
+        setPreviousSongs((prev) => [...prev, randomSong]);
+        dispatch(setPlayingSong(randomSong));
+        handlePlayClick(randomSong);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     };
     returnRandSong();
   }, [dispatch, triggerNext]);
+
   useEffect(() => {
-    //write code for focusing on input upon opening this page
     return () => {
       dispatch(setPlaying(false));
       dispatch(setPlayingSong(null));
       dispatch(setPanelOpen(false));
     };
   }, [dispatch]);
+  //for auto scrolling of song list when more songs are added
+  useEffect(() => {
+    const elem = listRef.current;
+    if (elem) {
+      elem.scrollTop = elem.scrollHeight;
+    }
+  }, [previousSongs]);
+  //for making the currently playing song stay at the middle
+  useEffect(() => {
+    if (playingSong && itemRefs.current![playingSong._id]) {
+      itemRefs.current[playingSong._id]!.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [playingSong]);
   const moveToNextSong = () => {
-    const posOfCurrentSong = previousSongs.findIndex(
-      (song) => song._id === playingSong!._id
-    );
-    const nextSong = previousSongs[posOfCurrentSong + 1];
-    if (!nextSong) {
-      setTriggerNext(!triggerNext);
+    const currentPlayingIndex = previousSongs.indexOf(playingSong!);
+    const nextSong = previousSongs[currentPlayingIndex + 1];
+    if (nextSong) {
+      dispatch(setPlayingSong(nextSong));
       return;
     }
-    dispatch(setPlayingSong(nextSong));
+    setTriggerNext(!triggerNext);
   };
   const moveToPreviousSong = () => {
-    const posOfCurrentSong = previousSongs.findIndex(
-      (song) => song._id === playingSong!._id
-    );
-    const prevSong = previousSongs[posOfCurrentSong - 1];
+    const prevSong = previousSongs[previousSongs.indexOf(playingSong!) - 1];
     if (!prevSong) {
       if (audioRef.current) audioRef.current.currentTime = 0;
       return;
     }
+    if (audioRef.current) audioRef.current.pause();
     dispatch(setPlayingSong(prevSong));
   };
   return (
-    <main className="min-h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 text-white flex flex-col justify-center items-center p-4">
-      <audio
-        ref={audioRef}
-        onEnded={moveToNextSong}
-        preload="metadata"
-        hidden
-      />
+    <div
+      style={{ height: `calc(100vh - ${navHeight})` }}
+      className="bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 text-white flex flex-col items-center p-4"
+    >
+      {/* Recently Played Panel */}
+      <section className="w-full max-w-[94%] bg-purple-800 p-4 rounded-2xl shadow-xl mb-6 mt-4 h-[60vh] flex flex-col">
+        <h2 className="text-xl font-bold text-center mb-4">Recently Played</h2>
 
+        <div
+          className="flex-1 flex flex-col gap-2 overflow-y-auto"
+          ref={listRef}
+        >
+          {previousSongs.slice(0, previousSongs.length - 1).length > 0 ? (
+            previousSongs
+              .slice(0, previousSongs.length - 1)
+              .map((song, index) => (
+                <li
+                  ref={(el) => {
+                    itemRefs.current[song._id] = el;
+                  }}
+                  key={song._id}
+                  onClick={() => handlePlayClick(song)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handlePlayClick(song);
+                    }
+                  }}
+                  className={`flex items-center gap-2 px-2 py-3 rounded-lg shadow transition-shadow duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2 ${
+                    playingSong?._id === song._id
+                      ? "bg-orange-500 text-white hover:shadow-lg"
+                      : "bg-white hover:shadow-md"
+                  }`}
+                >
+                  {/* Numbering */}
+                  <div
+                    className={`flex-shrink-0 w-6 h-6 rounded-full font-mono text-sm font-bold flex items-center justify-center select-none ${
+                      playingSong?._id === song._id
+                        ? "bg-white text-orange-600"
+                        : "bg-purple-100 text-purple-700"
+                    }`}
+                  >
+                    {index + 1}
+                  </div>
+
+                  {/* Song Title */}
+                  <div className="flex-grow overflow-hidden">
+                    <h3
+                      className={`text-lg font-semibold truncate ${
+                        playingSong?._id === song._id
+                          ? "text-white"
+                          : "text-gray-900"
+                      }`}
+                      title={song.title}
+                    >
+                      {song.title}
+                    </h3>
+                  </div>
+                </li>
+              ))
+          ) : (
+            <div className="flex-1 flex flex-col justify-center items-center text-center px-3">
+              <p className="text-orange-400 text-2xl sm:text-3xl font-bold mb-2 animate-bounce">
+                🎵 The stage is empty…
+              </p>
+              <p className="text-purple-100 text-base sm:text-lg">
+                …but you’re the star! Start playing songs to fill this space
+                with music.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Music Player */}
       {playingSong && (
-        <div className="w-full max-w-sm flex flex-col items-center gap-6">
+        <section
+          className={`w-full max-w-sm flex flex-col items-center gap-6 mt-[${navHeight}]`}
+        >
           {/* Song Title */}
           <h1 className="text-2xl sm:text-3xl font-bold text-center truncate w-full px-2">
             {playingSong.title}
           </h1>
-
-          {/* Recently Played */}
-          {previousSongs.length > 1 && (
-            <div className="w-full flex gap-3 overflow-x-auto py-2 px-1">
-              {previousSongs
-                .slice(-3, -1) // last 2 songs before current
-                .map((song) => (
-                  <button
-                    key={song._id}
-                    onClick={() => {
-                      dispatch(setPlayingSong(song));
-                      handlePlayClick(song);
-                    }}
-                    className="flex-none bg-purple-700 hover:bg-purple-600 px-3 py-1 rounded-full shadow-md truncate text-xs sm:text-sm transition-colors duration-300"
-                  >
-                    {song.title}
-                  </button>
-                ))}
-            </div>
-          )}
 
           {/* Progress Slider */}
           <div className="w-full flex flex-col items-center">
@@ -114,6 +194,7 @@ const RandomPlayer = () => {
               value={Math.floor(currentTime)}
               onChange={handleSliderChange}
               className="w-full h-2 bg-purple-600 rounded-full appearance-none cursor-pointer accent-orange-400 hover:accent-orange-500 transition-colors duration-300"
+              aria-label="Playback progress"
             />
             <div className="flex justify-between w-full text-xs font-mono text-purple-300 mt-1 px-1">
               <span>{formatDuration(currentTime)}</span>
@@ -121,12 +202,25 @@ const RandomPlayer = () => {
             </div>
           </div>
 
-          {/* Player Controls */}
+          {/* Controls */}
           <div className="flex items-center justify-center gap-6 mt-4">
+            {/* Delete */}
+            <button
+              onClick={() => {
+                dispatch(setPlaying(false));
+                audioRef.current?.pause();
+                dispatch(setMountDeleteConfirmation(true));
+              }}
+              className="text-white hover:text-orange-400 transition-colors"
+              aria-label="Delete song"
+            >
+              <i className="ri-delete-bin-line text-2xl" />
+            </button>
             {/* Previous */}
             <button
               onClick={moveToPreviousSong}
               className="w-12 h-12 flex items-center justify-center rounded-full bg-purple-700 hover:bg-purple-600 shadow-md hover:shadow-lg active:scale-95 transition-transform"
+              aria-label="Previous song"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -146,12 +240,13 @@ const RandomPlayer = () => {
                 if (!playing) {
                   audioRef.current?.play();
                   dispatch(setPlaying(true));
-                  return;
+                } else {
+                  audioRef.current?.pause();
+                  dispatch(setPlaying(false));
                 }
-                audioRef.current?.pause();
-                dispatch(setPlaying(false));
               }}
               className="w-16 h-16 rounded-full bg-gradient-to-tr from-orange-400 to-purple-600 flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform"
+              aria-label={playing ? "Pause" : "Play"}
             >
               {playing ? (
                 <svg
@@ -180,7 +275,15 @@ const RandomPlayer = () => {
             {/* Next */}
             <button
               onClick={moveToNextSong}
-              className="w-12 h-12 flex items-center justify-center rounded-full bg-purple-700 hover:bg-purple-600 shadow-md hover:shadow-lg active:scale-95 transition-transform"
+              disabled={loading}
+              className={`w-12 h-12 flex items-center justify-center rounded-full shadow-md transition-transform
+  ${
+    loading
+      ? "bg-gray-400 cursor-not-allowed opacity-50"
+      : "bg-purple-700 hover:bg-purple-600 hover:shadow-lg active:scale-95"
+  }
+`}
+              aria-label="Next song"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -193,34 +296,35 @@ const RandomPlayer = () => {
                 <rect x="8" y="5" width="2" height="14" rx="1" />
               </svg>
             </button>
-          </div>
 
-          {/* Bottom Actions */}
-          <div className="flex items-center justify-between w-full mt-6 px-4">
-            <button
-              onClick={() => {
-                dispatch(setPlaying(false));
-                audioRef.current?.pause();
-                dispatch(setMountDeleteConfirmation(true));
-              }}
-              className="text-white hover:text-orange-400 transition-colors"
-            >
-              <i className="ri-delete-bin-line text-2xl" />
-            </button>
-
+            {/* Download */}
             <button
               onClick={handleDownload}
               disabled={downloading}
-              className={`text-white hover:text-orange-400 transition-colors ${
-                downloading ? "text-gray-400" : ""
+              className={`text-white transition-colors ${
+                downloading ? "text-gray-400" : "hover:text-orange-400"
               }`}
+              aria-label="Download song"
             >
               <i className="ri-download-line text-2xl" />
             </button>
           </div>
+        </section>
+      )}
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+          <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />
         </div>
       )}
-    </main>
+
+      {/* Hidden Audio Element */}
+      <audio
+        ref={audioRef}
+        onEnded={moveToNextSong}
+        preload="metadata"
+        hidden
+      />
+    </div>
   );
 };
 

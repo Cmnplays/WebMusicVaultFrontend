@@ -1,11 +1,41 @@
 # ISSUES
---- HIGH PRIORITY ---
-1.if i write search query very fast then i just get the data from the first request made like if i write asdjlfasfja then i get results of either a or as but not with the full query. So need to analyze and fix that also generally it works fine, just need to solve this case of problem, kinda a edge case of fast typers some times it also works fine in this case also but most of the time its problematic
---- MEDIUM PRIORITY ---
-1. New uploads don’t appear at top of public feed instantly
-   - Current behavior: Feed is paginated, newest songs come from backend
-   - Newly uploaded songs only visible after refresh
 
---- LOW PRIORITY ---
+## --- HIGH PRIORITY ---
+1. **Fast typing search bug**  
+   - If user types search query quickly, results often reflect only the first few characters (e.g. “a” or “as” instead of full “asdjlfasfja”)  
+   - Works fine generally, but fails in fast typing edge cases  
+   - Needs debounce/cancellation logic to ensure latest query wins
 
+---
 
+## --- MEDIUM PRIORITY ---
+1. **New uploads don’t appear at top of public feed instantly**  
+   - Feed is paginated; newest songs come from backend  
+   - Newly uploaded songs only visible after refresh  
+   - ✅ Solution: Let it be itself
+
+2. **Shuffle song UI issues**  
+   - Loading spinner and delete confirmation panel not showing  
+   - UI feels incomplete or broken
+
+3. **Scrolling song titles in player panel**  
+   - Long song titles should auto-scroll (marquee or animation)  
+   - Only when inside the player panel
+
+4. **Jump-to-current-song button on main page**  
+   - When a song is playing far down the list and user scrolls up  
+   - Add a button to jump back to the currently playing song
+
+5. **Scroll-to-top button**  
+   - When user scrolls far down the page  
+   - Show a floating “↑” button to quickly return to top
+
+6. **Navbar scroll polish**  
+   - Animate navbar on scroll (e.g. shrink, fade, or blur)  
+   - Optionally make it transparent until scroll starts  
+   - Should feel buttery and premium
+
+---
+
+## --- LOW PRIORITY ---
+_(No tasks listed yet)_
