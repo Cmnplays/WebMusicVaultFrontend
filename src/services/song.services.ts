@@ -27,6 +27,7 @@ interface searchParams {
   limit?: number;
   cursor?: string | undefined;
   query: string;
+  signal: AbortSignal;
 }
 const fetchAllSongs = async ({
   limit = 10,
@@ -63,6 +64,7 @@ const searchSong = async ({
   limit = 10,
   query,
   cursor,
+  signal,
 }: searchParams): Promise<songsReturnType> => {
   const response = await axios.get<apiResponse<songsReturnType>>(
     `${apiBase}/song/search`,
@@ -72,6 +74,7 @@ const searchSong = async ({
         cursor,
         limit,
       },
+      signal,
       timeout: 1000 * 100, //120seconds
     }
   );

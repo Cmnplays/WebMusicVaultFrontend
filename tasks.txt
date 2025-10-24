@@ -35,6 +35,7 @@
    - Optionally make it transparent until scroll starts  
    - Should feel buttery and premium
 
+7.**To add ratelimiting on frontend, little bit, it is mostly done in backend, but can also be done in frontend for less spamming.
 ---
 
 ## --- LOW PRIORITY ---

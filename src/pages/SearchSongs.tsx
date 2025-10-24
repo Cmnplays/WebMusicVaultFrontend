@@ -49,13 +49,19 @@ const SearchSongs = () => {
   } = useAudioPlayer({ panelRef, audioRef, songs: searchedSongs });
   const timerRef = useRef<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const debounceSearch = (query: string, delay: number) => {
     dispatch(setLoading(true));
-    setStatusText("Loading...");
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      console.log("aborted");
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
     timerRef.current = window.setTimeout(async () => {
       try {
         if (!query || query === "") {
@@ -66,11 +72,9 @@ const SearchSongs = () => {
         const response: songsReturnType = await searchSong({
           query,
           cursor: tempNextCursor,
+          signal: controller.signal,
         });
         const songs = response.songs;
-        if (songs.length === 0) {
-          setStatusText("No song found.");
-        }
         dispatch(setTempNextCursor(response.nextCursor));
         dispatch(setTempHasMoreSongs(response.hasMoreSongs));
         dispatch(setTempSongs(songs));
@@ -79,6 +83,8 @@ const SearchSongs = () => {
         if (axios.isAxiosError(err)) {
           if (err.code === "ECONNABORTED") {
             setStatusText("Request timed out. Please try again later.");
+          } else if (err.code === "ERR_CANCELLED") {
+            return;
           } else {
             setStatusText("Something went wrong. Please try again.");
           }
@@ -107,7 +113,12 @@ const SearchSongs = () => {
       dispatch(setPlaying(false));
       dispatch(setPlayingSong(null));
       dispatch(setPanelOpen(false));
+      dispatch(setLoading(false));
     };
+  }, []);
+
+  useEffect(() => {
+    inputRef.current?.focus();
   }, []);
 
   return (
@@ -119,10 +130,10 @@ const SearchSongs = () => {
             setQuery(value.trim());
             dispatch(setTempNextCursor(undefined));
             dispatch(replaceTempSongs([]));
-            debounceSearch(value, 250);
+            debounceSearch(value.trim(), 250);
             //i think because of this 250 second param, when i type too fast the last text doesnt get searched in db, the previous one captured text might only be searched in db and the results of that show there at the page.
           }}
-          className="w-full p-3 border-2 rounded-lg mb-[14px]"
+          className="w-full p-3 border-2 rounded-lg mb-[14px] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           type="text"
           placeholder="Start typing to find your favorite songs!"
           id="songQuery"
@@ -167,7 +178,9 @@ const SearchSongs = () => {
         <p className="text-center mt-4 text-gray-600">{statusText}</p>
       )}
       {!loading && searchedSongs.length === 0 && query && (
-        <p className="text-center mt-4 text-gray-600">{statusText}</p>
+        <p className="text-center mt-4 text-gray-500 italic">
+          No songs found. Try a different vibe or artist name 🎧
+        </p>
       )}
       {!hasMoreSongs && searchedSongs.length > 0 && !loading && (
         <p className="text-center mt-4 text-gray-600">
