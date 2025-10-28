@@ -14,7 +14,7 @@ import {
 } from "../reduxSlices/song/songSlice";
 
 interface songPanelProps {
-  audioRef: React.RefObject<HTMLAudioElement>;
+  audioRef: React.RefObject<HTMLAudioElement | null>;
   panelRef: React.RefObject<HTMLDivElement | null>;
   fadeOutPanel: (panelElement: HTMLDivElement, onComplete?: () => void) => void;
   handlePlayPause: () => void;
@@ -72,7 +72,7 @@ const SongPlayerPanel = ({
             <button
               onClick={() => {
                 dispatch(setPlaying(false));
-                audioRef.current.pause();
+                audioRef.current!.pause();
                 dispatch(setMountDeleteConfirmation(true));
               }}
             >
@@ -91,7 +91,7 @@ const SongPlayerPanel = ({
                     dispatch(setPanelOpen(false));
                     dispatch(setRepeat("repeat"));
                   });
-                  audioRef.current.pause();
+                  audioRef.current!.pause();
                   dispatch(setPlaying(false));
                 }
               }}

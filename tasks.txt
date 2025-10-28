@@ -6,8 +6,6 @@
    - Works fine generally, but fails in fast typing edge cases  
    - Needs debounce/cancellation logic to ensure latest query wins
 
----
-
 ## --- MEDIUM PRIORITY ---
 1. **New uploads don’t appear at top of public feed instantly**  
    - Feed is paginated; newest songs come from backend  
@@ -18,25 +16,34 @@
    - Loading spinner and delete confirmation panel not showing  
    - UI feels incomplete or broken
 
-3. **Scrolling song titles in player panel**  
+3. **Shuffle play song styles issue**  
+   - Styles of songs in shuffle mode appear inconsistent or broken  
+   - Needs UI/UX polish so shuffle songs display correctly
+
+4. **Scrolling song titles in player panel**  
    - Long song titles should auto-scroll (marquee or animation)  
    - Only when inside the player panel
 
-4. **Jump-to-current-song button on main page**  
+5. **Jump-to-current-song button on main page**  
    - When a song is playing far down the list and user scrolls up  
    - Add a button to jump back to the currently playing song
 
-5. **Scroll-to-top button**  
+6. **Scroll-to-top button**  
    - When user scrolls far down the page  
    - Show a floating “↑” button to quickly return to top
 
-6. **Navbar scroll polish**  
+7. **Navbar scroll polish**  
    - Animate navbar on scroll (e.g. shrink, fade, or blur)  
    - Optionally make it transparent until scroll starts  
    - Should feel buttery and premium
 
-7.**To add ratelimiting on frontend, little bit, it is mostly done in backend, but can also be done in frontend for less spamming.
----
+8. **To add rate limiting on frontend**  
+   - Mostly handled in backend, but can also be done in frontend to reduce spamming
+
+9. **Auto-load new songs when returning to homepage**  
+   - When the user navigates back to the homepage from any other page, automatically fetch a new batch of songs  
+   - No scrolling should be required; the new songs load and display seamlessly  
+   - Ensures the user always sees the latest songs immediately
 
 ## --- LOW PRIORITY ---
 _(No tasks listed yet)_

@@ -100,8 +100,8 @@ const RandomPlayer = () => {
   };
   return (
     <div
-      style={{ height: `calc(100vh - ${navHeight})` }}
-      className="bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 text-white flex flex-col items-center p-4"
+      // style={{ height: `calc(100vh - ${navHeight})` }}
+      className="h-[100vh] bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 text-white flex flex-col items-center p-4"
     >
       {/* Recently Played Panel */}
       <section className="w-full max-w-[94%] bg-purple-800 p-4 rounded-2xl shadow-xl mb-6 mt-4 h-[60vh] flex flex-col">
