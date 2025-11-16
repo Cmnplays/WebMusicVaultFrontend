@@ -179,15 +179,14 @@ const SearchSongs = () => {
           </button>
         </div>
       )}
-
-      {playingSong && (
-        <>
-          <audio
+   <audio
             ref={audioRef}
             onEnded={handleAudioEnded}
             preload="metadata"
             hidden
           />
+      {playingSong && (
+        <>
           <SongPlayerPanel
             audioRef={audioRef}
             panelRef={panelRef}
