@@ -10,7 +10,7 @@ import {
   setPlayingSong,
 } from "../reduxSlices/song/songSlice";
 import { useHandleDownload } from "../hooks/useHandleDownload";
-import { useHandleSliderChange } from "../components/useHanldeSliderChange";
+import { useHandleSliderChange } from "../components/useHandleSliderChange";
 const RandomPlayer = () => {
   const playingSong = useAppSelector((state) => state.song.playingSong);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -98,7 +98,7 @@ const { handlePlayClick } = useAudioPlayer({
     panelRef,
     audioRef,
     songs: previousSongs,
-    customFns:{moveToNextSong, moveToPreviousSong}
+    customFns:{next:moveToNextSong,previous:moveToPreviousSong}
   });
   return (
     <div
