@@ -1,12 +1,23 @@
-function useMediaSession(playing, playingSong,controllers){
+import { useEffect } from "react";
 
-if(!"medisession" in navigator || !playing){
-    return
+function useMediaSession(playing, playingSong, controllers) {
+  useEffect(() => {
+    if (!("mediaSession" in navigator) || !playingSong) return;
+
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: playingSong.title
+ });
+
+    navigator.mediaSession.setActionHandler(
+      "nexttrack",
+      controllers.moveToNextSong
+    );
+
+    navigator.mediaSession.setActionHandler(
+      "previoustrack",
+      controllers.moveToPreviousSong
+    );
+  }, [playing, playingSong]);
 }
-navigator.mediaSession.metadata= new MediaMetaData({
-   title: playingSong.title
-})
-navigator.mediaSession.setActionHandler("nexttrack",controllers.moveToNextSong)
-navigator.mediaSession.setActionHandler("previoustrack",controllers.moveToPreviousSong)
-}
-export default useMediaSession
+
+export default useMediaSession;
