@@ -44,12 +44,13 @@ export const useAudioPlayer = ({
   const playingSong = useAppSelector((state) => state.song.playingSong);
 
   //    Play or pause audio based on playingSong change
+useMediaSession(playing,playingSong,{moveToNextSong, moveToPreviousSong})
   useEffect(() => {
     const audioEl = audioRef.current;
     if (!audioEl) return;
 
     if (playingSong?.fileUrl) {
-useMediaSession(playing,playingSong,{moveToNextSong, moveToPreviousSong})
+
       if (audioEl.src !== playingSong.fileUrl) {
         audioEl.src = playingSong.fileUrl;
    
