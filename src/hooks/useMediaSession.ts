@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-type controls{
+import type { Song } from "../services/song.services";
+type controls={
 moveToNextSong: ()=>void
 ,moveToPreviousSong: ()=>void
 }
