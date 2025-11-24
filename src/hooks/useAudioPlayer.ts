@@ -27,14 +27,19 @@ export const fadeOutPanel = (
     onComplete,
   });
 };
+type customFnType={
+next:()=>void
+previous:()=>void}
 export const useAudioPlayer = ({
   panelRef,
   audioRef,
   songs,
+  customFns
 }: {
   panelRef: React.RefObject<HTMLDivElement | null>;
   audioRef: React.RefObject<HTMLAudioElement | null>;
   songs: Song[];
+customFns?:customFnType
 }) => {
   const dispatch = useAppDispatch();
   const panelOpen = useAppSelector((state) => state.song.panelOpen);
@@ -243,7 +248,7 @@ export const useAudioPlayer = ({
     }
     dispatch(setPlaying(true));
   };
-useMediaSession(playing,playingSong,{moveToNextSong, moveToPreviousSong})
+useMediaSession(playing,playingSong,{moveToNextSong: customFns?.next ?? moveToNextSong,moveToPreviousSong: customFns?.previous ?? moveToPreviousSong})
   return {
     handlePlayClick,
     handleAudioEnded,
