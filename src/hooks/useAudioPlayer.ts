@@ -49,7 +49,7 @@ export const useAudioPlayer = ({
     if (!audioEl) return;
 
     if (playingSong?.fileUrl) {
-useMediaPlayer(playing,playingSong,{moveToNextSong, moveToPreviousSong})
+useMediaSession(playing,playingSong,{moveToNextSong, moveToPreviousSong})
       if (audioEl.src !== playingSong.fileUrl) {
         audioEl.src = playingSong.fileUrl;
    
