@@ -1,6 +1,9 @@
 import { useEffect } from "react";
-
-function useMediaSession(playing, playingSong, controllers) {
+type controls{
+moveToNextSong: ()=>void
+,moveToPreviousSong: ()=>void
+}
+function useMediaSession(playing: boolean, playingSong:Song, controllers:controls) {
   useEffect(() => {
     if (!("mediaSession" in navigator) || !playingSong) return;
 
