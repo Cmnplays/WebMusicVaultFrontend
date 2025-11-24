@@ -1,7 +1,6 @@
-import {useAppSelector} from "../store/hook.ts"
-function useMediaSession(controllers){
-const playingSong=useAppSelector(state=>state.song.playingSong)
-if(!"medisession" in navigator){
+function useMediaSession(playing, playingSong,controllers){
+
+if(!"medisession" in navigator || !playing){
     return
 }
 navigator.mediaSession.metadata= new MediaMetaData({
