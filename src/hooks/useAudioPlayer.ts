@@ -3,6 +3,7 @@ import type { Song } from "../services/song.services";
 export type repeatType = "repeat" | "noRepeat" | "single";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import gsap from "gsap";
+import useMediaSession from "./useMediaSession"
 
 import {
   setPanelOpen,
@@ -48,8 +49,10 @@ export const useAudioPlayer = ({
     if (!audioEl) return;
 
     if (playingSong?.fileUrl) {
+useMediaPlayer(playing,playingSong,{moveToNextSong, moveToPreviousSong)
       if (audioEl.src !== playingSong.fileUrl) {
         audioEl.src = playingSong.fileUrl;
+   
       }
       audioEl.currentTime = 0;
       audioEl.play().catch((err) => console.error("Audio play error", err));
