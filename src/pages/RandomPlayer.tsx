@@ -29,11 +29,7 @@ const RandomPlayer = () => {
   const [loading, setLoading] = useState(false);
   const navHeight = useAppSelector((state) => state.song.navHeight);
 
-  const { handlePlayClick } = useAudioPlayer({
-    panelRef,
-    audioRef,
-    songs: previousSongs,
-  });
+  
   useEffect(() => {
     const returnRandSong = async () => {
       setLoading(true);
@@ -98,6 +94,12 @@ const RandomPlayer = () => {
     if (audioRef.current) audioRef.current.pause();
     dispatch(setPlayingSong(prevSong));
   };
+const { handlePlayClick } = useAudioPlayer({
+    panelRef,
+    audioRef,
+    songs: previousSongs,
+    customFns:{moveToNextSong, moveToPreviousSong}
+  });
   return (
     <div
       // style={{ height: `calc(100vh - ${navHeight})` }}
