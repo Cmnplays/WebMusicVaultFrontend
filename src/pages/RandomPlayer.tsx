@@ -10,7 +10,7 @@ import {
   setPlayingSong,
 } from "../reduxSlices/song/songSlice";
 import { useHandleDownload } from "../hooks/useHandleDownload";
-import { useHanldeSliderChange } from "../components/useHandleSliderChange";
+import { useHandleSliderChange } from "../components/useHanldeSliderChange";
 const RandomPlayer = () => {
   const playingSong = useAppSelector((state) => state.song.playingSong);
   const audioRef = useRef<HTMLAudioElement>(null);
