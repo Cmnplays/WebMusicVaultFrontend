@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { fetchAllSongs } from "../services/song.services";
 import type { songsReturnType } from "../services/song.services";
 export type repeatType = "repeat" | "noRepeat" | "single";
@@ -25,10 +25,16 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
   const [error, setError] = useState(false);
   const triggerFetch = useAppSelector((state) => state.song.triggerFetch);
   const nextCursor = useAppSelector((state) => state.song.nextCursor);
+  const songs = useAppSelector((state) => state.song.songs);
+  const didMount = useRef(false);
 
-  // Fetch songs on page or initial load
   useEffect(() => {
     const loadSongs = async () => {
+      if (!didMount.current && songs.length > 0) {
+        didMount.current = true;
+        return; // skip only first mount
+      }
+      didMount.current = true;
       dispatch(setLoading(true));
       try {
         setError(false);
@@ -46,10 +52,10 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
               )
             );
           }
+        } else {
+          dispatch(setStatusText("Loading more songs..."));
         }
-
-        dispatch(setStatusText("Loading more songs..."));
-
+        console.log(triggerFetch, sortOrder, sortChanged);
         const response: songsReturnType = await fetchAllSongs({
           sortOrder,
           cursor: nextCursor,

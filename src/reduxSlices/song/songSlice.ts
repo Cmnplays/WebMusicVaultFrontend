@@ -41,7 +41,7 @@ const initialState: initialStateType = {
   downloading: false,
   deleting: false,
   mountDeleteConfirmation: false,
-  statusText: "loading more songs...",
+  statusText: "",
   repeat: "repeat",
   shuffle: false,
   playingSong: null,
