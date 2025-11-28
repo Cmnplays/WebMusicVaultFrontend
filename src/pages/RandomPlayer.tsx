@@ -4,6 +4,7 @@ import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import { getRandomSong, type Song } from "../services/song.services";
 import { setPanelOpen } from "../reduxSlices/song/songSlice";
 import { formatDuration } from "../components/MusicPageComponents/formatDuration";
+import DeleteConfirmation from "../components/MusicPageComponents/DeleteConfirmation";
 import {
   setMountDeleteConfirmation,
   setPlaying,
@@ -28,6 +29,9 @@ const RandomPlayer = () => {
   const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
   const [loading, setLoading] = useState(false);
   const navHeight = useAppSelector((state) => state.song.navHeight);
+  const mountDeleteConfirmation = useAppSelector(
+    (state) => state.song.mountDeleteConfirmation
+  );
 
   useEffect(() => {
     const returnRandSong = async () => {
@@ -99,6 +103,10 @@ const RandomPlayer = () => {
     songs: previousSongs,
     customFns: { next: moveToNextSong, previous: moveToPreviousSong },
   });
+  function excludeSongFn(songId: string) {
+    setPreviousSongs((prev) => prev.filter((song) => song._id !== songId));
+    moveToNextSong();
+  }
   return (
     <div
       // style={{ height: `calc(100vh - ${navHeight})` }}
@@ -311,6 +319,15 @@ const RandomPlayer = () => {
             </button>
           </div>
         </section>
+      )}
+      {mountDeleteConfirmation && (
+        <DeleteConfirmation
+          title={playingSong!.title}
+          songId={playingSong!._id}
+          moveToNextSong={moveToNextSong}
+          temp={true}
+          customExcludeFn={excludeSongFn}
+        />
       )}
       {loading && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">

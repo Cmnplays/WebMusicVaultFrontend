@@ -12,10 +12,6 @@
    - Newly uploaded songs only visible after refresh  
    - ✅ Solution: Let it be itself
 
-2. **Shuffle song UI issues**  
-   - Loading spinner and delete confirmation panel not showing  
-   - UI feels incomplete or broken
-
 3. **Shuffle play song styles issue**  
    - Styles of songs in shuffle mode appear inconsistent or broken  
    - Needs UI/UX polish so shuffle songs display correctly
@@ -40,10 +36,7 @@
 8. **To add rate limiting on frontend**  
    - Mostly handled in backend, but can also be done in frontend to reduce spamming
 
-9. **Auto-load new songs when returning to homepage**  
-   - When the user navigates back to the homepage from any other page, automatically fetch a new batch of songs  
-   - No scrolling should be required; the new songs load and display seamlessly  
-   - Ensures the user always sees the latest songs immediately
-
+9.to add hashtags type things in songs to classify songs
+10.to show a popup for do you want to download this song like which comes in delete songs
 ## --- LOW PRIORITY ---
 _(No tasks listed yet)_
