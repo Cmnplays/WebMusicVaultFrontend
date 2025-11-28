@@ -55,7 +55,6 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
         } else {
           dispatch(setStatusText("Loading more songs..."));
         }
-        console.log(triggerFetch, sortOrder, sortChanged);
         const response: songsReturnType = await fetchAllSongs({
           sortOrder,
           cursor: nextCursor,

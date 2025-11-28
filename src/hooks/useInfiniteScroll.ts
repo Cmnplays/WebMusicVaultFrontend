@@ -26,7 +26,6 @@ const useInfiniteScroll = ({
         return;
       }
       if (target.isIntersecting) {
-        console.log("intersected");
         if (loading) {
           return;
         }
@@ -36,7 +35,6 @@ const useInfiniteScroll = ({
           return;
         }
         if (!hasMoreSongs) return;
-        console.log("fetched");
         dispatch(setTriggerFetch());
       }
     });
