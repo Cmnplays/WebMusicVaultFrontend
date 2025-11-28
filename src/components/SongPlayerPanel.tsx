@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { useAppSelector } from "../store/hook";
 import { useAppDispatch } from "../store/hook";
 import { useHandleDownload } from "../hooks/useHandleDownload";
-import { useHandleSliderChange } from "./useHanldeSliderChange";
+import { useHandleSliderChange } from "./useHandleSliderChange";
 import {
   setPanelOpen,
   setPlaying,
