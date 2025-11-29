@@ -33,6 +33,7 @@ const UploadPage: React.FC = () => {
     }
     if (files.length > 3) {
       setStatusText("Please select less than 3 files.");
+      return;
     }
 
     const formData = new FormData();
@@ -51,7 +52,7 @@ const UploadPage: React.FC = () => {
       setFiles([]);
       if (inputRef.current) inputRef.current.value = "";
     } catch (err: unknown) {
-      setStatusText("Upload failed. Please try again."); // generic fallback
+      setStatusText("Upload failed. Please try again.");
       if (axios.isAxiosError(err)) {
         if (err.code === "ECONNABORTED") {
           setStatusText("Request timed out. Please try again later.");
@@ -79,84 +80,92 @@ const UploadPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-2 mt-8 p-4 border rounded-lg bg-white shadow-md">
-      <form
-        onSubmit={handleSubmit}
-        encType="multipart/form-data"
-        className="flex flex-col gap-4"
-      >
-        <div
-          onClick={handleFileClick}
-          className="border-2 border-dashed border-gray-400 rounded-md p-6 cursor-pointer text-center text-gray-600 hover:border-purple-600 transition-colors"
+    <div className="min-h-screen flex justify-center items-start p-4 bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700">
+      <div className="w-full max-w-md bg-purple-800 rounded-2xl shadow-xl p-6 mt-8 flex flex-col gap-4 text-white">
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2">
+          Upload Your Songs
+        </h1>
+
+        <form
+          onSubmit={handleSubmit}
+          encType="multipart/form-data"
+          className="flex flex-col gap-4"
         >
-          {files.length > 0 ? (
-            <div className="space-y-1">
-              <p className="font-semibold text-gray-800">Selected files:</p>
-              <ul className="text-sm text-gray-700 max-h-32 overflow-auto">
-                {files.map((file, idx) => (
-                  <li key={idx} className="truncate" title={file.name}>
-                    {file.name}
+          <div
+            onClick={handleFileClick}
+            className="border-2 border-dashed border-purple-400 rounded-2xl p-6 cursor-pointer text-center text-purple-200 hover:border-orange-400 transition-colors"
+          >
+            {files.length > 0 ? (
+              <div className="space-y-2">
+                <p className="font-semibold text-white">Selected files:</p>
+                <ul className="text-sm text-purple-100 max-h-32 overflow-auto">
+                  {files.map((file, idx) => (
+                    <li key={idx} className="truncate" title={file.name}>
+                      {file.name}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-xs text-purple-300">
+                  Click to change files
+                </p>
+              </div>
+            ) : (
+              <>
+                <p className="text-lg font-semibold">
+                  Click here to select files
+                </p>
+                <p className="text-xs text-purple-300">
+                  (or drag and drop files here)
+                </p>
+              </>
+            )}
+            <input
+              type="file"
+              name="songs"
+              accept="audio/*"
+              multiple
+              className="hidden"
+              onChange={handleFilesChange}
+              ref={inputRef}
+            />
+          </div>
+
+          {statusText && (
+            <p className="text-sm font-medium text-orange-400">{statusText}</p>
+          )}
+
+          {alreadyExistingSongs.length > 0 && (
+            <div className="bg-red-50 border border-red-300 p-3 rounded-xl mt-2 text-red-700">
+              <p className="font-semibold mb-1">Already existing songs:</p>
+              <ul className="list-disc list-inside text-sm max-h-32 overflow-auto">
+                {alreadyExistingSongs.map((title, idx) => (
+                  <li key={idx} title={title} className="truncate">
+                    {title}
                   </li>
                 ))}
               </ul>
-              <p className="mt-2 text-xs text-gray-500">
-                Click to change files
-              </p>
             </div>
-          ) : (
-            <>
-              <p className="text-lg font-semibold">
-                Click here to select files
-              </p>
-              <p className="text-xs text-gray-400">
-                (or drag and drop files here)
-              </p>
-            </>
           )}
-          <input
-            type="file"
-            name="songs"
-            accept="audio/*"
-            multiple
-            className="hidden"
-            onChange={handleFilesChange}
-            ref={inputRef}
-          />
-        </div>
 
-        {statusText && <p className="text-sm font-medium">{statusText}</p>}
-        {alreadyExistingSongs.length > 0 && (
-          <div className="bg-red-50 border border-red-300 p-3 rounded-md mt-2">
-            <p className="text-red-700 font-semibold mb-1">
-              Already existing songs:
-            </p>
-            <ul className="list-disc list-inside text-red-600 text-sm max-h-32 overflow-auto">
-              {alreadyExistingSongs.map((title, idx) => (
-                <li key={idx} title={title!} className="truncate">
-                  {title}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        <p className="text-gray-700 text-sm">
+          <p className="text-gray-200 text-sm italic">
+            Upload might take up to 2 minutes depending upon the number of
+            songs, size, and connection.
+          </p>
+
+          <button
+            type="submit"
+            className="bg-pink-400 hover:bg-orange-500 text-white font-semibold py-2 rounded-2xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={loading}
+          >
+            {isUploading ? "Uploading..." : "Upload"}
+          </button>
+        </form>
+
+        <p className="text-purple-200 text-sm text-center mt-2">
           Click the logo to return to your music library.
         </p>
+      </div>
 
-        {/* Upload duration info message */}
-        <p className="text-gray-500 text-sm italic mb-2">
-          Upload might take up to 2 minutes depending upon no. of songs, songs
-          size and connection.
-        </p>
-
-        <button
-          type="submit"
-          className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loading}
-        >
-          {isUploading ? "Uploading..." : "Upload"}
-        </button>
-      </form>
       {loading && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
           <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />

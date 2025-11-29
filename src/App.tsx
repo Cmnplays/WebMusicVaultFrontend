@@ -18,7 +18,6 @@ export default function App() {
         <Route path="/upload" element={<UploadPage />} />
         <Route path="/search-songs" element={<SearchSongs />} />
         <Route path="/random-player" element={<RandomPlayer />} />
-
         <Route path="/about" element={<About />} />
       </Routes>
     </>

@@ -57,7 +57,6 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
 
   const handleDeleteClick = async () => {
     dispatch(setDeleting(true));
-
     if (password !== realPass) {
       setMessage("Invalid Password!");
       setClose(true);

@@ -12,6 +12,7 @@ import {
 } from "../reduxSlices/song/songSlice";
 import { useHandleDownload } from "../hooks/useHandleDownload";
 import { useHandleSliderChange } from "../components/useHandleSliderChange";
+
 const RandomPlayer = () => {
   const playingSong = useAppSelector((state) => state.song.playingSong);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -28,7 +29,8 @@ const RandomPlayer = () => {
   const listRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
   const [loading, setLoading] = useState(false);
-  const navHeight = useAppSelector((state) => state.song.navHeight);
+  const deleting = useAppSelector((state) => state.song.deleting);
+
   const mountDeleteConfirmation = useAppSelector(
     (state) => state.song.mountDeleteConfirmation
   );
@@ -63,14 +65,12 @@ const RandomPlayer = () => {
       dispatch(setPanelOpen(false));
     };
   }, [dispatch]);
-  //for auto scrolling of song list when more songs are added
+
   useEffect(() => {
     const elem = listRef.current;
-    if (elem) {
-      elem.scrollTop = elem.scrollHeight;
-    }
+    if (elem) elem.scrollTop = elem.scrollHeight;
   }, [previousSongs]);
-  //for making the currently playing song stay at the middle
+
   useEffect(() => {
     if (playingSong && itemRefs.current![playingSong._id]) {
       itemRefs.current[playingSong._id]!.scrollIntoView({
@@ -79,6 +79,7 @@ const RandomPlayer = () => {
       });
     }
   }, [playingSong]);
+
   const moveToNextSong = () => {
     const currentPlayingIndex = previousSongs.indexOf(playingSong!);
     const nextSong = previousSongs[currentPlayingIndex + 1];
@@ -88,6 +89,7 @@ const RandomPlayer = () => {
     }
     setTriggerNext(!triggerNext);
   };
+
   const moveToPreviousSong = () => {
     const prevSong = previousSongs[previousSongs.indexOf(playingSong!) - 1];
     if (!prevSong) {
@@ -97,24 +99,26 @@ const RandomPlayer = () => {
     if (audioRef.current) audioRef.current.pause();
     dispatch(setPlayingSong(prevSong));
   };
+
   const { handlePlayClick } = useAudioPlayer({
     panelRef,
     audioRef,
     songs: previousSongs,
     customFns: { next: moveToNextSong, previous: moveToPreviousSong },
   });
+
   function excludeSongFn(songId: string) {
     setPreviousSongs((prev) => prev.filter((song) => song._id !== songId));
     moveToNextSong();
   }
+
   return (
-    <div
-      // style={{ height: `calc(100vh - ${navHeight})` }}
-      className="h-[100vh] bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 text-white flex flex-col items-center p-4"
-    >
+    <div className="h-[100vh] bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 text-white flex flex-col items-center p-4 lg:flex-row lg:items-start lg:gap-6 ">
       {/* Recently Played Panel */}
-      <section className="w-full max-w-[94%] bg-purple-800 p-4 rounded-2xl shadow-xl mb-6 mt-4 h-[60vh] flex flex-col">
-        <h2 className="text-xl font-bold text-center mb-4">Recently Played</h2>
+      <section className="w-full lg:min-w-1/2  bg-purple-800 p-4 rounded-2xl shadow-xl mb-6 mt-4 h-[60vh] flex flex-col md:h-[80vh] md:p-6 md:rounded-[2rem]">
+        <h2 className="text-xl font-bold text-center mb-4 md:text-2xl">
+          Recently Played
+        </h2>
 
         <div
           className="flex-1 flex flex-col gap-2 overflow-y-auto"
@@ -138,31 +142,31 @@ const RandomPlayer = () => {
                       handlePlayClick(song);
                     }
                   }}
-                  className={`flex items-center gap-2 px-2 py-3 rounded-lg shadow transition-shadow duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2 ${
+                  className={`flex items-center gap-2 px-2 py-3 rounded-lg shadow transition-shadow duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2
+                  ${
                     playingSong?._id === song._id
-                      ? "bg-orange-500 text-white hover:shadow-lg"
-                      : "bg-white hover:shadow-md"
+                      ? "bg-orange-500 text-white hover:shadow-lg md:px-4 md:py-4 md:gap-4"
+                      : "bg-white hover:shadow-md md:px-4 md:py-4 md:gap-4"
                   }`}
                 >
-                  {/* Numbering */}
                   <div
-                    className={`flex-shrink-0 w-6 h-6 rounded-full font-mono text-sm font-bold flex items-center justify-center select-none ${
-                      playingSong?._id === song._id
-                        ? "bg-white text-orange-600"
-                        : "bg-purple-100 text-purple-700"
-                    }`}
+                    className={`flex-shrink-0 w-6 h-6 rounded-full font-mono text-sm font-bold flex items-center justify-center select-none
+                  ${
+                    playingSong?._id === song._id
+                      ? "bg-white text-orange-600 md:w-8 md:h-8 md:text-base"
+                      : "bg-purple-100 text-purple-700 md:w-8 md:h-8 md:text-base"
+                  }`}
                   >
                     {index + 1}
                   </div>
 
-                  {/* Song Title */}
                   <div className="flex-grow overflow-hidden">
                     <h3
                       className={`text-lg font-semibold truncate ${
                         playingSong?._id === song._id
                           ? "text-white"
                           : "text-gray-900"
-                      }`}
+                      } md:text-xl`}
                       title={song.title}
                     >
                       {song.title}
@@ -172,10 +176,10 @@ const RandomPlayer = () => {
               ))
           ) : (
             <div className="flex-1 flex flex-col justify-center items-center text-center px-3">
-              <p className="text-orange-400 text-2xl sm:text-3xl font-bold mb-2 animate-bounce">
+              <p className="text-orange-400 text-2xl sm:text-3xl font-bold mb-2 animate-bounce md:text-4xl">
                 🎵 The stage is empty…
               </p>
-              <p className="text-purple-100 text-base sm:text-lg">
+              <p className="text-purple-100 text-base sm:text-lg md:text-lg">
                 …but you’re the star! Start playing songs to fill this space
                 with music.
               </p>
@@ -186,11 +190,9 @@ const RandomPlayer = () => {
 
       {/* Music Player */}
       {playingSong && (
-        <section
-          className={`w-full max-w-sm flex flex-col items-center gap-6 mt-[${navHeight}]`}
-        >
+        <section className="md:min-w-[410px] w-full bg-purple-800 p-4 rounded-2xl shadow-xl flex flex-col items-center gap-6 mt-0 md:mt-4 md:gap-8">
           {/* Song Title */}
-          <h1 className="text-2xl sm:text-3xl font-bold text-center truncate w-full px-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center truncate w-full px-2">
             {playingSong.title}
           </h1>
 
@@ -202,38 +204,34 @@ const RandomPlayer = () => {
               max={Math.floor(duration)}
               value={Math.floor(currentTime)}
               onChange={handleSliderChange}
-              className="w-full h-2 bg-purple-600 rounded-full appearance-none cursor-pointer accent-orange-400 hover:accent-orange-500 transition-colors duration-300"
+              className="w-full h-2 bg-purple-600 rounded-full appearance-none cursor-pointer accent-orange-400 hover:accent-orange-500 transition-colors duration-300 md:h-3"
               aria-label="Playback progress"
             />
-            <div className="flex justify-between w-full text-xs font-mono text-purple-300 mt-1 px-1">
+            <div className="flex justify-between w-full text-xs font-mono text-purple-300 mt-1 px-1 md:text-sm">
               <span>{formatDuration(currentTime)}</span>
               <span>{formatDuration(duration - currentTime)}</span>
             </div>
           </div>
 
-          {/* Controls */}
-          <div className="flex items-center justify-center gap-6 mt-4">
-            {/* Delete */}
+          <div className="flex items-center justify-center gap-6 mt-4 md:gap-8">
             <button
               onClick={() => {
                 dispatch(setPlaying(false));
                 audioRef.current?.pause();
                 dispatch(setMountDeleteConfirmation(true));
               }}
-              className="text-white hover:text-orange-400 transition-colors"
-              aria-label="Delete song"
+              className="text-white hover:text-orange-400 transition-colors md:text-3xl"
             >
-              <i className="ri-delete-bin-line text-2xl" />
+              <i className="ri-delete-bin-line" />
             </button>
-            {/* Previous */}
+
             <button
               onClick={moveToPreviousSong}
-              className="w-12 h-12 flex items-center justify-center rounded-full bg-purple-700 hover:bg-purple-600 shadow-md hover:shadow-lg active:scale-95 transition-transform"
-              aria-label="Previous song"
+              className="w-12 h-12 flex items-center justify-center rounded-full bg-purple-700 hover:bg-purple-600 shadow-md hover:shadow-lg active:scale-95 transition-transform md:w-14 md:h-14"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6 stroke-purple-300"
+                className="w-6 h-6 stroke-purple-300 md:w-7 md:h-7"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={2}
@@ -243,7 +241,6 @@ const RandomPlayer = () => {
               </svg>
             </button>
 
-            {/* Play / Pause */}
             <button
               onClick={() => {
                 if (!playing) {
@@ -254,13 +251,12 @@ const RandomPlayer = () => {
                   dispatch(setPlaying(false));
                 }
               }}
-              className="w-16 h-16 rounded-full bg-gradient-to-tr from-orange-400 to-purple-600 flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform"
-              aria-label={playing ? "Pause" : "Play"}
+              className="w-16 h-16 rounded-full bg-gradient-to-tr from-orange-400 to-purple-600 flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-transform md:w-20 md:h-20"
             >
               {playing ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-8 h-8 stroke-white"
+                  className="w-8 h-8 stroke-white md:w-10 md:h-10"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={2}
@@ -271,7 +267,7 @@ const RandomPlayer = () => {
               ) : (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-8 h-8 stroke-white"
+                  className="w-8 h-8 stroke-white md:w-10 md:h-10"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={2}
@@ -281,22 +277,18 @@ const RandomPlayer = () => {
               )}
             </button>
 
-            {/* Next */}
             <button
               onClick={moveToNextSong}
               disabled={loading}
-              className={`w-12 h-12 flex items-center justify-center rounded-full shadow-md transition-transform
-  ${
-    loading
-      ? "bg-gray-400 cursor-not-allowed opacity-50"
-      : "bg-purple-700 hover:bg-purple-600 hover:shadow-lg active:scale-95"
-  }
-`}
-              aria-label="Next song"
+              className={`w-12 h-12 flex items-center justify-center rounded-full shadow-md transition-transform ${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed opacity-50"
+                  : "bg-purple-700 hover:bg-purple-600 hover:shadow-lg active:scale-95"
+              } md:w-14 md:h-14`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6 stroke-purple-300"
+                className="w-6 h-6 stroke-purple-300 md:w-7 md:h-7"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={2}
@@ -306,20 +298,19 @@ const RandomPlayer = () => {
               </svg>
             </button>
 
-            {/* Download */}
             <button
               onClick={handleDownload}
               disabled={downloading}
               className={`text-white transition-colors ${
                 downloading ? "text-gray-400" : "hover:text-orange-400"
-              }`}
-              aria-label="Download song"
+              } md:text-3xl`}
             >
-              <i className="ri-download-line text-2xl" />
+              <i className="ri-download-line" />
             </button>
           </div>
         </section>
       )}
+
       {mountDeleteConfirmation && (
         <DeleteConfirmation
           title={playingSong!.title}
@@ -329,13 +320,13 @@ const RandomPlayer = () => {
           customExcludeFn={excludeSongFn}
         />
       )}
-      {loading && (
+
+      {(loading || deleting) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
           <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />
         </div>
       )}
 
-      {/* Hidden Audio Element */}
       <audio
         ref={audioRef}
         onEnded={moveToNextSong}

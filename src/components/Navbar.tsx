@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { setNavHeight } from "../reduxSlices/song/songSlice.ts";
 import { useAppDispatch } from "../store/hook.ts";
+import { NavLink } from "react-router-dom";
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -92,22 +93,73 @@ const Navbar = () => {
         {/* Desktop nav links */}
         <ul className="hidden sm:flex space-x-8 font-semibold text-lg">
           <li>
-            <Link
+            <NavLink
               to="/musics"
-              className="text-blue-600 hover:text-purple-700 transition-colors"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-purple-700 transition-colors"
+                  : "text-blue-600 hover:text-purple-700 transition-colors"
+              }
               onClick={() => setIsOpen(false)}
             >
               Music
-            </Link>
+            </NavLink>
           </li>
+
           <li>
-            <Link
+            <NavLink
               to="/upload"
-              className="text-blue-600 hover:text-purple-700 transition-colors"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-purple-700 transition-colors"
+                  : "text-blue-600 hover:text-purple-700 transition-colors"
+              }
               onClick={() => setIsOpen(false)}
             >
               Upload
-            </Link>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/search-songs"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-purple-700 transition-colors"
+                  : "text-blue-600 hover:text-purple-700 transition-colors"
+              }
+              onClick={() => setIsOpen(false)}
+            >
+              Search
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/random-player"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-purple-700 transition-colors"
+                  : "text-blue-600 hover:text-purple-700 transition-colors"
+              }
+              onClick={() => setIsOpen(false)}
+            >
+              Shuffle Play
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-purple-700 transition-colors"
+                  : "text-blue-600 hover:text-purple-700 transition-colors"
+              }
+              onClick={() => setIsOpen(false)}
+            >
+              About
+            </NavLink>
           </li>
         </ul>
 
