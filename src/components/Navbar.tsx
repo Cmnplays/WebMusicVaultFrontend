@@ -1,24 +1,24 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import gsap from "gsap";
 import { setNavHeight } from "../reduxSlices/song/songSlice.ts";
 import { useAppDispatch } from "../store/hook.ts";
-import { NavLink } from "react-router-dom";
+
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
+
   useLayoutEffect(() => {
     const updateHeight = () => {
-      if (navRef.current) {
-        dispatch(setNavHeight(navRef.current.offsetHeight));
-      }
+      if (navRef.current) dispatch(setNavHeight(navRef.current.offsetHeight));
     };
     updateHeight();
     window.addEventListener("resize", updateHeight);
     return () => window.removeEventListener("resize", updateHeight);
-  });
+  }, [dispatch]);
+
   useEffect(() => {
     if (!menuRef.current) return;
 
@@ -37,15 +37,12 @@ const Navbar = () => {
         duration: 0.3,
         ease: "power2.in",
         onComplete: () => {
-          if (menuRef.current) {
-            menuRef.current.style.display = "none";
-          }
+          if (menuRef.current) menuRef.current.style.display = "none";
         },
       });
     }
   }, [isOpen]);
 
-  // Initialize hidden menu on mount
   useEffect(() => {
     if (menuRef.current) {
       menuRef.current.style.height = "0";
@@ -56,16 +53,21 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50" ref={navRef}>
-      <div className="max-w-7xl mx-auto px-5 py-2 flex items-center justify-between">
+    <nav
+      className="bg-white border-b border-gray-200 shadow-md sticky top-0 z-50"
+      ref={navRef}
+    >
+      <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link
           to="/musics"
           className="flex items-center cursor-pointer select-none"
         >
-          {/* Mobile: short logo */}
-          <span className="flex items-center text-blue-600 sm:hidden tracking-tight">
-            <span className="mr-0.5 font-semibold italic text-2xl">WmV</span>
+          {/* Mobile Logo */}
+          <span className="flex items-center text-blue-600 md:hidden tracking-tight">
+            <span className="mr-1 font-bold italic text-2xl bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+              WmV
+            </span>
             <svg
               className="w-8 h-8 text-blue-600"
               xmlns="http://www.w3.org/2000/svg"
@@ -76,11 +78,13 @@ const Navbar = () => {
             </svg>
           </span>
 
-          {/* Desktop: full name + icon */}
-          <span className="hidden sm:flex items-center space-x-2 text-blue-600 font-semibold italic text-2xl md:text-3xl tracking-tight select-none">
-            <span>WebMusicVault</span>
+          {/* Desktop Logo */}
+          <span className="hidden md:flex items-center space-x-2 font-bold italic text-2xl md:text-3xl tracking-tight select-none">
+            <span className="bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+              WebMusicVault
+            </span>
             <svg
-              className="w-7 h-7"
+              className="w-7 h-7 text-purple-600"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
               viewBox="0 0 24 24"
@@ -91,163 +95,84 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop nav links */}
-        <ul className="hidden sm:flex space-x-8 font-semibold text-lg">
-          <li>
-            <NavLink
-              to="/musics"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-purple-700 transition-colors"
-                  : "text-blue-600 hover:text-purple-700 transition-colors"
-              }
-              onClick={() => setIsOpen(false)}
-            >
-              Music
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
-              to="/upload"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-purple-700 transition-colors"
-                  : "text-blue-600 hover:text-purple-700 transition-colors"
-              }
-              onClick={() => setIsOpen(false)}
-            >
-              Upload
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
-              to="/search-songs"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-purple-700 transition-colors"
-                  : "text-blue-600 hover:text-purple-700 transition-colors"
-              }
-              onClick={() => setIsOpen(false)}
-            >
-              Search
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
-              to="/random-player"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-purple-700 transition-colors"
-                  : "text-blue-600 hover:text-purple-700 transition-colors"
-              }
-              onClick={() => setIsOpen(false)}
-            >
-              Shuffle Play
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
-              to="/about"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-purple-700 transition-colors"
-                  : "text-blue-600 hover:text-purple-700 transition-colors"
-              }
-              onClick={() => setIsOpen(false)}
-            >
-              About
-            </NavLink>
-          </li>
+        <ul className="hidden md:flex space-x-6 font-semibold text-lg">
+          {[
+            { name: "Music", to: "/musics" },
+            { name: "Upload", to: "/upload" },
+            { name: "Search", to: "/search-songs" },
+            { name: "Shuffle", to: "/random-player" },
+            { name: "About", to: "/about" },
+          ].map((link) => (
+            <li key={link.to}>
+              <NavLink
+                to={link.to}
+                className={({ isActive }) =>
+                  isActive
+                    ? "px-3 py-1 rounded-lg shadow-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white transform transition-all hover:scale-105"
+                    : "px-3 py-1 rounded-lg text-blue-600 hover:text-purple-700 hover:scale-105 transform transition-all"
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                {link.name}
+              </NavLink>
+            </li>
+          ))}
         </ul>
 
-        {/* Hamburger button (mobile only) */}
+        {/* Hamburger button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-gray-800 sm:hidden focus:outline-none"
+          className="text-gray-800 md:hidden flex flex-col justify-center items-center space-y-1 p-1 rounded hover:bg-gray-100 shadow-sm transition-all"
           aria-label="Toggle menu"
         >
-          <svg
-            className="w-9 h-9"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {isOpen ? (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            ) : (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            )}
-          </svg>
+          <span
+            className={`w-8 h-1 bg-purple-600 rounded transform transition-all ${
+              isOpen ? "rotate-45 translate-y-2" : ""
+            }`}
+          ></span>
+          <span
+            className={`w-8 h-1 bg-purple-600 rounded transition-all ${
+              isOpen ? "opacity-0" : "opacity-100"
+            }`}
+          ></span>
+          <span
+            className={`w-8 h-1 bg-purple-600 rounded transform transition-all ${
+              isOpen ? "-rotate-45 -translate-y-2" : ""
+            }`}
+          ></span>
         </button>
       </div>
 
-      {/* Mobile nav menu */}
+      {/* Mobile menu */}
       <div
         ref={menuRef}
-        className="sm:hidden px-6 pb-4 bg-white shadow-md overflow-hidden"
+        className="md:hidden px-6 py-4 bg-white shadow-lg overflow-hidden rounded-xl mt-2 mb-3 mx-2 border border-gray-100"
         style={{ height: 0, opacity: 0, display: "none" }}
       >
-        <ul className="space-y-2">
-          <li>
-            <Link
-              to="/musics"
-              className="block text-gray-800 font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Musics
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/upload"
-              className="block text-gray-800 font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Upload
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/search-songs"
-              className="block text-gray-800 font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Search
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/random-player"
-              className="block text-gray-800 font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Shuffle Play
-            </Link>
-          </li>
-
-          <li>
-            <Link
-              to="/about"
-              className="block text-gray-800 font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              About
-            </Link>
-          </li>
+        <ul className="space-y-3">
+          {[
+            { name: "Music", to: "/musics" },
+            { name: "Upload", to: "/upload" },
+            { name: "Search", to: "/search-songs" },
+            { name: "Shuffle", to: "/random-player" },
+            { name: "About", to: "/about" },
+          ].map((link) => (
+            <li key={link.to}>
+              <NavLink
+                to={link.to}
+                onClick={() => setIsOpen(false)}
+                className={({ isActive }) =>
+                  `block font-semibold px-4 py-2 rounded-lg transition-all shadow-sm ${
+                    isActive
+                      ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md"
+                      : "text-purple-700 hover:bg-purple-50 hover:translate-x-1 transform"
+                  }`
+                }
+              >
+                {link.name}
+              </NavLink>
+            </li>
+          ))}
         </ul>
       </div>
     </nav>
