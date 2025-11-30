@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
-import { deleteSong } from "../../services/song.services";
-import { useAppDispatch, useAppSelector } from "../../store/hook";
+import { deleteSong } from "../services/song.services";
+import { useAppDispatch, useAppSelector } from "../store/hook";
 import {
   setDeleting,
   setMountDeleteConfirmation,
   deleteSong as excludeSong,
   deleteTempSong as excludeTempSong,
-} from "../../reduxSlices/song/songSlice";
+} from "../reduxSlices/song/songSlice";
 
 interface DeleteConfirmationProps {
   title: string;
@@ -101,9 +101,8 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
       style={{ transformOrigin: "center" }}
     >
       <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-lg">
-        {/* Status message or original text */}
         <h3
-          className={`text-lg font-semibold mb-4 truncate ${
+          className={`text-lg font-semibold mb-4 line-clamp-2 ${
             message === "Successfully deleted song"
               ? "text-green-600"
               : message === "Invalid Password!"

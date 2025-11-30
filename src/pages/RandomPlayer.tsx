@@ -2,16 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import { getRandomSong, type Song } from "../services/song.services";
-import { setPanelOpen } from "../reduxSlices/song/songSlice";
+import {
+  setMountDownloadConfirmation,
+  setPanelOpen,
+  setLoading,
+} from "../reduxSlices/song/songSlice";
 import { formatDuration } from "../components/MusicPageComponents/formatDuration";
-import DeleteConfirmation from "../components/MusicPageComponents/DeleteConfirmation";
+import DeleteConfirmation from "../components/DeleteConfirmation";
+import DownloadConfirmation from "../components/DownloadConfirmation";
 import {
   setMountDeleteConfirmation,
   setPlaying,
   setPlayingSong,
 } from "../reduxSlices/song/songSlice";
-import { useHandleDownload } from "../hooks/useHandleDownload";
 import { useHandleSliderChange } from "../components/useHandleSliderChange";
+import Marquee from "react-fast-marquee";
 
 const RandomPlayer = () => {
   const playingSong = useAppSelector((state) => state.song.playingSong);
@@ -24,20 +29,21 @@ const RandomPlayer = () => {
   const downloading = useAppSelector((state) => state.song.downloading);
   const [triggerNext, setTriggerNext] = useState(false);
   const [previousSongs, setPreviousSongs] = useState<Song[]>([]);
-  const handleDownload = useHandleDownload();
   const handleSliderChange = useHandleSliderChange(audioRef);
   const listRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
-  const [loading, setLoading] = useState(false);
+  const loading = useAppSelector((state) => state.song.loading);
   const deleting = useAppSelector((state) => state.song.deleting);
-
   const mountDeleteConfirmation = useAppSelector(
     (state) => state.song.mountDeleteConfirmation
+  );
+  const mountDownloadConfirmation = useAppSelector(
+    (state) => state.song.mountDownloadConfirmation
   );
 
   useEffect(() => {
     const returnRandSong = async () => {
-      setLoading(true);
+      dispatch(setLoading(true));
       try {
         const randomSong = await getRandomSong();
         if (
@@ -52,7 +58,7 @@ const RandomPlayer = () => {
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading(false);
+        dispatch(setLoading(false));
       }
     };
     returnRandSong();
@@ -63,6 +69,7 @@ const RandomPlayer = () => {
       dispatch(setPlaying(false));
       dispatch(setPlayingSong(null));
       dispatch(setPanelOpen(false));
+      dispatch(setLoading(false));
     };
   }, [dispatch]);
 
@@ -190,11 +197,19 @@ const RandomPlayer = () => {
 
       {/* Music Player */}
       {playingSong && (
-        <section className="md:min-w-[410px] w-full bg-purple-800 p-4 rounded-2xl shadow-xl flex flex-col items-center gap-6 mt-0 md:mt-4 md:gap-8">
+        <section className="md:min-w-[410px] w-full bg-purple-800 p-4 rounded-2xl shadow-xl flex flex-col items-center gap-6 mt-0 md:mt-4 md:gap-8 ">
           {/* Song Title */}
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center truncate w-full px-2">
-            {playingSong.title}
-          </h1>
+          <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-center w-full px-2">
+            <Marquee
+              key={playingSong._id}
+              speed={50}
+              delay={1}
+              pauseOnHover
+              className="overflow-hidden"
+            >
+              <span className="mx-8">{playingSong.title}</span>
+            </Marquee>
+          </div>
 
           {/* Progress Slider */}
           <div className="w-full flex flex-col items-center">
@@ -220,7 +235,7 @@ const RandomPlayer = () => {
                 audioRef.current?.pause();
                 dispatch(setMountDeleteConfirmation(true));
               }}
-              className="text-white hover:text-orange-400 transition-colors md:text-3xl"
+              className="text-white hover:text-orange-400 transition-colors text-3xl"
             >
               <i className="ri-delete-bin-line" />
             </button>
@@ -299,11 +314,17 @@ const RandomPlayer = () => {
             </button>
 
             <button
-              onClick={handleDownload}
+              onClick={() => {
+                console.log("hello");
+                dispatch(setPlaying(false));
+                audioRef.current?.pause();
+                dispatch(setMountDownloadConfirmation(true));
+                console.log(mountDownloadConfirmation);
+              }}
               disabled={downloading}
               className={`text-white transition-colors ${
                 downloading ? "text-gray-400" : "hover:text-orange-400"
-              } md:text-3xl`}
+              } text-3xl`}
             >
               <i className="ri-download-line" />
             </button>
@@ -321,7 +342,11 @@ const RandomPlayer = () => {
         />
       )}
 
-      {(loading || deleting) && (
+      {mountDownloadConfirmation && (
+        <DownloadConfirmation title={playingSong!.title} />
+      )}
+
+      {(loading || deleting || downloading) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
           <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />
         </div>

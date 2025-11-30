@@ -1,7 +1,7 @@
 import { useRef } from "react";
-import type { Song } from "../../services/song.services";
-import { formatDuration } from "../MusicPageComponents/formatDuration";
-import useInfiniteScroll from "../../hooks/useInfiniteScroll";
+import type { Song } from "../services/song.services";
+import { formatDuration } from "./MusicPageComponents/formatDuration";
+import useInfiniteScroll from "../hooks/useInfiniteScroll";
 const SongList = ({
   songs,
   handlePlayClick,

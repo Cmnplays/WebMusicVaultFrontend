@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { searchSong } from "../services/song.services";
 import type { songsReturnType } from "../services/song.services";
-import SongList from "../components/MusicPageComponents/SongList";
+import SongList from "../components/SongList";
 import { useAppSelector, useAppDispatch } from "../store/hook";
 import SongPlayerPanel from "../components/SongPlayerPanel";
 import { fadeOutPanel } from "../hooks/useAudioPlayer";
@@ -16,7 +16,8 @@ import {
   setTempNextCursor,
 } from "../reduxSlices/song/songSlice";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
-import DeleteConfirmation from "../components/MusicPageComponents/DeleteConfirmation";
+import DeleteConfirmation from "../components/DeleteConfirmation";
+import DownloadConfirmation from "../components/DownloadConfirmation";
 import axios from "axios";
 
 const SearchSongs = () => {
@@ -30,6 +31,9 @@ const SearchSongs = () => {
   const deleting = useAppSelector((state) => state.song.deleting);
   const mountDeleteConfirmation = useAppSelector(
     (state) => state.song.mountDeleteConfirmation
+  );
+  const mountDownloadConfirmation = useAppSelector(
+    (state) => state.song.mountDownloadConfirmation
   );
   const dispatch = useAppDispatch();
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -179,12 +183,12 @@ const SearchSongs = () => {
           </button>
         </div>
       )}
-   <audio
-            ref={audioRef}
-            onEnded={handleAudioEnded}
-            preload="metadata"
-            hidden
-          />
+      <audio
+        ref={audioRef}
+        onEnded={handleAudioEnded}
+        preload="metadata"
+        hidden
+      />
       {playingSong && (
         <>
           <SongPlayerPanel
@@ -231,6 +235,9 @@ const SearchSongs = () => {
           moveToNextSong={moveToNextSong}
           temp={true}
         />
+      )}
+      {mountDownloadConfirmation && (
+        <DownloadConfirmation title={playingSong!.title} />
       )}
 
       {(downloading || deleting || loading) && (

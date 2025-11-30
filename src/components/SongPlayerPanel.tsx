@@ -2,7 +2,6 @@ import { formatDuration } from "./MusicPageComponents/formatDuration";
 import { useEffect } from "react";
 import gsap from "gsap";
 import { useAppSelector, useAppDispatch } from "../store/hook";
-import { useHandleDownload } from "../hooks/useHandleDownload";
 import { useHandleSliderChange } from "./useHandleSliderChange";
 import {
   setPanelOpen,
@@ -10,7 +9,9 @@ import {
   setRepeat,
   setShuffle,
   setMountDeleteConfirmation,
+  setMountDownloadConfirmation,
 } from "../reduxSlices/song/songSlice";
+import Marquee from "react-fast-marquee";
 
 interface SongPanelProps {
   audioRef: React.RefObject<HTMLAudioElement | null>;
@@ -40,8 +41,6 @@ const SongPlayerPanel = ({
   const shuffle = useAppSelector((state) => state.song.shuffle);
 
   const handleSliderChange = useHandleSliderChange(audioRef);
-  const handleDownload = useHandleDownload();
-
   const fadeInPanel = (panelElement: HTMLDivElement) => {
     gsap.fromTo(
       panelElement,
@@ -96,7 +95,9 @@ const SongPlayerPanel = ({
             />
 
             <button
-              onClick={handleDownload}
+              onClick={() => {
+                dispatch(setMountDownloadConfirmation(true));
+              }}
               aria-label="Download song"
               disabled={downloading}
             >
@@ -113,7 +114,15 @@ const SongPlayerPanel = ({
 
         {/* Song Title */}
         <div className="text-center lg:text-left text-lg lg:text-base font-semibold truncate px-2">
-          {playingSong.title}
+          <Marquee
+            key={playingSong._id}
+            speed={50}
+            delay={1}
+            pauseOnHover
+            className="overflow-hidden"
+          >
+            <span className="mx-8">{playingSong.title}</span>
+          </Marquee>
         </div>
 
         {/* Progress Slider */}

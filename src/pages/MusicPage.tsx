@@ -1,18 +1,20 @@
 import React, { useRef, useEffect } from "react";
 import SongPlayerPanel from "../components/SongPlayerPanel";
-import DeleteConfirmation from "../components/MusicPageComponents/DeleteConfirmation";
+import DeleteConfirmation from "../components/DeleteConfirmation";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { useSongs } from "../hooks/useSongs";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 import { fadeOutPanel } from "../hooks/useAudioPlayer";
 import MusicHeader from "../components/MusicPageComponents/MusicHeader";
-import SongList from "../components/MusicPageComponents/SongList";
+import SongList from "../components/SongList";
 import {
   setTempSongs,
   setPlaying,
   setPanelOpen,
   setPlayingSong,
+  setLoading,
 } from "../reduxSlices/song/songSlice";
+import DownloadConfirmation from "../components/DownloadConfirmation";
 
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -24,6 +26,9 @@ const MusicPage: React.FC = () => {
   const deleting = useAppSelector((state) => state.song.deleting);
   const mountDeleteConfirmation = useAppSelector(
     (state) => state.song.mountDeleteConfirmation
+  );
+  const mountDownloadConfirmation = useAppSelector(
+    (state) => state.song.mountDownloadConfirmation
   );
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
   const playingSong = useAppSelector((state) => state.song.playingSong);
@@ -43,6 +48,7 @@ const MusicPage: React.FC = () => {
       dispatch(setPlaying(false));
       dispatch(setPlayingSong(null));
       dispatch(setPanelOpen(false));
+      dispatch(setLoading(false));
     };
   }, [dispatch]);
 
@@ -88,6 +94,9 @@ const MusicPage: React.FC = () => {
           songId={playingSong!._id}
           moveToNextSong={moveToNextSong}
         />
+      )}
+      {mountDownloadConfirmation && (
+        <DownloadConfirmation title={playingSong!.title} />
       )}
       {(loading || error) && (
         <p className="text-center mt-4 text-gray-600 whitespace-pre-line">
