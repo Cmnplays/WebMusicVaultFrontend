@@ -121,7 +121,7 @@ const SongPlayerPanel = ({
             pauseOnHover
             className="overflow-hidden"
           >
-            <span className="mx-8">{playingSong.title}</span>
+            <span className="mx-5">{playingSong.title}</span>
           </Marquee>
         </div>
 
