@@ -64,8 +64,8 @@ const Navbar = () => {
           className="flex items-center cursor-pointer select-none"
         >
           {/* Mobile Logo */}
-          <span className="flex items-center text-blue-600 md:hidden tracking-tight">
-            <span className="mr-1 font-bold italic text-2xl bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+          <span className="flex items-center text-blue-600 lg:hidden tracking-tight">
+            <span className="mr-1 font-bold italic text-3xl bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
               WmV
             </span>
             <svg
@@ -79,7 +79,7 @@ const Navbar = () => {
           </span>
 
           {/* Desktop Logo */}
-          <span className="hidden md:flex items-center space-x-2 font-bold italic text-2xl md:text-3xl tracking-tight select-none">
+          <span className="hidden lg:flex items-center space-x-2 font-bold italic text-3xl tracking-tight select-none">
             <span className="bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
               WebMusicVault
             </span>

@@ -190,9 +190,9 @@ const SearchSongs = () => {
         hidden
       />
       {playingSong && (
-        <>
+        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-5xl z-50">
           <SongPlayerPanel
-            audioRef={audioRef}
+            audioRef={audioRef as React.RefObject<HTMLAudioElement>}
             panelRef={panelRef}
             fadeOutPanel={fadeOutPanel}
             handlePlayPause={() => {
@@ -207,7 +207,7 @@ const SearchSongs = () => {
             moveToNextSong={moveToNextSong}
             moveToPreviousSong={moveToPreviousSong}
           />
-        </>
+        </div>
       )}
 
       {(loading || error) && (

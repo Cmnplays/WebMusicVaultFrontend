@@ -41,6 +41,7 @@ const SongPlayerPanel = ({
   const shuffle = useAppSelector((state) => state.song.shuffle);
 
   const handleSliderChange = useHandleSliderChange(audioRef);
+
   const fadeInPanel = (panelElement: HTMLDivElement) => {
     gsap.fromTo(
       panelElement,
@@ -58,15 +59,20 @@ const SongPlayerPanel = ({
       <div
         ref={panelRef}
         style={{ transform: "translateY(100%)", opacity: 0 }}
-        className="fixed bottom-0 left-0 w-full max-w-5xl mx-auto py-4 px-1
-          bg-gradient-to-tr from-purple-900 via-purple-800 to-purple-700
-          rounded-t-xl shadow-2xl text-white
-          lg:rounded-xl lg:mx-auto lg:static lg:max-w-4xl
-          flex flex-col lg:flex-row lg:items-center lg:justify-between
-          space-y-3 lg:space-y-0"
+        className="
+        fixed bottom-0 left-0 w-full max-w-5xl mx-auto
+        bg-gradient-to-tr from-purple-900 via-purple-800 to-purple-700
+        rounded-t-xl shadow-2xl text-white z-50
+
+        /* Mobile */
+        py-4 px-1
+
+        /* Desktop */
+        lg:py-2 lg:px-2 lg:rounded-xl
+      "
       >
         {/* Top Controls */}
-        <div className="flex justify-center mb-2 lg:mb-0">
+        <div className="flex justify-center mb-2 lg:mb-2">
           <div className="flex w-full justify-around">
             <button
               onClick={() => {
@@ -75,11 +81,19 @@ const SongPlayerPanel = ({
                 dispatch(setMountDeleteConfirmation(true));
               }}
             >
-              <i className="ri-delete-bin-line text-white text-2xl cursor-pointer hover:text-orange-400 transition-colors duration-300" />
+              <i
+                className="
+                ri-delete-bin-line text-white cursor-pointer hover:text-orange-400 transition-colors duration-300
+                text-2xl lg:text-3xl
+              "
+              />
             </button>
 
             <i
-              className="ri-arrow-down-wide-line text-white text-3xl cursor-pointer hover:text-orange-400 transition-colors duration-300"
+              className="
+              ri-arrow-down-wide-line text-white cursor-pointer hover:text-orange-400 transition-colors duration-300
+              text-3xl lg:text-4xl
+            "
               role="button"
               aria-label="Close player panel"
               onClick={() => {
@@ -95,16 +109,17 @@ const SongPlayerPanel = ({
             />
 
             <button
-              onClick={() => {
-                dispatch(setMountDownloadConfirmation(true));
-              }}
+              onClick={() => dispatch(setMountDownloadConfirmation(true))}
               aria-label="Download song"
               disabled={downloading}
             >
               <i
-                className={`ri-download-line ${
-                  downloading && "text-gray-400"
-                } text-2xl cursor-pointer hover:text-orange-400 transition-colors duration-300`}
+                className={`
+                ri-download-line
+                ${downloading && "text-gray-400"}
+                cursor-pointer hover:text-orange-400 transition-colors duration-300
+                text-2xl lg:text-3xl
+              `}
               />
             </button>
           </div>
@@ -113,7 +128,15 @@ const SongPlayerPanel = ({
         <hr />
 
         {/* Song Title */}
-        <div className="text-center lg:text-left text-lg lg:text-base font-semibold truncate px-2">
+        <div
+          className="
+          px-2 font-semibold truncate
+          text-center text-lg
+          h-[40px] flex items-center justify-center
+
+          lg:text-xl lg:h-[42px]
+        "
+        >
           <Marquee
             key={playingSong._id}
             speed={50}
@@ -121,7 +144,11 @@ const SongPlayerPanel = ({
             pauseOnHover
             className="overflow-hidden"
           >
-            <span className="mx-5">{playingSong.title}</span>
+            <span className="mx-5">
+              {" "}
+              <span className="text-xl mr-2">⬤</span>
+              {playingSong.title}
+            </span>
           </Marquee>
         </div>
 
@@ -132,24 +159,39 @@ const SongPlayerPanel = ({
           max={Math.floor(duration)}
           value={Math.floor(currentTime)}
           onChange={(e) => handleSliderChange(e)}
-          className="w-full lg:w-64 h-2 bg-purple-600 rounded-full appearance-none cursor-pointer accent-orange-400 hover:accent-orange-500 transition-colors duration-300"
+          className="
+          w-full bg-purple-600 rounded-full appearance-none cursor-pointer
+          accent-orange-400 hover:accent-orange-500 transition-colors duration-300
+          h-2 lg:h-3 mb-3
+        "
         />
 
         {/* Controls + Time */}
-        <div className="flex items-center justify-between lg:justify-between px-2">
-          <span className="text-xs lg:text-sm font-mono text-purple-300 w-10 text-left select-none">
+        <div className="flex items-center justify-between px-2">
+          <span
+            className="
+            font-mono text-purple-300 text-left select-none
+            w-10 text-xs
+            lg:w-12 lg:text-sm
+          "
+          >
             {formatDuration(currentTime)}
           </span>
 
-          <div className="w-[90%] flex items-center justify-center gap-4">
+          <div
+            className="
+            w-[90%] flex items-center justify-center gap-4
+            lg:gap-6 lg:h-[80px]
+          "
+          >
             {/* Shuffle */}
             <button className="relative" onClick={() => dispatch(setShuffle())}>
               {shuffle ? (
-                <i className="ri-shuffle-line text-2xl text-white" />
+                <i className="ri-shuffle-line text-white text-2xl lg:text-3xl" />
               ) : (
                 <div className="relative inline-block">
-                  <i className="ri-shuffle-line text-2xl text-white opacity-40" />
-                  <div className="absolute inset-0 m-auto w-[1.25px] h-full bg-white rotate-[-45deg]" />
+                  <i className="ri-shuffle-line text-white opacity-40 text-2xl lg:text-3xl" />
+                  <div className="absolute inset-0 m-auto w-[1.25px] lg:w-[1.5px] h-full bg-white rotate-[-45deg]" />
                 </div>
               )}
             </button>
@@ -157,12 +199,18 @@ const SongPlayerPanel = ({
             {/* Previous */}
             <button
               aria-label="Previous"
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-purple-700 hover:bg-purple-600 transition-transform shadow-md hover:shadow-lg active:scale-95"
+              className="
+              flex items-center justify-center rounded-full
+              bg-purple-700 hover:bg-purple-600 transition-transform shadow-md hover:shadow-lg active:scale-95
+
+              w-10 h-10
+              lg:w-12 lg:h-12
+            "
               onClick={moveToPreviousSong}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 stroke-purple-300"
+                className="stroke-purple-300 w-5 h-5 lg:w-6 lg:h-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={2}
@@ -176,12 +224,19 @@ const SongPlayerPanel = ({
             <button
               aria-label={playing ? "Pause" : "Play"}
               onClick={handlePlayPause}
-              className="w-14 h-14 rounded-full bg-gradient-to-tr from-orange-400 to-purple-600 flex items-center justify-center text-white shadow-lg hover:scale-110 active:scale-95 transition-transform"
+              className="
+              rounded-full bg-gradient-to-tr from-orange-400 to-purple-600
+              flex items-center justify-center text-white
+              shadow-lg hover:scale-110 active:scale-95 transition-transform
+
+              w-14 h-14
+              lg:w-16 lg:h-16
+            "
             >
               {playing ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-7 h-7 stroke-white"
+                  className="stroke-white w-7 h-7 lg:w-9 lg:h-9"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={2}
@@ -192,7 +247,7 @@ const SongPlayerPanel = ({
               ) : (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-7 h-7 stroke-white"
+                  className="stroke-white w-7 h-7 lg:w-9 lg:h-9"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={2}
@@ -206,11 +261,17 @@ const SongPlayerPanel = ({
             <button
               aria-label="Next"
               onClick={moveToNextSong}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-purple-700 hover:bg-purple-600 transition-transform shadow-md hover:shadow-lg active:scale-95"
+              className="
+              flex items-center justify-center rounded-full
+              bg-purple-700 hover:bg-purple-600 transition-transform shadow-md hover:shadow-lg active:scale-95
+
+              w-10 h-10
+              lg:w-12 lg:h-12
+            "
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 stroke-purple-300"
+                className="stroke-purple-300 w-5 h-5 lg:w-6 lg:h-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={2}
@@ -229,21 +290,27 @@ const SongPlayerPanel = ({
               }}
             >
               {repeat === "repeat" && (
-                <i className="ri-repeat-2-line text-2xl text-white" />
+                <i className="ri-repeat-2-line text-white text-2xl lg:text-3xl" />
               )}
               {repeat === "single" && (
-                <i className="ri-repeat-one-line text-2xl text-white" />
+                <i className="ri-repeat-one-line text-white text-2xl lg:text-3xl" />
               )}
               {repeat === "noRepeat" && (
                 <div className="relative inline-block">
-                  <i className="ri-repeat-2-line text-2xl text-white opacity-40" />
-                  <div className="absolute inset-0 m-auto w-[1.25px] h-full bg-white rotate-[-45deg]" />
+                  <i className="ri-repeat-2-line text-white opacity-40 text-2xl lg:text-3xl" />
+                  <div className="absolute inset-0 m-auto w-[1.25px] lg:w-[1.5px] h-full bg-white rotate-[-45deg]" />
                 </div>
               )}
             </button>
           </div>
 
-          <span className="text-xs lg:text-sm font-mono text-purple-300 w-10 text-right select-none">
+          <span
+            className="
+            font-mono text-purple-300 text-right select-none
+            w-10 text-xs
+            lg:w-12 lg:text-sm
+          "
+          >
             {formatDuration(duration - currentTime)}
           </span>
         </div>

@@ -1,4 +1,5 @@
-# ISSUES
+
+# ✅ **ISSUES**
 
 ## --- HIGH PRIORITY ---
 1. **Fast typing search bug**  
@@ -6,37 +7,44 @@
    - Works fine generally, but fails in fast typing edge cases  
    - Needs debounce/cancellation logic to ensure latest query wins
 
+---
+
 ## --- MEDIUM PRIORITY ---
 1. **New uploads don’t appear at top of public feed instantly**  
    - Feed is paginated; newest songs come from backend  
    - Newly uploaded songs only visible after refresh  
    - ✅ Solution: Let it be itself
 
-3. **Shuffle play song styles issue**  
-   - Styles of songs in shuffle mode appear inconsistent or broken  
-   - Needs UI/UX polish so shuffle songs display correctly
-
-4. **Scrolling song titles in player panel**  
-   - Long song titles should auto-scroll (marquee or animation)  
-   - Only when inside the player panel
-
-5. **Jump-to-current-song button on main page**  
+2. **Jump-to-current-song button on main page**  
    - When a song is playing far down the list and user scrolls up  
    - Add a button to jump back to the currently playing song
 
-6. **Scroll-to-top button**  
+3. **Scroll-to-top button**  
    - When user scrolls far down the page  
    - Show a floating “↑” button to quickly return to top
 
-7. **Navbar scroll polish**  
+4. **Navbar scroll polish**  
    - Animate navbar on scroll (e.g. shrink, fade, or blur)  
    - Optionally make it transparent until scroll starts  
    - Should feel buttery and premium
 
-8. **To add rate limiting on frontend**  
-   - Mostly handled in backend, but can also be done in frontend to reduce spamming
+5. **Frontend rate limiting**  
+   - Mostly handled in backend  
+   - Add lightweight frontend throttling to reduce spammy requests
 
-9.to add hashtags type things in songs to classify songs
-10.to show a popup for do you want to download this song like which comes in delete songs
+6. **Add hashtags/tags for songs**  
+   - Allow songs to have tags/hashtags  
+   - Helps classify songs and improve search/filter UX
+
+7. **Add dedicated song page**  
+   - When sharing a link to a specific song  
+   - Should open a standalone page with that song’s details + player  
+   - Enables deep linking and better SEO
+
+---
+
 ## --- LOW PRIORITY ---
-_(No tasks listed yet)_
+_(No tasks listed yet — ready to add when needed)_
+
+---
+
