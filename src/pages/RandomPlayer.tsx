@@ -120,7 +120,7 @@ const RandomPlayer = () => {
   }
 
   return (
-    <div className="h-[100vh] bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 text-white flex flex-col items-center p-4 lg:flex-row lg:items-start lg:gap-6 ">
+    <div className="h-[100vh] bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 text-white flex flex-col items-center p-2 lg:flex-row lg:items-start lg:gap-6 ">
       {/* Recently Played Panel */}
       <section className="w-full lg:min-w-1/2  bg-purple-800 p-4 rounded-2xl shadow-xl mb-6 mt-4 h-[60vh] flex flex-col md:h-[80vh] md:p-6 md:rounded-[2rem]">
         <h2 className="text-xl font-bold text-center mb-4 md:text-2xl">
