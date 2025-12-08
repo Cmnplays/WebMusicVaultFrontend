@@ -24,7 +24,7 @@ const About = () => {
           playback modes.
         </p>
         <p className="mt-4 inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-semibold text-sm">
-          Developed with ❤️ by Aaditya Chaurasiya
+          Developed with ❤️ by Aaditya!
         </p>
       </div>
 
@@ -130,7 +130,7 @@ const About = () => {
 
       {/* Version Info */}
       <div className="text-center text-gray-400 text-sm">
-        <p>WMV v2.0.0 – Last updated Oct 2025</p>
+        <p>WMV v2.0.0 – Last updated December 2025</p>
       </div>
     </div>
   );
