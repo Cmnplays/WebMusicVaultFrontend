@@ -106,7 +106,7 @@ const Navbar = () => {
             { name: "Music", to: "/musics" },
             { name: "Upload", to: "/upload" },
             { name: "Search", to: "/search-songs" },
-            { name: "Shuffle", to: "/random-player" },
+            { name: "Shuffle", to: "/shuffle-player" },
             { name: "About", to: "/about" },
           ].map((link) => (
             <li key={link.to}>

@@ -7,12 +7,15 @@ import ScrollToTop from "./components/ScrollToTop.tsx";
 import SongPage from "./pages/SongPage.tsx";
 import About from "./pages/About.tsx";
 import ShufflePlayer from "./pages/ShufflePlay.tsx";
+import SecretConsole from "./pages/Experimental/SecretConsole.tsx";
 export default function App() {
+  const hideNavbar = location.pathname === "/console";
   return (
     <>
       {/* Background Layer */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-[#3A1A8A] via-[#5520A5] to-[#7A2CA0]" />
-      <Navbar />
+      {!hideNavbar && <Navbar />}
+
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Navigate replace to="/musics" />} />
@@ -22,6 +25,7 @@ export default function App() {
         <Route path="/shuffle-player" element={<ShufflePlayer />} />
         <Route path="/about" element={<About />} />
         <Route path="/song/:id" element={<SongPage />} />
+        <Route path="/console" element={<SecretConsole />} />
       </Routes>
     </>
   );
