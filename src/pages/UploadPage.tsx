@@ -11,7 +11,17 @@ const UploadPage: React.FC = () => {
   const [alreadyExistingSongs, setAlreadyExistingSongs] = useState<string[]>(
     []
   );
-
+  const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const droppedFiles = Array.from(e.dataTransfer.files).filter((file) =>
+      file.type.startsWith("audio/")
+    );
+    if (droppedFiles.length == 0) {
+      setStatusText("Only audio files are allowed.");
+      return;
+    }
+    setFiles(droppedFiles);
+  };
   const handleFileClick = () => {
     inputRef.current?.click();
   };
@@ -93,6 +103,8 @@ const UploadPage: React.FC = () => {
         >
           <div
             onClick={handleFileClick}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleFileDrop}
             className="border-2 border-dashed border-purple-400 rounded-2xl p-6 cursor-pointer text-center text-purple-200 hover:border-orange-400 transition-colors"
           >
             {files.length > 0 ? (
