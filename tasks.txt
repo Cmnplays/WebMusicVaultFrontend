@@ -41,6 +41,7 @@
    - Should open a standalone page with that song’s details + player  
    - Enables deep linking and better SEO
 
+8.store the shuffle songs also in the storage and also give a reset button to reset the songs and also like add a boundary condition like songs reach 50 then reset automatically i mean delete songs from memory 
 ---
 
 ## --- LOW PRIORITY ---

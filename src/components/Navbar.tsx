@@ -54,7 +54,13 @@ const Navbar = () => {
 
   return (
     <nav
-      className="bg-white border-b border-gray-200 shadow-md sticky top-0 z-50"
+      className="
+    bg-white 
+    border-b border-gray-100 
+    shadow-[0_2px_10px_rgba(0,0,0,0.06)]
+    sticky top-0 z-50 
+    rounded-b-xl
+  "
       ref={navRef}
     >
       <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
@@ -109,7 +115,7 @@ const Navbar = () => {
                 className={({ isActive }) =>
                   isActive
                     ? "px-3 py-1 rounded-lg shadow-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white transform transition-all hover:scale-105"
-                    : "px-3 py-1 rounded-lg text-blue-600 hover:text-purple-700 hover:scale-105 transform transition-all"
+                    : "px-3 py-1 rounded-lg text-blue-600 hover:text-purple-700 hover:scale-105 transform transition-all duration-200"
                 }
                 onClick={() => setIsOpen(false)}
               >
@@ -122,7 +128,7 @@ const Navbar = () => {
         {/* Hamburger button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-gray-800 md:hidden flex flex-col justify-center items-center space-y-1 p-1 rounded hover:bg-gray-100 shadow-sm transition-all"
+          className="text-gray-800 md:hidden flex flex-col justify-center items-center space-y-1 p-1 rounded hover:bg-gray-50 shadow-sm transition-all"
           aria-label="Toggle menu"
         >
           <span
@@ -146,7 +152,13 @@ const Navbar = () => {
       {/* Mobile menu */}
       <div
         ref={menuRef}
-        className="md:hidden px-6 py-4 bg-white shadow-lg overflow-hidden rounded-xl mt-2 mb-3 mx-2 border border-gray-100"
+        className="
+      md:hidden px-6 py-4 
+      bg-white 
+      shadow-[0_4px_20px_rgba(0,0,0,0.08)]
+      overflow-hidden rounded-xl mt-2 mb-3 mx-2 
+      border border-gray-100
+    "
         style={{ height: 0, opacity: 0, display: "none" }}
       >
         <ul className="space-y-3">
@@ -154,7 +166,7 @@ const Navbar = () => {
             { name: "Music", to: "/musics" },
             { name: "Upload", to: "/upload" },
             { name: "Search", to: "/search-songs" },
-            { name: "Shuffle", to: "/random-player" },
+            { name: "Shuffle", to: "/shuffle-player" },
             { name: "About", to: "/about" },
           ].map((link) => (
             <li key={link.to}>

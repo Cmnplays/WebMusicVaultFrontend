@@ -18,7 +18,7 @@ import {
 import { useHandleSliderChange } from "../components/useHandleSliderChange";
 import Marquee from "react-fast-marquee";
 
-const RandomPlayer = () => {
+const ShufflePlayer = () => {
   const playingSong = useAppSelector((state) => state.song.playingSong);
   const audioRef = useRef<HTMLAudioElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -120,15 +120,15 @@ const RandomPlayer = () => {
   }
 
   return (
-    <div className="h-[100vh] bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 text-white flex flex-col items-center p-2 lg:flex-row lg:items-start lg:gap-6 ">
+    <div className="h-[100vh] text-white flex flex-col items-center p-2 lg:flex-row lg:items-start lg:gap-6">
       {/* Recently Played Panel */}
-      <section className="w-full lg:min-w-1/2  bg-purple-800 p-4 rounded-2xl shadow-xl mb-6 mt-4 h-[60vh] flex flex-col md:h-[80vh] md:p-6 md:rounded-[2rem]">
+      <section className="w-full lg:min-w-1/2 bg-white/5 backdrop-blur-xl border border-white/10 p-4 rounded-2xl shadow-xl mb-6 mt-4 h-[60vh] flex flex-col md:h-[80vh] md:p-6 md:rounded-[2rem]">
         <h2 className="text-xl font-bold text-center mb-4 md:text-2xl">
           Recently Played
         </h2>
 
         <div
-          className="flex-1 flex flex-col gap-2 overflow-y-auto"
+          className="flex-1 flex flex-col gap-3 overflow-y-auto scrollbar-thin scrollbar-thumb-white/30 scrollbar-thumb-rounded-full scrollbar-track-white/10 hover:scrollbar-thumb-white/50"
           ref={listRef}
         >
           {previousSongs.slice(0, previousSongs.length - 1).length > 0 ? (
@@ -149,20 +149,25 @@ const RandomPlayer = () => {
                       handlePlayClick(song);
                     }
                   }}
-                  className={`flex items-center gap-2 px-2 py-3 rounded-lg shadow transition-shadow duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-600 focus-visible:ring-offset-2
+                  className={`flex items-center gap-2 px-2 py-3 md:py-[14px] rounded-lg shadow cursor-pointer
+                  backdrop-blur-lg border border-white/20
+                  transition-all duration-300 hover:-translate-y-[1px]
+                  focus:outline-none focus-visible:ring-1 focus-visible:ring-white/40
+                  hover:shadow-[0_0_12px_rgba(255,255,255,0.15)]
+                  hover:border-white/30 active:scale-[0.99]
                   ${
                     playingSong?._id === song._id
                       ? "bg-orange-500 text-white hover:shadow-lg md:px-4 md:py-4 md:gap-4"
-                      : "bg-white hover:shadow-md md:px-4 md:py-4 md:gap-4"
+                      : "bg-gradient-to-br from-white/10 to-white/5 hover:shadow-md md:px-4 md:py-4 md:gap-4"
                   }`}
                 >
                   <div
                     className={`flex-shrink-0 w-6 h-6 rounded-full font-mono text-sm font-bold flex items-center justify-center select-none
-                  ${
-                    playingSong?._id === song._id
-                      ? "bg-white text-orange-600 md:w-8 md:h-8 md:text-base"
-                      : "bg-purple-100 text-purple-700 md:w-8 md:h-8 md:text-base"
-                  }`}
+                    ${
+                      playingSong?._id === song._id
+                        ? "bg-white text-orange-600 md:w-8 md:h-8 md:text-base"
+                        : "bg-white/20 text-white md:w-8 md:h-8 md:text-base"
+                    }`}
                   >
                     {index + 1}
                   </div>
@@ -172,7 +177,7 @@ const RandomPlayer = () => {
                       className={`text-lg font-semibold truncate ${
                         playingSong?._id === song._id
                           ? "text-white"
-                          : "text-gray-900"
+                          : "text-white/90"
                       } md:text-xl`}
                       title={song.title}
                     >
@@ -197,7 +202,7 @@ const RandomPlayer = () => {
 
       {/* Music Player */}
       {playingSong && (
-        <section className="md:min-w-[410px] w-full bg-purple-800 p-4 rounded-2xl shadow-xl flex flex-col items-center gap-6 mt-0 md:mt-4 md:gap-8 ">
+        <section className="md:min-w-[410px] w-full bg-white/5 backdrop-blur-xl border border-white/10 p-4 rounded-2xl shadow-xl flex flex-col items-center gap-6 mt-0 md:mt-4 md:gap-8">
           {/* Song Title */}
           <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-center w-full px-2">
             <Marquee
@@ -228,6 +233,7 @@ const RandomPlayer = () => {
             </div>
           </div>
 
+          {/* Controls */}
           <div className="flex items-center justify-center gap-6 mt-4 md:gap-8">
             <button
               onClick={() => {
@@ -315,11 +321,9 @@ const RandomPlayer = () => {
 
             <button
               onClick={() => {
-                console.log("hello");
                 dispatch(setPlaying(false));
                 audioRef.current?.pause();
                 dispatch(setMountDownloadConfirmation(true));
-                console.log(mountDownloadConfirmation);
               }}
               disabled={downloading}
               className={`text-white transition-colors ${
@@ -348,7 +352,7 @@ const RandomPlayer = () => {
 
       {(loading || deleting || downloading) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-          <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />
+          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
         </div>
       )}
 
@@ -362,4 +366,4 @@ const RandomPlayer = () => {
   );
 };
 
-export default RandomPlayer;
+export default ShufflePlayer;

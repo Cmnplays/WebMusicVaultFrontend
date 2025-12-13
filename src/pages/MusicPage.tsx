@@ -51,22 +51,30 @@ const MusicPage: React.FC = () => {
       dispatch(setLoading(false));
     };
   }, [dispatch]);
-
   return (
-    <main className={`max-w-5xl mx-auto p-4 ${playing && "mb-[192px]"}`}>
+    <main
+      className={`max-w-5xl mx-auto p-4 text-white ${playing && "mb-[192px]"}`}
+    >
+      {/* Header */}
       <MusicHeader handleSorting={handleSorting} sortOrder={sortOrder} />
+
+      {/* Song List */}
       <SongList
         handlePlayClick={handlePlayClick}
         playing={playing}
         playingSong={playingSong}
         songs={songs}
       />
+
+      {/* Audio Element */}
       <audio
         ref={audioRef}
         onEnded={handleAudioEnded}
         preload="metadata"
         hidden
       />
+
+      {/* Player Panel */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-5xl z-50">
         <SongPlayerPanel
           audioRef={audioRef as React.RefObject<HTMLAudioElement>}
@@ -86,6 +94,7 @@ const MusicPage: React.FC = () => {
         />
       </div>
 
+      {/* Delete Confirmation */}
       {mountDeleteConfirmation && (
         <DeleteConfirmation
           title={playingSong!.title}
@@ -93,22 +102,30 @@ const MusicPage: React.FC = () => {
           moveToNextSong={moveToNextSong}
         />
       )}
+
+      {/* Download Confirmation */}
       {mountDownloadConfirmation && (
         <DownloadConfirmation title={playingSong!.title} />
       )}
+
+      {/* Loading / Error */}
       {(loading || error) && (
-        <p className="text-center mt-4 text-gray-600 whitespace-pre-line">
+        <p className="text-center mt-4 text-purple-200 whitespace-pre-line">
           {statusText}
         </p>
       )}
+
+      {/* End of List */}
       {!hasMoreSongs && (
-        <p className="text-center mt-4 text-gray-600">
+        <p className="text-center mt-4 text-purple-200">
           You have reached the end of the list.
         </p>
       )}
+
+      {/* Global Loader */}
       {(downloading || deleting || loading) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-          <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />
+          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
         </div>
       )}
     </main>

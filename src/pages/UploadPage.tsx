@@ -88,11 +88,10 @@ const UploadPage: React.FC = () => {
       setLoading(false);
     }
   };
-
   return (
-    <div className="min-h-screen flex justify-center items-start p-4 bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700">
-      <div className="w-full max-w-md bg-purple-800 rounded-2xl shadow-xl p-6 mt-8 flex flex-col gap-4 text-white">
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2">
+    <div className="min-h-screen bg-transparent flex justify-center items-start p-4">
+      <div className="w-full max-w-md bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl p-6 mt-8 flex flex-col gap-4 text-purple-100">
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-white drop-shadow">
           Upload Your Songs
         </h1>
 
@@ -101,16 +100,22 @@ const UploadPage: React.FC = () => {
           encType="multipart/form-data"
           className="flex flex-col gap-4"
         >
+          {/* File Drop Zone */}
           <div
             onClick={handleFileClick}
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleFileDrop}
-            className="border-2 border-dashed border-purple-400 rounded-2xl p-6 cursor-pointer text-center text-purple-200 hover:border-orange-400 transition-colors"
+            className="
+            border-2 border-dashed border-white/20 
+            rounded-2xl p-6 cursor-pointer text-center 
+            hover:border-purple-300 transition-colors
+            bg-white/5 backdrop-blur-sm
+          "
           >
             {files.length > 0 ? (
               <div className="space-y-2">
                 <p className="font-semibold text-white">Selected files:</p>
-                <ul className="text-sm text-purple-100 max-h-32 overflow-auto">
+                <ul className="text-sm text-purple-200 max-h-32 overflow-auto">
                   {files.map((file, idx) => (
                     <li key={idx} className="truncate" title={file.name}>
                       {file.name}
@@ -123,7 +128,7 @@ const UploadPage: React.FC = () => {
               </div>
             ) : (
               <>
-                <p className="text-lg font-semibold">
+                <p className="text-lg font-semibold text-white">
                   Click here to select files
                 </p>
                 <p className="text-xs text-purple-300">
@@ -131,6 +136,7 @@ const UploadPage: React.FC = () => {
                 </p>
               </>
             )}
+
             <input
               type="file"
               name="songs"
@@ -142,12 +148,14 @@ const UploadPage: React.FC = () => {
             />
           </div>
 
+          {/* Status Text */}
           {statusText && (
-            <p className="text-sm font-medium text-orange-400">{statusText}</p>
+            <p className="text-sm font-medium text-orange-300">{statusText}</p>
           )}
 
+          {/* Already Existing Songs */}
           {alreadyExistingSongs.length > 0 && (
-            <div className="bg-red-50 border border-red-300 p-3 rounded-xl mt-2 text-red-700">
+            <div className="bg-white/10 backdrop-blur-md border border-red-300/30 p-3 rounded-xl mt-2 text-red-200 shadow">
               <p className="font-semibold mb-1">Already existing songs:</p>
               <ul className="list-disc list-inside text-sm max-h-32 overflow-auto">
                 {alreadyExistingSongs.map((title, idx) => (
@@ -159,14 +167,20 @@ const UploadPage: React.FC = () => {
             </div>
           )}
 
-          <p className="text-gray-200 text-sm italic">
-            Upload might take up to 2 minutes depending upon the number of
-            songs, size, and connection.
+          <p className="text-purple-200 text-sm italic">
+            Upload might take up to 2 minutes depending on file size and
+            connection.
           </p>
 
+          {/* Upload Button */}
           <button
             type="submit"
-            className="bg-pink-400 hover:bg-orange-500 text-white font-semibold py-2 rounded-2xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="
+            bg-purple-600/60 hover:bg-purple-500 
+            text-white font-semibold py-2 rounded-2xl 
+            transition-colors backdrop-blur-sm
+            disabled:opacity-50 disabled:cursor-not-allowed
+          "
             disabled={loading}
           >
             {isUploading ? "Uploading..." : "Upload"}
@@ -180,7 +194,7 @@ const UploadPage: React.FC = () => {
 
       {loading && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-          <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />
+          <i className="ri-loader-2-line text-purple-200 text-6xl animate-spin" />
         </div>
       )}
     </div>

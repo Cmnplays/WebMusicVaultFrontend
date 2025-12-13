@@ -149,7 +149,8 @@ const SearchSongs = () => {
   }, [dispatch]);
 
   return (
-    <div className="max-w-5xl mx-auto p-4">
+    <div className="max-w-5xl mx-auto p-4 text-white">
+      {/* Search Input */}
       <div className="flex justify-center">
         <input
           ref={inputRef}
@@ -159,12 +160,20 @@ const SearchSongs = () => {
             setQuery(value);
             debounceSearch(value, 400);
           }}
-          className="w-full p-3 border-2 rounded-lg mb-[14px] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="
+          w-full p-3 border-2 rounded-lg mb-[14px]
+          bg-white/10 backdrop-blur-md text-white
+          border-white/20
+          placeholder-purple-200/60
+          transition-all duration-200
+          focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400
+        "
           type="text"
           placeholder="Start typing to find your favorite songs!"
         />
       </div>
 
+      {/* Song List */}
       <SongList
         handlePlayClick={handlePlayClick}
         playing={playing}
@@ -173,22 +182,33 @@ const SearchSongs = () => {
         isTemp={true}
       />
 
+      {/* Load More Button */}
       {hasMoreSongs && !loading && searchedSongs.length > 0 && (
         <div className="flex justify-center mt-4">
           <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="
+            px-4 py-2 rounded-lg
+            bg-purple-700 text-white
+            hover:bg-purple-600
+            transition-all duration-200
+            shadow-md hover:shadow-lg
+          "
             onClick={loadMoreSongs}
           >
             Load More
           </button>
         </div>
       )}
+
+      {/* Audio Element */}
       <audio
         ref={audioRef}
         onEnded={handleAudioEnded}
         preload="metadata"
         hidden
       />
+
+      {/* Player Panel */}
       {playingSong && (
         <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-5xl z-50">
           <SongPlayerPanel
@@ -210,24 +230,28 @@ const SearchSongs = () => {
         </div>
       )}
 
+      {/* Loading / Error */}
       {(loading || error) && (
-        <p className="text-center mt-4 text-gray-600">
+        <p className="text-center mt-4 text-purple-200">
           {statusText || "Loading..."}
         </p>
       )}
 
+      {/* No Songs Found */}
       {!loading && searchedSongs.length === 0 && query && (
-        <p className="text-center mt-4 text-gray-500 italic">
+        <p className="text-center mt-4 text-purple-300 italic">
           No songs found. Try a different vibe or artist name 🎧
         </p>
       )}
 
+      {/* End of List */}
       {!hasMoreSongs && searchedSongs.length > 0 && !loading && (
-        <p className="text-center mt-4 text-gray-600">
+        <p className="text-center mt-4 text-purple-200">
           You have reached the end of the list.
         </p>
       )}
 
+      {/* Delete Confirmation */}
       {mountDeleteConfirmation && playingSong && (
         <DeleteConfirmation
           title={playingSong.title}
@@ -236,13 +260,16 @@ const SearchSongs = () => {
           temp={true}
         />
       )}
+
+      {/* Download Confirmation */}
       {mountDownloadConfirmation && (
         <DownloadConfirmation title={playingSong!.title} />
       )}
 
+      {/* Global Loader */}
       {(downloading || deleting || loading) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-          <i className="ri-loader-2-line text-gray-400 text-6xl animate-spin" />
+          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
         </div>
       )}
     </div>
