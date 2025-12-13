@@ -1,5 +1,3 @@
-import React from "react";
-
 interface ModalViewerProps {
   open: boolean;
   type: "photo" | "video" | "audio" | null;
