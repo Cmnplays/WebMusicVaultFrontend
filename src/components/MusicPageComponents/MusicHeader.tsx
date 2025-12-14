@@ -7,7 +7,7 @@ const MusicHeader = ({
 }) => {
   return (
     <div className="flex justify-between items-center">
-      <h2 className="text-2xl font-extrabold text-white tracking-tight leading-tight">
+      <h2 className="text-3xl font-extrabold text-white tracking-tight leading-tight">
         Your Music Collection
       </h2>
       <button
