@@ -40,7 +40,7 @@ const About = () => {
             {songsLength !== null ? (
               <CountUp end={songsLength} duration={2} />
             ) : (
-              "Loading..."
+              <i className="ri-loader-2-line text-purple-300 inline-block text-4xl animate-spin" />
             )}
           </h2>
           <p className="text-purple-200 mt-2 text-lg">Total Songs</p>
