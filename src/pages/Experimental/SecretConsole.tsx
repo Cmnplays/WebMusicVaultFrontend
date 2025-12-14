@@ -173,6 +173,11 @@ export default function SecretConsole() {
       setEntries([]);
       setCursor(null);
       setHasMore(true);
+      setSavedData(null);
+      setTextValue("");
+      setVideoFile(null);
+      setAudioFile(null);
+      setPhotoFiles([]);
       fetchEntries();
     } catch {
       setSendStatus("error");
@@ -207,6 +212,13 @@ export default function SecretConsole() {
     }
   };
 
+  const handleRefresh = () => {
+    setEntries([]);
+    setCursor(null);
+    setHasMore(true);
+    fetchEntries();
+  };
+
   useEffect(() => {
     if (unlocked) fetchEntries();
   }, [unlocked]);
@@ -215,11 +227,28 @@ export default function SecretConsole() {
   if (unlocked) {
     return (
       <div className="min-h-screen bg-slate-950 text-white p-4 flex flex-col gap-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <h1 className="text-lg font-semibold">WMV Console</h1>
-          <span className="text-xs text-slate-400">{status}</span>
-        </div>
 
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleRefresh}
+              disabled={loading}
+              className="p-2 rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 flex items-center justify-center"
+              title="Refresh"
+            >
+              <span
+                className={`inline-block text-lg transition-transform ${
+                  loading ? "animate-spin" : ""
+                }`}
+              >
+                ⟳
+              </span>
+            </button>
+
+            <span className="text-xs text-slate-400">{status}</span>
+          </div>
+        </div>
         <ConsoleNav section={section} setSection={setSection} />
 
         {/* ✅ UPLOAD SECTION */}
