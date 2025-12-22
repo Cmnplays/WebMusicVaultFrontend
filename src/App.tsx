@@ -13,7 +13,7 @@ export default function App() {
   return (
     <>
       {/* Background Layer */}
-      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-[#3A1A8A] via-[#5520A5] to-[#7A2CA0]" />
+      <div className="fixed inset-0 -z-10 bg-[#5520A5]" />
       {!hideNavbar && <Navbar />}
 
       <ScrollToTop />
