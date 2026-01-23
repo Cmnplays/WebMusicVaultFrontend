@@ -44,6 +44,8 @@
 8.store the shuffle songs also in the storage and also give a reset button to reset the songs and also like add a boundary condition like songs reach 50 then reset automatically i mean delete songs from memory 
 ---
 
+9.instead of background colors , use different 4,5 photos and make the like background editable, and 4,5 or whatever no. of background are there should be optimized for low end and all devices and each  photo should be of like different themes. 
+
 ## --- LOW PRIORITY ---
 _(No tasks listed yet — ready to add when needed)_
 
