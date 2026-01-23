@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import UploadPage from "./pages/UploadPage";
-import Navbar from "./components/Navbar";
+import UploadPage from "./pages/UploadPage.tsx";
+import Navbar from "./components/Navbar.tsx";
 import MusicPage from "./pages/MusicPage.tsx";
 export default function App() {
   return (
