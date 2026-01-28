@@ -8,6 +8,7 @@ import SongPage from "./pages/SongPage.tsx";
 import About from "./pages/About.tsx";
 import ShufflePlayer from "./pages/ShufflePlay.tsx";
 import SecretConsole from "./pages/Experimental/SecretConsole.tsx";
+import SmoothScrollWrapper from "./components/SmoothScrollWrapper.tsx";
 export default function App() {
   const hideNavbar = location.pathname === "/console";
   return (
@@ -19,9 +20,23 @@ export default function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Navigate replace to="/musics" />} />
-        <Route path="/musics" element={<MusicPage />} />
+        <Route
+          path="/musics"
+          element={
+            <SmoothScrollWrapper>
+              <MusicPage />
+            </SmoothScrollWrapper>
+          }
+        />
         <Route path="/upload" element={<UploadPage />} />
-        <Route path="/search-songs" element={<SearchSongs />} />
+        <Route
+          path="/search-songs"
+          element={
+            <SmoothScrollWrapper>
+              <SearchSongs />
+            </SmoothScrollWrapper>
+          }
+        />
         <Route path="/shuffle-player" element={<ShufflePlayer />} />
         <Route path="/about" element={<About />} />
         <Route path="/song/:id" element={<SongPage />} />
