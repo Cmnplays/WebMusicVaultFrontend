@@ -8,9 +8,9 @@ import {
   setPanelOpen,
   setLoading,
 } from "@/reduxSlices/song/songSlice";
-import { formatDuration } from "@/components/MusicPageComponents/formatDuration";
-import DeleteConfirmation from "@/components/DeleteConfirmation";
-import DownloadConfirmation from "@/components/DownloadConfirmation";
+import { formatDuration } from "@/components/formatDuration";
+import DeleteConfirmation from "@/components/ConfirmationComponents/DeleteConfirmation";
+import DownloadConfirmation from "@/components/ConfirmationComponents/DownloadConfirmation";
 import {
   setMountDeleteConfirmation,
   setPlaying,

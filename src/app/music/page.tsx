@@ -1,13 +1,13 @@
 "use client";
 import React, { useRef, useEffect } from "react";
-import SongPlayerPanel from "@/components/SongPlayerPanel";
-import DeleteConfirmation from "@/components/DeleteConfirmation";
+import SongPlayerPanel from "@/components/SongPlayerPanel/index";
+import DeleteConfirmation from "@/components/ConfirmationComponents/DeleteConfirmation";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useSongs } from "@/hooks/useSongs";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import { fadeOutPanel } from "@/hooks/useAudioPlayer";
-import MusicHeader from "@/components/MusicPageComponents/MusicHeader";
-import SongList from "@/components/SongList";
+import MusicHeader from "@/components/MusicPageComponents/MusicPageHeader";
+import SongList from "@/components/SongList/SongList";
 import {
   setTempSongs,
   setPlaying,
@@ -15,7 +15,7 @@ import {
   setPlayingSong,
   setLoading,
 } from "@/reduxSlices/song/songSlice";
-import DownloadConfirmation from "@/components/DownloadConfirmation";
+import DownloadConfirmation from "@/components/ConfirmationComponents/DownloadConfirmation";
 
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -109,27 +109,23 @@ const MusicPage: React.FC = () => {
         />
       )}
 
-      {/* Download Confirmation */}
       {mountDownloadConfirmation && (
         <DownloadConfirmation title={playingSong!.title} />
       )}
 
-      {/* Loading / Error */}
       {(loading || error) && (
         <p className="text-center mt-4 text-purple-200 whitespace-pre-line">
           {statusText}
         </p>
       )}
 
-      {/* End of List */}
       {!hasMoreSongs && (
         <p className="text-center mt-4 text-purple-200">
           You have reached the end of the list.
         </p>
       )}
 
-      {/* Global Loader */}
-      {(downloading || deleting || loading) && (
+      {(downloading || deleting) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
           <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
         </div>

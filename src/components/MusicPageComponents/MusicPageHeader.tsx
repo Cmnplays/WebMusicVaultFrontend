@@ -1,9 +1,10 @@
-const MusicHeader = ({
-  handleSorting,
-  sortOrder,
-}: {
+interface MusicPageHeaderProps {
   handleSorting: () => void;
   sortOrder: "asc" | "desc";
+}
+const MusicHeader: React.FC<MusicPageHeaderProps> = ({
+  handleSorting,
+  sortOrder,
 }) => {
   return (
     <div className="flex justify-between items-center">

@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { searchSong } from "@/services/song.services";
 import type { songsReturnType } from "@/services/song.services";
-import SongList from "@/components/SongList";
+import SongList from "@/components/SongList/SongList";
 import { useAppSelector, useAppDispatch } from "@/store/hook";
 import SongPlayerPanel from "@/components/SongPlayerPanel";
 import { fadeOutPanel } from "@/hooks/useAudioPlayer";
@@ -17,7 +17,7 @@ import {
   setTempNextCursor,
 } from "@/reduxSlices/song/songSlice";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
-import DeleteConfirmation from "@/components/DeleteConfirmation";
+import DeleteConfirmation from "@/components/ConfirmationComponents/DeleteConfirmation";
 import DownloadConfirmation from "@/components/DownloadConfirmation";
 import axios from "axios";
 

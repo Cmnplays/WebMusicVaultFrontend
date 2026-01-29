@@ -1,5 +1,6 @@
 import axios from "axios";
 const apiBase = process.env.NEXT_PUBLIC_API_URL;
+
 interface apiResponse<K> {
   status: number;
   message: string;

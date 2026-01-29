@@ -1,9 +1,9 @@
 "use client";
 import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
-import { useHandleDownload } from "../hooks/useHandleDownload";
-import { setMountDownloadConfirmation } from "../reduxSlices/song/songSlice";
-import { useAppDispatch } from "../store/hook";
+import { useHandleDownload } from "@/hooks/useHandleDownload";
+import { setMountDownloadConfirmation } from "@/reduxSlices/song/songSlice";
+import { useAppDispatch } from "@/store/hook";
 interface DownloadConfirmationProps {
   title: string;
   onClose?: () => void;

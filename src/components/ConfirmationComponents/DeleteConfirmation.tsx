@@ -1,14 +1,14 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
-import { deleteSong } from "../services/song.services";
-import { useAppDispatch, useAppSelector } from "../store/hook";
+import { deleteSong } from "../../services/song.services";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
 import {
   setDeleting,
   setMountDeleteConfirmation,
   deleteSong as excludeSong,
   deleteTempSong as excludeTempSong,
-} from "../reduxSlices/song/songSlice";
+} from "../../reduxSlices/song/songSlice";
 
 interface DeleteConfirmationProps {
   title: string;

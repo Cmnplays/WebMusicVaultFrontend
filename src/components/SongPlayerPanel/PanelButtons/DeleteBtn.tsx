@@ -12,8 +12,9 @@ const DeleteBtn: React.FC<DeleteBtnProps> = ({ audioRef }) => {
   const dispatch = useAppDispatch();
 
   const handleDelete = () => {
+    if (!audioRef.current) return;
     dispatch(setPlaying(false));
-    audioRef.current?.pause();
+    audioRef.current.pause();
     dispatch(setMountDeleteConfirmation(true));
   };
   return (
