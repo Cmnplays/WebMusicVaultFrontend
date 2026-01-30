@@ -11,10 +11,14 @@ import PanelBottomControls from "./PanelBottomControls";
 interface SongPanelProps {
   audioRef: React.RefObject<HTMLAudioElement | null>;
   panelRef: React.RefObject<HTMLDivElement | null>;
-  fadeOutPanel: (panelElement: HTMLDivElement, onComplete?: () => void) => void;
+  fadeOutPanel?: (
+    panelElement: HTMLDivElement,
+    onComplete?: () => void,
+  ) => void;
   handlePlayPause: () => void;
   moveToNextSong: () => void;
   moveToPreviousSong: () => void;
+  excludeTopControls?: boolean;
 }
 
 const SongPlayerPanel = ({
@@ -24,6 +28,7 @@ const SongPlayerPanel = ({
   moveToPreviousSong,
   panelRef,
   fadeOutPanel,
+  excludeTopControls = false,
 }: SongPanelProps) => {
   const playing = useAppSelector((state) => state.song.playing);
   const duration = useAppSelector((state) => state.song.duration);
@@ -60,12 +65,14 @@ const SongPlayerPanel = ({
     "
     >
       {/* Top Controls */}
-      <PanelTopControls
-        audioRef={audioRef}
-        downloading={downloading}
-        panelRef={panelRef}
-        fadeOutPanel={fadeOutPanel}
-      />
+      {!excludeTopControls && (
+        <PanelTopControls
+          audioRef={audioRef}
+          downloading={downloading}
+          panelRef={panelRef}
+          fadeOutPanel={fadeOutPanel!} // used ! bcuz if i say exlude controls then its obvious that fadeoutpanel is not required
+        />
+      )}
       <hr className="border-white/20" />
       <SongTitleMarquee playingSong={playingSong} />
       <ProgressSlider

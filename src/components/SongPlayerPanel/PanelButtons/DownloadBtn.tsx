@@ -1,7 +1,7 @@
 "use client";
 import { useAppDispatch } from "@/store/hook";
 import { setMountDownloadConfirmation } from "@/reduxSlices/song/songSlice";
-
+import { Download } from "lucide-react";
 interface DownloadBtnProps {
   downloading: boolean;
 }
@@ -16,7 +16,7 @@ const DownloadBtn: React.FC<DownloadBtnProps> = ({ downloading }) => {
       aria-label="Download song"
       disabled={downloading}
     >
-      <i
+      {/* <i
         className={`
                    ri-download-line
                    ${
@@ -27,6 +27,10 @@ const DownloadBtn: React.FC<DownloadBtnProps> = ({ downloading }) => {
                    transition-colors duration-300
                    text-2xl lg:text-3xl
                  `}
+      /> */}
+      <Download
+        size={30}
+        className="transition-colors duration-300 hover:text-orange-400"
       />
     </button>
   );

@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useSongs } from "@/hooks/useSongs";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import { fadeOutPanel } from "@/hooks/useAudioPlayer";
-import MusicHeader from "@/components/MusicPageComponents/MusicPageHeader";
+import MusicHeader from "@/components/MusicPage/MusicPageHeader";
 import SongList from "@/components/SongList/SongList";
 import {
   setTempSongs,

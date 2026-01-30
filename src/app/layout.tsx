@@ -13,7 +13,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="dark">
       <body className={`relative overflow-x-hidden`}>
         {/* Background Layer - Like your React version */}
         <div className="fixed inset-0 -z-10 bg-[#5520A5]" />

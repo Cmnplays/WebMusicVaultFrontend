@@ -4,7 +4,7 @@ import {
   setPlaying,
   setMountDeleteConfirmation,
 } from "@/reduxSlices/song/songSlice";
-
+import { Trash } from "lucide-react";
 interface DeleteBtnProps {
   audioRef: AudioRef;
 }
@@ -19,13 +19,10 @@ const DeleteBtn: React.FC<DeleteBtnProps> = ({ audioRef }) => {
   };
   return (
     <button onClick={handleDelete}>
-      <i
-        className="
-                    ri-delete-bin-line 
-                    text-white/90 hover:text-orange-400 
-                    transition-colors duration-300
-                    text-2xl lg:text-3xl
-                  "
+      <Trash
+        size={30}
+        className="hover:text-orange-400 
+                    transition-colors duration-300"
       />
     </button>
   );

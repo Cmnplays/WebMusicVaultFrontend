@@ -4,6 +4,8 @@ import gsap from "gsap";
 import { useHandleDownload } from "@/hooks/useHandleDownload";
 import { setMountDownloadConfirmation } from "@/reduxSlices/song/songSlice";
 import { useAppDispatch } from "@/store/hook";
+import { Button } from "../ui/button";
+
 interface DownloadConfirmationProps {
   title: string;
   onClose?: () => void;
@@ -16,19 +18,21 @@ const DownloadConfirmation: React.FC<DownloadConfirmationProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const handleDownload = useHandleDownload();
+
   useEffect(() => {
-    if (containerRef.current && typeof window !== "undefined") {
-      gsap.fromTo(
-        containerRef.current,
-        { opacity: 0, scale: 0.95 },
-        { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" },
-      );
-    }
+    if (!containerRef.current) return;
+
+    gsap.fromTo(
+      containerRef.current,
+      { opacity: 0, scale: 0.95 },
+      { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" },
+    );
   }, []);
+
   function handleInput(download: boolean) {
     if (download) {
       handleDownload();
-      if (!containerRef.current || typeof window === "undefined") return;
+      if (!containerRef.current) return;
       gsap.to(containerRef.current, {
         duration: 0.4,
         opacity: 0,
@@ -41,30 +45,33 @@ const DownloadConfirmation: React.FC<DownloadConfirmationProps> = ({
     }
     dispatch(setMountDownloadConfirmation(false));
   }
+
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 flex items-center justify-center bg-white/60 backdrop-blur-md z-50 px-4 text-black"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-md px-4 text-foreground"
       style={{ transformOrigin: "center" }}
     >
-      <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-lg">
-        <h3 className="text-lg font-semibold mb-4 text-black line-clamp-2">
+      <div className="w-full max-w-md rounded-xl bg-card border border-border p-6 shadow-xl">
+        <h3 className="mb-4 text-lg font-semibold line-clamp-2 text-foreground">
           Do you want to download <span className="font-bold">{title}</span>?
         </h3>
 
-        <div className="flex justify-center gap-4">
-          <button
+        <div className="flex justify-end gap-3">
+          <Button
+            variant="secondary"
             onClick={() => handleInput(false)}
-            className="flex-1/3 px-4 py-2 rounded text-black bg-gray-300 hover:bg-gray-400 shadow-sm hover:shadow-md transition"
+            className="min-w-[80px]"
           >
             No
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="default"
             onClick={() => handleInput(true)}
-            className="flex-1/3 px-4 py-2 rounded text-white bg-purple-600 hover:bg-purple-700 shadow-sm hover:shadow-md transition"
+            className="min-w-[80px]"
           >
             Yes
-          </button>
+          </Button>
         </div>
       </div>
     </div>

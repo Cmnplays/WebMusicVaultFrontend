@@ -18,8 +18,9 @@ import {
 } from "@/reduxSlices/song/songSlice";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import DeleteConfirmation from "@/components/ConfirmationComponents/DeleteConfirmation";
-import DownloadConfirmation from "@/components/DownloadConfirmation";
+import DownloadConfirmation from "@/components/ConfirmationComponents/DownloadConfirmation";
 import axios from "axios";
+import SearchInput from "@/components/SearchInput";
 
 const SearchSongs = () => {
   const searchedSongs = useAppSelector((state) => state.song.tempSongs);
@@ -151,28 +152,12 @@ const SearchSongs = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-4 text-white">
-      {/* Search Input */}
-      <div className="flex justify-center">
-        <input
-          ref={inputRef}
-          value={query}
-          onChange={(e) => {
-            const value = e.target.value;
-            setQuery(value);
-            debounceSearch(value, 400);
-          }}
-          className="
-          w-full p-3 border-2 rounded-lg mb-[14px]
-          bg-white/10 backdrop-blur-md text-white
-          border-white/20
-          placeholder-purple-200/60
-          transition-all duration-200
-          focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400
-        "
-          type="text"
-          placeholder="Start typing to find your favorite songs!"
-        />
-      </div>
+      <SearchInput
+        debounceSearch={debounceSearch}
+        inputRef={inputRef}
+        query={query}
+        setQuery={setQuery}
+      />
 
       {/* Song List */}
       <SongList

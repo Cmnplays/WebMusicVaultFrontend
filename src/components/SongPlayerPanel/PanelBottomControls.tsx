@@ -32,7 +32,7 @@ const PanelBottomControls: React.FC<PanelBottomControlsProps> = ({
       <div
         className="
             w-[90%] flex items-center justify-center gap-4
-            lg:gap-6 lg:h-[80px]
+            lg:gap-5 lg:h-[80px]
           "
       >
         <ShuffleBtn shuffle={shuffle} />
