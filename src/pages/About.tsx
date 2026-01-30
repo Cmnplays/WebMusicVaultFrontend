@@ -24,7 +24,7 @@ const About = () => {
         <p className="text-purple-200 mt-3 text-base sm:text-lg">
           WebMusicVault (WMV) is my personal music space on the internet where i
           upload songs which i like and my loved ones like. Others can search,
-          play, and download songs easily.By the way, the version 3 of this is
+          play, and download songs easily. By the way, the version 3 of this is
           dropping soon so i am not trying to fix flaws in this existing
           version. And last note, this website runs better in pc than mobile.
         </p>
