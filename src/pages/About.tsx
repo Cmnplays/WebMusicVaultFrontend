@@ -26,7 +26,7 @@ const About = () => {
           upload songs which i like and my loved ones like. Others can search,
           play, and download songs easily.By the way, the version 3 of this is
           dropping soon so i am not trying to fix flaws in this existing
-          version.
+          version. And last note, this website runs better in pc than mobile.
         </p>
 
         <p className="mt-4 inline-block bg-white/10 backdrop-blur-md text-purple-100 px-3 py-1 rounded-full font-semibold text-sm border border-white/10 shadow">
