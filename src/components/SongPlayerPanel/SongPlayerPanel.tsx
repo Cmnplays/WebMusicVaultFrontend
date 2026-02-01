@@ -60,9 +60,7 @@ const SongPlayerPanel = ({
     <div
       ref={panelRef}
       style={{ transform: "translateY(100%)", opacity: 0 }}
-      className="
-      fixed bottom-0 left-0 w-full max-w-5xl mx-auto bg-gradient-to-tr from-purple-900/95 via-purple-800/95 to-purple-700/95 border-t border-white/10 rounded-t-xl shadow-[0_8px_20px_rgba(0,0,0,0.25)] text-white z-50 py-4 px-1 lg:py-2 lg:px-2 lg:rounded-xl
-    "
+      className="fixed bottom-0 left-0 w-full max-w-5xl mx-auto bg-gradient-to-tr from-purple-900/95 via-purple-800/95 to-purple-700/95 border-t border-white/10 rounded-t-xl shadow-[0_8px_20px_rgba(0,0,0,0.25)] text-white z-50 py-4 px-1 lg:py-2 lg:px-2 lg:rounded-xl"
     >
       {/* Top Controls */}
       {!excludeTopControls && (
