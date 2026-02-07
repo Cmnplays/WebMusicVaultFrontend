@@ -35,10 +35,10 @@ const ShufflePlayer = () => {
   const loading = useAppSelector((state) => state.song.loading);
   const deleting = useAppSelector((state) => state.song.deleting);
   const mountDeleteConfirmation = useAppSelector(
-    (state) => state.song.mountDeleteConfirmation
+    (state) => state.song.mountDeleteConfirmation,
   );
   const mountDownloadConfirmation = useAppSelector(
-    (state) => state.song.mountDownloadConfirmation
+    (state) => state.song.mountDownloadConfirmation,
   );
 
   useEffect(() => {
@@ -179,9 +179,9 @@ const ShufflePlayer = () => {
                           ? "text-white"
                           : "text-white/90"
                       } md:text-xl`}
-                      title={song.title}
+                      title={song.title.replace(".mp3", "")} //tooltip
                     >
-                      {song.title}
+                      {song.title.replace(".mp3", "")}
                     </h3>
                   </div>
                 </li>

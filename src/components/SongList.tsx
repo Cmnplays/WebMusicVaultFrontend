@@ -38,7 +38,7 @@ const SongList = ({
                 }
               }}
               aria-label={isCurrentSongPlaying ? "Pause" : "Play"}
-              title={isCurrentSongPlaying ? "Pause" : "Play"}
+              title={song.title.replace(".mp3", "")}
               className={`
                 relative overflow-hidden
                 flex items-center gap-4 p-3 rounded-xl shadow
@@ -95,7 +95,7 @@ const SongList = ({
               <div className="flex-grow overflow-hidden">
                 <h3
                   className="text-lg font-semibold text-white truncate"
-                  title={song.title}
+                  title={song.title.replace(".mp3", "")}
                 >
                   {song.title}
                 </h3>

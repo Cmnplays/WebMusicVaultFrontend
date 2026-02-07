@@ -30,10 +30,10 @@ const SearchSongs = () => {
   const downloading = useAppSelector((state) => state.song.downloading);
   const deleting = useAppSelector((state) => state.song.deleting);
   const mountDeleteConfirmation = useAppSelector(
-    (state) => state.song.mountDeleteConfirmation
+    (state) => state.song.mountDeleteConfirmation,
   );
   const mountDownloadConfirmation = useAppSelector(
-    (state) => state.song.mountDownloadConfirmation
+    (state) => state.song.mountDownloadConfirmation,
   );
   const dispatch = useAppDispatch();
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -104,7 +104,7 @@ const SearchSongs = () => {
         }
       }, delay);
     },
-    [dispatch]
+    [dispatch],
   );
 
   // Load more for cursor pagination

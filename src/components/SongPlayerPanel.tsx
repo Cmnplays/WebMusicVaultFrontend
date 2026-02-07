@@ -46,7 +46,7 @@ const SongPlayerPanel = ({
     gsap.fromTo(
       panelElement,
       { y: "100%", opacity: 0 },
-      { y: "0%", opacity: 1, duration: 0.5, ease: "power3.out" }
+      { y: "0%", opacity: 1, duration: 0.5, ease: "power3.out" },
     );
   };
 
@@ -160,7 +160,7 @@ const SongPlayerPanel = ({
           >
             <span className="mx-5">
               <span className="text-xl mr-2 text-purple-200">⬤</span>
-              {playingSong.title}
+              {playingSong.title.replace(".mp3", "")}
             </span>
           </Marquee>
         </div>

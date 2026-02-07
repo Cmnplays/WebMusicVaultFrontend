@@ -37,7 +37,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
       gsap.fromTo(
         containerRef.current,
         { opacity: 0, scale: 0.95 },
-        { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" }
+        { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" },
       );
     }
   }, []);
@@ -106,14 +106,14 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
             message === "Successfully deleted song"
               ? "text-green-600"
               : message === "Invalid Password!"
-              ? "text-red-600"
-              : "text-black"
+                ? "text-red-600"
+                : "text-black"
           }`}
         >
           {message || (
             <>
               Enter password to delete{" "}
-              <span className="font-bold">{title}</span>
+              <span className="font-bold">{title.replace(".mp3", "")}</span>
             </>
           )}
         </h3>

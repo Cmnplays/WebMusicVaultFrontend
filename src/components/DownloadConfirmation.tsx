@@ -20,7 +20,7 @@ const DownloadConfirmation: React.FC<DownloadConfirmationProps> = ({
       gsap.fromTo(
         containerRef.current,
         { opacity: 0, scale: 0.95 },
-        { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" }
+        { opacity: 1, scale: 1, duration: 0.4, ease: "power2.out" },
       );
     }
   }, []);
@@ -48,7 +48,8 @@ const DownloadConfirmation: React.FC<DownloadConfirmationProps> = ({
     >
       <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-lg">
         <h3 className="text-lg font-semibold mb-4 text-black line-clamp-2">
-          Do you want to download <span className="font-bold">{title}</span>?
+          Do you want to download{" "}
+          <span className="font-bold">{title.replace(".mp3", "")}</span>?
         </h3>
 
         <div className="flex justify-center gap-4">
