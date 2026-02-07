@@ -40,17 +40,9 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
         setError(false);
         if (!nextCursor) {
           if (sortOrder === "asc") {
-            dispatch(
-              setStatusText(
-                "Fetching songs... Newest to Oldest.\n(First load may take up to a minute as the server wakes up)"
-              )
-            );
+            dispatch(setStatusText("Fetching songs... Newest to Oldest"));
           } else {
-            dispatch(
-              setStatusText(
-                "Fetching songs... Oldest to Newest.\n(First load may take up to a minute as the server wakes up)"
-              )
-            );
+            dispatch(setStatusText("Fetching songs... Oldest to Newest."));
           }
         } else {
           dispatch(setStatusText("Loading more songs..."));
@@ -75,14 +67,14 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
         if (axios.isAxiosError(err)) {
           if (err.code === "ECONNABORTED") {
             dispatch(
-              setStatusText("Request timed out. Please try again later.")
+              setStatusText("Request timed out. Please try again later."),
             );
           } else {
             dispatch(setStatusText("Something went wrong. Please try again."));
           }
         } else if (err instanceof Error) {
           dispatch(
-            setStatusText("Unexpected error occurred. Please try again.")
+            setStatusText("Unexpected error occurred. Please try again."),
           );
         } else {
           dispatch(setStatusText("An unknown error occurred."));

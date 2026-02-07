@@ -179,7 +179,7 @@ const ShufflePlayer = () => {
                           ? "text-white"
                           : "text-white/90"
                       } md:text-xl`}
-                      title={song.title.replace(".mp3", "")} //tooltip
+                      title={`Play ${song.title.replace(".mp3", "")}`}
                     >
                       {song.title.replace(".mp3", "")}
                     </h3>

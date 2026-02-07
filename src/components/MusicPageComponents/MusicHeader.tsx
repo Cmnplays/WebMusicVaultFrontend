@@ -14,6 +14,7 @@ const MusicHeader = ({
         onClick={handleSorting}
         className="inline-flex items-center justify-center p-1"
         aria-label="Sort toggle"
+        title={`${sortOrder === "desc" ? "Sort order is Oldest First" : "Sort order is Newest First"}`}
       >
         {sortOrder == "desc" ? (
           <i className="ri-sort-desc text-3xl leading-none" />
