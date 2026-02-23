@@ -5,6 +5,7 @@ type controls = {
   moveToNextSong: () => void;
   moveToPreviousSong: () => void;
 };
+//function for the controls of button provided by the chrome in the notification bar
 function useMediaSession(
   playing: boolean,
   playingSong: Song | null,

@@ -68,6 +68,7 @@ export const useAudioPlayer = ({
     }
   }, [playingSong]);
 
+  //song time related data updatation
   useEffect(() => {
     const song = audioRef.current;
     if (!song) {

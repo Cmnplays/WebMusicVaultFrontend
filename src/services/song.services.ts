@@ -16,13 +16,14 @@ export interface Song {
 export interface songsReturnType {
   songs: Song[];
   hasMoreSongs: boolean;
-  nextCursor: string;
+  nextCursor: cursorT;
 }
 
-interface fetchParams {
+interface getSongsParams {
   limit?: number;
-  cursor?: string | undefined;
-  sortOrder?: "asc" | "desc";
+  cursor?: cursorT;
+  sortBy?: sortByT;
+  sortOrder?: sortOrderT;
 }
 interface searchParams {
   limit?: number;
@@ -30,23 +31,33 @@ interface searchParams {
   query: string;
   signal: AbortSignal;
 }
-const fetchAllSongs = async ({
+const getSongs = async ({
   limit = 10,
   cursor,
   sortOrder = "asc",
-}: fetchParams): Promise<songsReturnType> => {
+  sortBy = "createdAt",
+}: getSongsParams): Promise<songsReturnType> => {
+  console.log({
+    params: {
+      limit,
+      cursor: JSON.stringify(cursor),
+      sortOrder,
+      sortBy,
+    },
+  });
   const response = await axios.get<apiResponse<songsReturnType>>(
     `${apiBase}/song`,
     {
       params: {
         limit,
-        cursor,
+        cursor: JSON.stringify(cursor),
         sortOrder,
+        sortBy,
       },
       timeout: 1000 * 100, //120seconds
     },
   );
-
+  console.log(response.data);
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to fetch songs");
   }
@@ -100,4 +111,4 @@ const getRandomSong = async (): Promise<Song> => {
   }
   return response.data.data;
 };
-export { fetchAllSongs, deleteSong, searchSong, getSongsLength, getRandomSong };
+export { getSongs, deleteSong, searchSong, getSongsLength, getRandomSong };

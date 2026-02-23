@@ -21,10 +21,11 @@ interface initialStateType {
   shuffle: boolean;
   playingSong: Song | null;
   sortChanged: boolean;
-  sortOrder: "asc" | "desc";
+  sortOrder: sortOrderT;
+  sortBy: sortByT;
   hasMoreSongs: boolean;
   tempHasMoreSongs: boolean;
-  nextCursor: string | undefined;
+  nextCursor: cursorT;
   tempNextCursor: string | undefined;
   triggerFetch: boolean;
   tempTriggerFetch: boolean;
@@ -49,6 +50,7 @@ const initialState: initialStateType = {
   playingSong: null,
   sortChanged: false,
   sortOrder: "asc",
+  sortBy: "createdAt",
   hasMoreSongs: true,
   tempHasMoreSongs: true,
   nextCursor: undefined,
@@ -57,6 +59,7 @@ const initialState: initialStateType = {
   tempTriggerFetch: false,
   navHeight: 0,
 };
+
 const setSongsFn =
   (key: "songs" | "tempSongs") =>
   (state: initialStateType, action: PayloadAction<Song[]>) => {
@@ -139,8 +142,11 @@ const songSlice = createSlice({
     setSortChanged: (state, action: PayloadAction<boolean>) => {
       state.sortChanged = action.payload;
     },
-    setSortOrder: (state, action: PayloadAction<"asc" | "desc">) => {
+    setSortOrder: (state, action: PayloadAction<sortOrderT>) => {
       state.sortOrder = action.payload;
+    },
+    setSortBy: (state, action: PayloadAction<sortByT>) => {
+      state.sortBy = action.payload;
     },
     deleteSong: deleteSongFn("songs"),
     deleteTempSong: deleteSongFn("tempSongs"),
@@ -150,7 +156,7 @@ const songSlice = createSlice({
     setTempHasMoreSongs: (state, action: PayloadAction<boolean>) => {
       state.tempHasMoreSongs = action.payload;
     },
-    setNextCursor: (state, action: PayloadAction<string | undefined>) => {
+    setNextCursor: (state, action: PayloadAction<cursorT>) => {
       state.nextCursor = action.payload;
     },
     setTempNextCursor: (state, action: PayloadAction<string | undefined>) => {
@@ -188,6 +194,7 @@ export const {
   handleSortByChange,
   setSortChanged,
   setSortOrder,
+  setSortBy,
   deleteSong,
   deleteTempSong,
   setHasMoreSongs,

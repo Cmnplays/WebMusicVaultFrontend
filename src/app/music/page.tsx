@@ -32,17 +32,23 @@ const MusicPage: React.FC = () => {
     (state) => state.song.mountDownloadConfirmation,
   );
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
+  const sortBy = useAppSelector((state) => state.song.sortBy);
   const playingSong = useAppSelector((state) => state.song.playingSong);
   const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+
   const {
     handlePlayClick,
     handleAudioEnded,
     moveToNextSong,
     moveToPreviousSong,
   } = useAudioPlayer({ panelRef, audioRef, songs });
-  const { error, handleSorting } = useSongs(panelRef);
+
+  const { error, handleSortBy, handleSortOrder } = useSongs(panelRef);
+
+  //for reseting some states when the page changes
   useEffect(() => {
     return () => {
       dispatch(setTempSongs([]));
@@ -57,7 +63,12 @@ const MusicPage: React.FC = () => {
       className={`max-w-5xl mx-auto p-4 text-white ${playing && "mb-[192px]"}`}
     >
       {/* Header */}
-      <MusicHeader handleSorting={handleSorting} sortOrder={sortOrder} />
+      <MusicHeader
+        HandleSortBy={handleSortBy}
+        HandleSortOrder={handleSortOrder}
+        sortOrder={sortOrder}
+        sortBy={sortBy}
+      />
 
       {/* Song List */}
       <SongList
@@ -79,7 +90,7 @@ const MusicPage: React.FC = () => {
 
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-5xl z-50">
         <SongPlayerPanel
-          audioRef={audioRef as React.RefObject<HTMLAudioElement>}
+          audioRef={audioRef}
           panelRef={panelRef}
           fadeOutPanel={fadeOutPanel}
           handlePlayPause={async () => {

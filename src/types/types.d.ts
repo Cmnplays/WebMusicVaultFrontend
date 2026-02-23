@@ -4,4 +4,12 @@ declare global {
   type AudioRef = React.RefObject<HTMLAudioElement | null>;
   type PanelRef = React.RefObject<HTMLDivElement | null>;
   type InputRef = React.RefObject<HTMLInputElement | null>;
+  type cursorT =
+    | {
+        value: string | number | Date;
+        _id?: string;
+      }
+    | undefined;
+  type sortByT = "createdAt" | "title" | "duration" | "playCount";
+  type sortOrderT = "asc" | "desc";
 }
