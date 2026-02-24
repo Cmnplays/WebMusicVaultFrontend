@@ -1,6 +1,4 @@
-import axios from "axios";
-const apiBase = process.env.NEXT_PUBLIC_API_URL;
-
+import api from "./api";
 interface apiResponse<K> {
   status: number;
   message: string;
@@ -45,19 +43,15 @@ const getSongs = async ({
       sortBy,
     },
   });
-  const response = await axios.get<apiResponse<songsReturnType>>(
-    `${apiBase}/song`,
-    {
-      params: {
-        limit,
-        cursor: JSON.stringify(cursor),
-        sortOrder,
-        sortBy,
-      },
-      timeout: 1000 * 100, //120seconds
+  const response = await api.get<apiResponse<songsReturnType>>(`/song`, {
+    params: {
+      limit,
+      cursor: JSON.stringify(cursor),
+      sortOrder,
+      sortBy,
     },
-  );
-  console.log(response.data);
+    timeout: 1000 * 100, //120seconds
+  });
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to fetch songs");
   }
@@ -65,7 +59,7 @@ const getSongs = async ({
 };
 
 const deleteSong = async (id: string): Promise<number> => {
-  const response = await axios.delete(`${apiBase}/song/${id}`);
+  const response = await api.delete(`song/${id}`);
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to fetch songs");
   }
@@ -78,18 +72,15 @@ const searchSong = async ({
   cursor,
   signal,
 }: searchParams): Promise<songsReturnType> => {
-  const response = await axios.get<apiResponse<songsReturnType>>(
-    `${apiBase}/song/search`,
-    {
-      params: {
-        searchQuery: query,
-        cursor,
-        limit,
-      },
-      signal,
-      timeout: 1000 * 100, //120seconds
+  const response = await api.get<apiResponse<songsReturnType>>(`/song/search`, {
+    params: {
+      searchQuery: query,
+      cursor,
+      limit,
     },
-  );
+    signal,
+    timeout: 1000 * 100, //120seconds
+  });
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to fetch songs");
   }
@@ -97,7 +88,7 @@ const searchSong = async ({
 };
 
 const getSongsLength = async (): Promise<number> => {
-  const response = await axios.get(`${apiBase}/about`);
+  const response = await api.get(`/about`);
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to get songs length");
   }
@@ -105,10 +96,39 @@ const getSongsLength = async (): Promise<number> => {
 };
 
 const getRandomSong = async (): Promise<Song> => {
-  const response = await axios.get(`${apiBase}/song/rand`);
+  const response = await api.get(`/song/rand`);
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to get random song");
   }
   return response.data.data;
 };
-export { getSongs, deleteSong, searchSong, getSongsLength, getRandomSong };
+
+const toggleAddToFav = async (id: string): Promise<void> => {
+  const response = await api.post(`/song/${id}/fav`);
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message ||
+        "There was a error while adding song to favourites",
+    );
+  }
+};
+
+const checkIsSongFav = async (id: string): Promise<boolean> => {
+  const response = await api.get(`/song/${id}/fav`);
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message ||
+        "There was a error while fetching isFavourite status",
+    );
+  }
+  return response.data.data;
+};
+export {
+  getSongs,
+  deleteSong,
+  searchSong,
+  getSongsLength,
+  getRandomSong,
+  toggleAddToFav,
+  checkIsSongFav,
+};

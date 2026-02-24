@@ -1,13 +1,14 @@
 "use client";
 import React, { useRef, useEffect } from "react";
 import SongPlayerPanel from "@/components/SongPlayerPanel/index";
-import DeleteConfirmation from "@/components/ConfirmationComponents/DeleteConfirmation";
+import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useSongs } from "@/hooks/useSongs";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import { fadeOutPanel } from "@/hooks/useAudioPlayer";
 import MusicHeader from "@/components/MusicPage/MusicPageHeader";
 import SongList from "@/components/SongList/SongList";
+import SongListSkeleton from "@/components/SongList/SongListSkeleton";
 import {
   setTempSongs,
   setPlaying,
@@ -15,8 +16,8 @@ import {
   setPlayingSong,
   setLoading,
 } from "@/reduxSlices/song/songSlice";
-import DownloadConfirmation from "@/components/ConfirmationComponents/DownloadConfirmation";
-
+import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
+import ShareSongModal from "@/components/Modal/ShareSongModal";
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const statusText = useAppSelector((state) => state.song.statusText);
@@ -31,6 +32,7 @@ const MusicPage: React.FC = () => {
   const mountDownloadConfirmation = useAppSelector(
     (state) => state.song.mountDownloadConfirmation,
   );
+  const mountShareModal = useAppSelector((state) => state.song.mountShareModal);
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
   const sortBy = useAppSelector((state) => state.song.sortBy);
   const playingSong = useAppSelector((state) => state.song.playingSong);
@@ -71,12 +73,16 @@ const MusicPage: React.FC = () => {
       />
 
       {/* Song List */}
-      <SongList
-        handlePlayClick={handlePlayClick}
-        playing={playing}
-        playingSong={playingSong}
-        songs={songs}
-      />
+      {loading && songs.length < 10 ? (
+        <SongListSkeleton rows={10} />
+      ) : (
+        <SongList
+          handlePlayClick={handlePlayClick}
+          playing={playing}
+          playingSong={playingSong}
+          songs={songs}
+        />
+      )}
 
       {/* Audio Element */}
       <audio
@@ -124,9 +130,20 @@ const MusicPage: React.FC = () => {
         <DownloadConfirmation title={playingSong!.title} />
       )}
 
-      {(loading || error) && (
+      {mountShareModal && playingSong && (
+        <ShareSongModal songId={playingSong._id} title={playingSong.title} />
+      )}
+
+      {error && (
         <p className="text-center mt-4 text-purple-200 whitespace-pre-line">
           {statusText}
+        </p>
+      )}
+
+      {loading && (
+        <p className="text-center mt-4 text-purple-200 whitespace-pre-line">
+          {/* Inline loader */}
+          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin inline-block" />
         </p>
       )}
 

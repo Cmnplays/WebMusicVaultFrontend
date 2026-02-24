@@ -16,18 +16,6 @@ const DownloadBtn: React.FC<DownloadBtnProps> = ({ downloading }) => {
       aria-label="Download song"
       disabled={downloading}
     >
-      {/* <i
-        className={`
-                   ri-download-line
-                   ${
-                     downloading
-                       ? "text-gray-400"
-                       : "text-white/90 hover:text-orange-400"
-                   }
-                   transition-colors duration-300
-                   text-2xl lg:text-3xl
-                 `}
-      /> */}
       <Download
         size={30}
         className="transition-colors duration-300 hover:text-orange-400"

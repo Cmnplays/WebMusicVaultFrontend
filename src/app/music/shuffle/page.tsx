@@ -9,8 +9,8 @@ import {
   setLoading,
 } from "@/reduxSlices/song/songSlice";
 import { formatDuration } from "@/components/formatDuration";
-import DeleteConfirmation from "@/components/ConfirmationComponents/DeleteConfirmation";
-import DownloadConfirmation from "@/components/ConfirmationComponents/DownloadConfirmation";
+import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
+import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
 import {
   setMountDeleteConfirmation,
   setPlaying,

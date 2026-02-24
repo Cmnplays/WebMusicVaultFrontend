@@ -17,8 +17,8 @@ import {
   setTempNextCursor,
 } from "@/reduxSlices/song/songSlice";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
-import DeleteConfirmation from "@/components/ConfirmationComponents/DeleteConfirmation";
-import DownloadConfirmation from "@/components/ConfirmationComponents/DownloadConfirmation";
+import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
+import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
 import axios from "axios";
 import SearchInput from "@/components/SearchInput";
 

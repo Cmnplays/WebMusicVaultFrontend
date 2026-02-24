@@ -16,6 +16,7 @@ interface initialStateType {
   deleting: boolean;
   mountDeleteConfirmation: boolean;
   mountDownloadConfirmation: boolean;
+  mountShareModal: boolean;
   statusText: string;
   repeat: repeatType;
   shuffle: boolean;
@@ -44,6 +45,7 @@ const initialState: initialStateType = {
   deleting: false,
   mountDeleteConfirmation: false,
   mountDownloadConfirmation: false,
+  mountShareModal: false,
   statusText: "",
   repeat: "repeat",
   shuffle: false,
@@ -110,6 +112,9 @@ const songSlice = createSlice({
     },
     setMountDownloadConfirmation: (state, action: PayloadAction<boolean>) => {
       state.mountDownloadConfirmation = action.payload;
+    },
+    setMountShareModal: (state, action: PayloadAction<boolean>) => {
+      state.mountShareModal = action.payload;
     },
     setPanelOpen: (state, action: PayloadAction<boolean>) => {
       state.panelOpen = action.payload;
@@ -181,6 +186,7 @@ export const {
   setDownloading,
   setMountDeleteConfirmation,
   setMountDownloadConfirmation,
+  setMountShareModal,
   setPanelOpen,
   setRepeat,
   setShuffle,
