@@ -66,7 +66,7 @@ export const useAudioPlayer = ({
       audioEl.pause();
       audioEl.src = "";
     }
-  }, [playingSong]);
+  }, [playingSong?.fileUrl]);
 
   //song time related data updatation
   useEffect(() => {

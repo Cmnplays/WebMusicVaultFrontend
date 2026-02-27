@@ -1,45 +1,45 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Heart } from "lucide-react";
 import { toggleAddToFav } from "@/services/song.services";
-
+import { useAppDispatch } from "@/store/hook";
+import { setSongLikedBy } from "@/reduxSlices/song/songSlice";
 interface AddToFavProps {
   songId: string;
-  isFav: boolean;
+  isLiked: boolean;
 }
 
-const AddToFav: React.FC<AddToFavProps> = ({ songId, isFav }) => {
-  const [liked, setLiked] = useState(isFav);
+const AddToFav: React.FC<AddToFavProps> = ({ songId, isLiked }) => {
   const [loading, setLoading] = useState(false);
-
+  const dispatch = useAppDispatch();
   const handleClick = async () => {
     if (loading) return;
     setLoading(true);
-    const previous = liked;
-    setLiked(!liked);
     try {
-      await toggleAddToFav(songId);
+      const likeData = await toggleAddToFav(songId);
+      console.log({ likeData });
+      dispatch(setSongLikedBy(likeData));
     } catch (err) {
       console.error(err);
-      setLiked(previous);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    setLiked(isFav);
-  }, [isFav]);
   return (
-    <button onClick={handleClick} disabled={loading}>
+    <button
+      onClick={handleClick}
+      disabled={loading}
+      className="focus:outline-none disabled:opacity-100 disabled:cursor-auto"
+    >
       <Heart
         size={30}
         className={`
           transition-colors duration-300
-          ${liked ? "text-red-500" : "text-white"}
+          ${isLiked ? "text-red-500" : "text-white"}
           ${loading ? "opacity-50 cursor-not-allowed" : "hover:text-red-400"}
         `}
-        fill={liked ? "currentColor" : "none"}
+        fill={isLiked ? "currentColor" : "none"}
       />
     </button>
   );

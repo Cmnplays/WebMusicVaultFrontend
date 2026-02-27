@@ -1,6 +1,5 @@
 import axios from "axios";
 const apiBase = process.env.NEXT_PUBLIC_API_URL;
-import store from "@/store/store";
 const api = axios.create({
   baseURL: apiBase,
 });
@@ -8,7 +7,7 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   //   const accessToken = store.getState().auth.accessToken;
   const accessToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OTY4YzhhZTY1ZGM5Y2NlZWVmNDM3NWEiLCJpYXQiOjE3NzE5NTY1MzUsImV4cCI6MTc3MjA0MjkzNX0.bhjMGjE7-arlLzWhZM230Pq7VmfWkjhYZGnX-_jWXiw";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OTllZDZjNTRhMzZlZTlmOTJlYmM1YWYiLCJpYXQiOjE3NzIyMTUwNzIsImV4cCI6MTc3MjMwMTQ3Mn0.Wusix_4Es_Act5ckscjmGAcn-okDMyhys3t0qkItHFQ";
   if (accessToken) {
     // config.headers = config.headers || {};
     config.headers = config.headers ?? {};

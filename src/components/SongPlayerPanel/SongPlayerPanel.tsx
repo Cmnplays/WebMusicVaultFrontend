@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import gsap from "gsap";
 import { useAppSelector } from "../../store/hook";
 import { useHandleSliderChange } from "@/components/useHandleSliderChange";
@@ -7,7 +7,6 @@ import PanelTopControls from "./PanelTopControls";
 import SongTitleMarquee from "./SongTitleMarquee";
 import ProgressSlider from "./ProgressSlider";
 import PanelBottomControls from "./PanelBottomControls";
-import { checkIsSongFav } from "@/services/song.services";
 
 interface SongPanelProps {
   audioRef: React.RefObject<HTMLAudioElement | null>;
@@ -49,26 +48,19 @@ const SongPlayerPanel = ({
       { y: "0%", opacity: 1, duration: 0.5, ease: "power3.out" },
     );
   };
-  const [isFav, setIsFav] = useState(false);
-
+  // const [triggerLikeStatusCheck, settriggerLikeStatusCheck] = useState(false);
   useEffect(() => {
     if (!panelRef.current) return;
     fadeInPanel(panelRef.current);
   }, [panelRef, panelTrigger]);
 
-  useEffect(() => {
-    if (!playingSong?._id) return;
-    const fetchIsFav = async () => {
-      try {
-        const fav = await checkIsSongFav(playingSong._id);
-        console.log({ fav });
-        setIsFav(fav);
-      } catch (error) {
-        console.error("Failed to check if song is favourite: ", error);
-      }
-    };
-    fetchIsFav();
-  }, [playingSong]);
+  // useEffect(() => {
+  //   if (!playingSong?._id) return;
+  //   const triggerCheck = async () => {
+  //     settriggerLikeStatusCheck(!triggerLikeStatusCheck);
+  //   };
+  //   triggerCheck();
+  // }, [playingSong]);
 
   if (!playingSong) return null;
 
@@ -86,7 +78,7 @@ const SongPlayerPanel = ({
           panelRef={panelRef}
           fadeOutPanel={fadeOutPanel!} // used ! bcuz if i say exlude controls then its obvious that fadeoutpanel is not required
           songId={playingSong._id}
-          isFav={isFav}
+          isLiked={playingSong.isLiked}
         />
       )}
       <hr className="border-white/20" />

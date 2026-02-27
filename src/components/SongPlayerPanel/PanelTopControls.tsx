@@ -10,7 +10,7 @@ interface PanelTopControlsProps {
   fadeOutPanel: (panelElement: HTMLDivElement, onComplete?: () => void) => void;
   panelRef: PanelRef;
   songId: string;
-  isFav: boolean;
+  isLiked: boolean;
 }
 const PanelTopControls: React.FC<PanelTopControlsProps> = ({
   audioRef,
@@ -18,7 +18,7 @@ const PanelTopControls: React.FC<PanelTopControlsProps> = ({
   fadeOutPanel,
   panelRef,
   songId,
-  isFav,
+  isLiked,
 }) => {
   return (
     <div className="flex w-full justify-around mb-2 lg:mb-2">
@@ -31,7 +31,7 @@ const PanelTopControls: React.FC<PanelTopControlsProps> = ({
         fadeOutPanel={fadeOutPanel}
       />
       <DownloadBtn downloading={downloading} />
-      <AddToFav songId={songId} isFav={isFav} />
+      <AddToFav songId={songId} isLiked={isLiked} />
     </div>
   );
 };

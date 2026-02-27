@@ -9,6 +9,7 @@ export interface Song {
   title: string;
   fileUrl?: string;
   duration: number;
+  isLiked: boolean;
 }
 
 export interface songsReturnType {
@@ -35,14 +36,6 @@ const getSongs = async ({
   sortOrder = "asc",
   sortBy = "createdAt",
 }: getSongsParams): Promise<songsReturnType> => {
-  console.log({
-    params: {
-      limit,
-      cursor: JSON.stringify(cursor),
-      sortOrder,
-      sortBy,
-    },
-  });
   const response = await api.get<apiResponse<songsReturnType>>(`/song`, {
     params: {
       limit,
@@ -103,26 +96,26 @@ const getRandomSong = async (): Promise<Song> => {
   return response.data.data;
 };
 
-const toggleAddToFav = async (id: string): Promise<void> => {
-  const response = await api.post(`/song/${id}/fav`);
+const getSongWithId = async (id: string): Promise<Song> => {
+  const response = await api.get(`/song/${id}`);
+  if (response.data.status !== 200) {
+    throw new Error(response.data.message || "Failed to get song with songId");
+  }
+  return response.data.data;
+};
+const toggleAddToFav = async (
+  id: string,
+): Promise<{ songId: string; isLiked: boolean }> => {
+  const response = await api.post(`/like/${id}/toggle`);
   if (response.data.status !== 200) {
     throw new Error(
       response.data.message ||
         "There was a error while adding song to favourites",
     );
   }
+  return { songId: id, isLiked: response.data.data };
 };
 
-const checkIsSongFav = async (id: string): Promise<boolean> => {
-  const response = await api.get(`/song/${id}/fav`);
-  if (response.data.status !== 200) {
-    throw new Error(
-      response.data.message ||
-        "There was a error while fetching isFavourite status",
-    );
-  }
-  return response.data.data;
-};
 export {
   getSongs,
   deleteSong,
@@ -130,5 +123,5 @@ export {
   getSongsLength,
   getRandomSong,
   toggleAddToFav,
-  checkIsSongFav,
+  getSongWithId,
 };

@@ -62,6 +62,10 @@ const initialState: initialStateType = {
   navHeight: 0,
 };
 
+type setSongLikedByT = {
+  songId: string;
+  isLiked: boolean;
+};
 const setSongsFn =
   (key: "songs" | "tempSongs") =>
   (state: initialStateType, action: PayloadAction<Song[]>) => {
@@ -84,6 +88,17 @@ const deleteSongFn =
   (key: "songs" | "tempSongs") =>
   (state: initialStateType, action: PayloadAction<string>) => {
     state[key] = state[key].filter((song) => song._id !== action.payload);
+  };
+const likeSongFn =
+  (key: "songs" | "tempSongs") =>
+  (state: initialStateType, action: PayloadAction<setSongLikedByT>) => {
+    const { songId, isLiked } = action.payload;
+    const songIndex = state[key].findIndex((song) => song._id === songId);
+    const playingSong = state.playingSong;
+    if (playingSong) {
+      playingSong.isLiked = isLiked;
+    }
+    state[key][songIndex].isLiked = isLiked;
   };
 
 const songSlice = createSlice({
@@ -176,6 +191,8 @@ const songSlice = createSlice({
     setNavHeight: (state, action: PayloadAction<number>) => {
       state.navHeight = action.payload;
     },
+    setSongLikedBy: likeSongFn("songs"),
+    setTempSongLIkedBy: likeSongFn("tempSongs"),
   },
 });
 export const {
@@ -210,5 +227,6 @@ export const {
   setTriggerFetch,
   settempTriggerFetch,
   setNavHeight,
+  setSongLikedBy,
 } = songSlice.actions;
 export default songSlice.reducer;
