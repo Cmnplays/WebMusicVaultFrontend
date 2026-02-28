@@ -163,6 +163,9 @@ const SongPlayerPanel = ({
               {playingSong.title.replace(".mp3", "")}
             </span>
           </Marquee>
+          <p className="text-xs text-white/35 font-light tracking-widest mt-0.5">
+            {playingSong.artist}
+          </p>
         </div>
 
         {/* Progress Slider */}

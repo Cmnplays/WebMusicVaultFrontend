@@ -183,6 +183,15 @@ const ShufflePlayer = () => {
                     >
                       {song.title.replace(".mp3", "")}
                     </h3>
+                    <p
+                      className={`text-xs font-light tracking-wide truncate mt-0.5 ${
+                        playingSong?._id === song._id
+                          ? "text-white/60"
+                          : "text-white/35"
+                      }`}
+                    >
+                      {song.artist}
+                    </p>
                   </div>
                 </li>
               ))
@@ -214,6 +223,9 @@ const ShufflePlayer = () => {
             >
               <span className="mx-5">{playingSong.title}</span>
             </Marquee>
+            <p className="text-sm text-white/35 font-light tracking-widest mt-1">
+              {playingSong.artist}
+            </p>
           </div>
 
           {/* Progress Slider */}
