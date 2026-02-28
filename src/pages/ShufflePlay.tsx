@@ -211,7 +211,7 @@ const ShufflePlayer = () => {
 
       {/* Music Player */}
       {playingSong && (
-        <section className="md:min-w-[410px] w-full bg-white/5 backdrop-blur-xl border border-white/10 p-4 rounded-2xl shadow-xl flex flex-col items-center gap-6 mt-0 md:mt-4 md:gap-8">
+        <section className="md:min-w-[410px] w-full bg-white/5 backdrop-blur-xl border border-white/10 p-4 rounded-2xl shadow-xl flex flex-col items-center gap-3 mt-0 md:mt-4 md:gap-4">
           {/* Song Title */}
           <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-center w-full px-2">
             <Marquee
@@ -223,8 +223,8 @@ const ShufflePlayer = () => {
             >
               <span className="mx-5">{playingSong.title}</span>
             </Marquee>
-            <p className="text-sm text-white/35 font-light tracking-widest mt-1">
-              {playingSong.artist}
+            <p className="text-sm text-white/70 font-medium tracking-[0.2em] mt-1">
+              ✦ {playingSong.artist} ✦
             </p>
           </div>
 
