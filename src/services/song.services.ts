@@ -8,8 +8,9 @@ interface apiResponse<K> {
 export interface Song {
   _id: string;
   title: string;
-  fileUrl?: string;
+  fileUrl: string;
   duration: number;
+  artist: string;
 }
 
 export interface songsReturnType {
@@ -43,7 +44,7 @@ const fetchAllSongs = async ({
         sortOrder,
       },
       timeout: 1000 * 100, //120seconds
-    }
+    },
   );
 
   if (response.data.status !== 200) {
@@ -76,7 +77,7 @@ const searchSong = async ({
       },
       signal,
       timeout: 1000 * 100, //120seconds
-    }
+    },
   );
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to fetch songs");

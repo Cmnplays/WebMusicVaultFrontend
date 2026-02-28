@@ -96,6 +96,9 @@ const SongList = ({
                 <h3 className="text-lg font-semibold text-white truncate">
                   {song.title.replace(".mp3", "")}
                 </h3>
+                <p className="text-xs truncate mt-0.5 text-white/40 font-light tracking-wide">
+                  {song.artist}
+                </p>
               </div>
 
               {/* Duration */}
