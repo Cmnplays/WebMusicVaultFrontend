@@ -4,7 +4,6 @@ import Navbar from "./components/Navbar";
 import MusicPage from "./pages/MusicPage.tsx";
 import SearchSongs from "./pages/SearchSongs.tsx";
 import ScrollToTop from "./components/ScrollToTop.tsx";
-import SongPage from "./pages/SongPage.tsx";
 import About from "./pages/About.tsx";
 import ShufflePlayer from "./pages/ShufflePlay.tsx";
 import SecretConsole from "./pages/Experimental/SecretConsole.tsx";
@@ -39,7 +38,6 @@ export default function App() {
         />
         <Route path="/shuffle-player" element={<ShufflePlayer />} />
         <Route path="/about" element={<About />} />
-        <Route path="/song/:id" element={<SongPage />} />
         <Route path="/console" element={<SecretConsole />} />
       </Routes>
     </>
