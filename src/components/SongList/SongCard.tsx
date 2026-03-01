@@ -81,6 +81,9 @@ const SongCard: React.FC<SongCardProps> = ({
         >
           {song.title}
         </h3>
+        <p className="text-xs truncate mt-0.5 text-white/40 font-light tracking-wide">
+          {song.artist}
+        </p>
       </div>
 
       {/* Duration */}

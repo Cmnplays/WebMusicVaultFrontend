@@ -12,4 +12,9 @@ declare global {
     | undefined;
   type sortByT = "createdAt" | "title" | "duration" | "playCount";
   type sortOrderT = "asc" | "desc";
+  interface apiResponse<K> {
+    status: number;
+    message: string;
+    data: K;
+  }
 }

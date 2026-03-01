@@ -16,11 +16,10 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`relative overflow-x-hidden`}>
         {/* Background Layer - Like your React version */}
-        <div className="fixed inset-0 -z-10 bg-[#5520A5]" />
+        <div className="fixed inset-0 -z-10" />
 
         <Providers>
           <ScrollToTop />
-          <Navbar />
           {children}
         </Providers>
       </body>

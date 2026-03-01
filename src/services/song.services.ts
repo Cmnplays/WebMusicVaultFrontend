@@ -1,14 +1,11 @@
-import api from "./api";
-interface apiResponse<K> {
-  status: number;
-  message: string;
-  data: K;
-}
+import api from "../lib/api";
+
 export interface Song {
   _id: string;
   title: string;
-  fileUrl?: string;
+  fileUrl: string;
   duration: number;
+  artist: string;
   isLiked: boolean;
 }
 

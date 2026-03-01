@@ -1,13 +1,14 @@
 import axios from "axios";
+import store from "@/store/store";
 const apiBase = process.env.NEXT_PUBLIC_API_URL;
 const api = axios.create({
   baseURL: apiBase,
 });
 
 api.interceptors.request.use((config) => {
-  //   const accessToken = store.getState().auth.accessToken;
-  const accessToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OTllZDZjNTRhMzZlZTlmOTJlYmM1YWYiLCJpYXQiOjE3NzIyMTUwNzIsImV4cCI6MTc3MjMwMTQ3Mn0.Wusix_4Es_Act5ckscjmGAcn-okDMyhys3t0qkItHFQ";
+  const accessToken = store.getState().auth.accessToken;
+  // const accessToken =
+  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OTllZDZjNTRhMzZlZTlmOTJlYmM1YWYiLCJpYXQiOjE3NzIzNTY0ODYsImV4cCI6MTc3MjQ0Mjg4Nn0.dX4x7H6hyVuM82Ev2HKpIlhpznBiOWIWo0SfEhDnMrQ";
   if (accessToken) {
     // config.headers = config.headers || {};
     config.headers = config.headers ?? {};
