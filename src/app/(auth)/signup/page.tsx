@@ -4,15 +4,30 @@ import { SignupForm } from "@/components/Forms/SignupForm";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
   getUsernameSuggestions,
+  signupService,
   verifyUsername,
 } from "@/services/auth.services";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "@/lib/schemas/auth.schema";
 import { SignupFormValues } from "@/lib/schemas/auth.schema";
+import { signup } from "@/reduxSlices/auth/authSlice";
+import { useAppDispatch } from "@/store/hook";
+import { useRouter } from "next/navigation";
+import { requestOtp } from "@/services/auth.services";
 
 export default function Page() {
-  const onSubmit: SubmitHandler<SignupFormValues> = (data) => {
-    console.log(data);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const onSubmit: SubmitHandler<SignupFormValues> = async (data) => {
+    const { accessToken, user } = await signupService(data);
+    dispatch(signup({ user, accessToken }));
+    try {
+      await requestOtp(user.email);
+    } catch (err) {
+      console.error("Failed to send OTP:", err);
+    }
+    router.push("/signup/verify-email");
   };
 
   const form = useForm<SignupFormValues>({
@@ -26,15 +41,17 @@ export default function Page() {
       confirmPassword: "",
     },
   });
+
   const [usernameIndex, setUsernameIndex] = useState(1);
   const [usernameSuggestions, setUsernameSuggestions] = useState<string[]>([]);
   const [isUsernameValid, setIsUsernameValid] = useState<"ok" | "notOk">();
+
   const fetchUsernameSuggestions = async () => {
     const isDisplayNameValid = await form.trigger("displayName");
     if (!isDisplayNameValid) return;
     const displayName = form.getValues("displayName");
     const suggestions = await getUsernameSuggestions(displayName, 5);
-    setUsernameSuggestions((prev) => [...prev, ...suggestions]);
+    setUsernameSuggestions(suggestions);
     form.setValue("username", suggestions[0], {
       shouldValidate: false,
       shouldTouch: false,
@@ -69,7 +86,7 @@ export default function Page() {
         <SignupForm
           form={form}
           onSubmit={onSubmit}
-          onDisplayNameBlue={fetchUsernameSuggestions}
+          onDisplayNameBlur={fetchUsernameSuggestions}
           changeUsername={changeUsername}
           usernameIndex={usernameIndex}
           isUsernameValid={isUsernameValid}

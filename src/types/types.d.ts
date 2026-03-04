@@ -17,4 +17,12 @@ declare global {
     message: string;
     data: K;
   }
+  interface UserI {
+    username: string;
+    email: string;
+    displayName: string;
+    avatar: string;
+    isEmailVerified?: boolean;
+    role: "user" | "admin";
+  }
 }

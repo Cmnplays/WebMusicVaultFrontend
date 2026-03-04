@@ -21,7 +21,7 @@ import { SignupFormValues } from "@/lib/schemas/auth.schema";
 interface SignupFormProps {
   form: UseFormReturn<SignupFormValues>;
   onSubmit: SubmitHandler<SignupFormValues>;
-  onDisplayNameBlue: () => void;
+  onDisplayNameBlur: () => void;
   changeUsername: (index: number) => void;
   usernameIndex: number;
   isUsernameValid: "ok" | "notOk" | undefined;
@@ -31,7 +31,7 @@ interface SignupFormProps {
 export function SignupForm({
   form,
   onSubmit,
-  onDisplayNameBlue,
+  onDisplayNameBlur,
   changeUsername,
   usernameIndex,
   isUsernameValid,
@@ -57,7 +57,7 @@ export function SignupForm({
                 id="displayName"
                 type="text"
                 placeholder="John Doe"
-                onBlur={() => onDisplayNameBlue()}
+                onBlur={() => onDisplayNameBlur()}
               />
               {errors.displayName && (
                 <p className="text-sm text-red-500 mt-1">
@@ -183,7 +183,9 @@ export function SignupForm({
                       />
                     </svg>
                   </span>
-                  Sign up with Google
+                  <a href="http://localhost:3001/api/v1/auth/google">
+                    Sign up with Google
+                  </a>
                 </Button>
                 <FieldDescription className="px-6 text-center">
                   Already have an account? <a href="/login">Login</a>

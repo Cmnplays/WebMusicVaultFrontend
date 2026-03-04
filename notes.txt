@@ -1,2 +1,6 @@
 ok so added the share and add to favourites button, both the button works. Also added a likedSongs field in user model in the backend made apis for gettingASongLikedStatus and toggleAddToFav(liked).
 And, lastly added a page for playing song in a page with link which we share, so  there for now  nothing works just added the layout kinda thing, now when i do code   i'll read this and start from there. Also one thing added the slices or say basically added auth in the redux store for the login and logout things but   there the  type of user  is kaamchalau need to update that, will do when i finish this  main music page, then i   will do the login and signup page setups   and also that store and all.Lastly also found out that the like button(add to fav btn) is still laggy i mean  glitchy something is wrong so need to fix that
+
+
+
+so fixed the otp page, now one thing, the pages need to be secured, like otp page can't be acessed by anyone anytime there should be criteria. check claude code historoy for more knowledge

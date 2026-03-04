@@ -85,7 +85,7 @@ export function LoginForm({
                       />
                     </svg>
                   </span>
-                  Google
+                  <a href="http://localhost:3001/api/v1/auth/google">Google</a>
                 </Button>
               </Field>
 
