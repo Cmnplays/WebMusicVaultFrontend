@@ -1,5 +1,5 @@
 "use client";
-import VerifyEmailForm from "@/components/Forms/VerifyEmail";
+import VerifyEmailForm from "@/components/Forms/VerifyEmailForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { otpSchema } from "@/lib/schemas/auth.schema";
@@ -7,6 +7,8 @@ import { verifyEmail } from "@/services/auth.services";
 import { SubmitHandler } from "react-hook-form";
 import { useAppSelector } from "@/store/hook";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import type { OtpPage } from "@/components/Forms/VerifyEmailForm";
 
 const Page = () => {
   const form = useForm<{ otp: string }>({
@@ -27,8 +29,11 @@ const Page = () => {
       console.error("Failed to send OTP:", err);
     }
   };
-
-  return <VerifyEmailForm onSubmit={onSubmit} form={form} />;
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type") ?? "signup";
+  return (
+    <VerifyEmailForm onSubmit={onSubmit} form={form} type={type as OtpPage} />
+  );
 };
 
 export default Page;

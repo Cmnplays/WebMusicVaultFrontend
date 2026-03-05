@@ -6,8 +6,10 @@ import {
   setPasswordValues,
 } from "@/lib/schemas/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const form = useForm<setPasswordValues>({
     resolver: zodResolver(setPasswordSchema),
     mode: "onBlur",
@@ -18,7 +20,10 @@ const Page = () => {
   });
 
   const onSubmit: SubmitHandler<setPasswordValues> = async (data) => {
-    console.log({ data });
+    sessionStorage.setItem("password", data.password);
+    router.push(
+      `/verify-email?identifier=${data.identifier}&type=set-password`,
+    );
   };
 
   return (

@@ -27,7 +27,7 @@ export default function Page() {
     } catch (err) {
       console.error("Failed to send OTP:", err);
     }
-    router.push("/signup/verify-email");
+    router.push("/verify-email?type=signup");
   };
 
   const form = useForm<SignupFormValues>({
