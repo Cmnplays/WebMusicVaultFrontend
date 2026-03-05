@@ -53,7 +53,9 @@ const loginSchema = z.object({
 });
 
 const setPasswordSchema = z.object({
-  password: password,
+  identifier,
+  password,
+  otp,
   confirmPassword: password,
 });
 

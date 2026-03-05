@@ -1,9 +1,14 @@
-import { LoginFormValues, SignupFormValues } from "@/lib/schemas/auth.schema";
+import {
+  LoginFormValues,
+  SignupFormValues,
+  setPasswordValues,
+} from "@/lib/schemas/auth.schema";
 import api from "../lib/api";
 interface AuthResponseData {
   user: UserI;
   accessToken: string;
 }
+type setPasswordResponse = AuthResponseData;
 
 const getUsernameSuggestions = async (
   identifier: string,
@@ -122,6 +127,22 @@ const fetchUser = async (): Promise<UserI> => {
   return response.data.data;
 };
 
+const setPassword = async (
+  data: setPasswordValues,
+): Promise<setPasswordResponse> => {
+  const { confirmPassword, ...dataToSend } = data;
+  const response = await api.post<apiResponse<setPasswordResponse>>(
+    "/auth/set-password",
+    dataToSend,
+  );
+  if (response.data.status !== 201) {
+    throw new Error(
+      response.data.message || "There was a problem while registering user",
+    );
+  }
+  return response.data.data;
+};
+
 export {
   getUsernameSuggestions,
   verifyUsername,
@@ -131,4 +152,5 @@ export {
   verifyEmail,
   getAccessToken,
   fetchUser,
+  setPassword,
 };
