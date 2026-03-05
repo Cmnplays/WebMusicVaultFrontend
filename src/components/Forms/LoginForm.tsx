@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,31 +14,43 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { UseFormReturn, SubmitHandler, useFormState } from "react-hook-form";
+import { LoginFormValues } from "@/lib/schemas/auth.schema";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+interface SignupFormProps {
+  form: UseFormReturn<LoginFormValues>;
+  onSubmit: SubmitHandler<LoginFormValues>;
+}
+
+export function LoginForm({ form, onSubmit }: SignupFormProps) {
+  const { handleSubmit, register } = form;
+  const { errors } = useFormState({ control: form.control });
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form>
+    <Card>
+      <CardHeader>
+        <CardTitle>Login to your account</CardTitle>
+        <CardDescription>
+          Enter your email below to login to your account
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FieldGroup>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
+                  {...register("identifier")}
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="johndoe@example.com"
                   required
                 />
+                {errors.identifier && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.identifier.message}
+                  </p>
+                )}
               </Field>
               <Field>
                 <div className="flex items-center">
@@ -51,9 +62,24 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  {...register("password")}
+                  id="password"
+                  type="password"
+                  required
+                />
+                {errors.password && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
               </Field>
-              <FieldSeparator>Or continue with</FieldSeparator>
+              <Field>
+                <Button type="submit">Login</Button>
+              </Field>
+            </FieldGroup>
+            <FieldSeparator>Or continue with</FieldSeparator>
+            <FieldGroup>
               <Field>
                 <Button
                   variant="outline"
@@ -88,14 +114,14 @@ export function LoginForm({
                   <a href="http://localhost:3001/api/v1/auth/google">Google</a>
                 </Button>
               </Field>
-
-              <FieldDescription className="px-6 text-center">
-                Don&apos;t have an account? <a href="/signup">Register</a>
-              </FieldDescription>
             </FieldGroup>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+
+            <FieldDescription className="px-6 text-center">
+              Don&apos;t have an account? <a href="/signup">Register</a>
+            </FieldDescription>
+          </FieldGroup>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

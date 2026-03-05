@@ -52,5 +52,12 @@ const loginSchema = z.object({
   password,
 });
 
+const setPasswordSchema = z.object({
+  password: password,
+  confirmPassword: password,
+});
+
 export type SignupFormValues = z.infer<typeof registerSchema>;
-export { registerSchema, loginSchema, otpSchema };
+export type LoginFormValues = z.infer<typeof loginSchema>;
+export type setPasswordValues = z.infer<typeof setPasswordSchema>;
+export { registerSchema, loginSchema, otpSchema, setPasswordSchema };

@@ -2,10 +2,7 @@
 import { Share2 } from "lucide-react";
 import { useAppDispatch } from "@/store/hook";
 import { setMountShareModal, setPlaying } from "@/reduxSlices/song/songSlice";
-interface ShareSongProps {
-  songId: string;
-}
-const ShareSongBtn: React.FC<ShareSongProps> = ({ songId }) => {
+const ShareSongBtn: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const handleDelete = () => {

@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useAppDispatch } from "@/store/hook";
-import { setMountAuthPromptModal } from "@/reduxSlices/song/songSlice"; // update slice name as needed
+import { setMountAuthPromptModal } from "@/reduxSlices/song/songSlice";
 import { Button } from "../ui/button";
 import { Heart } from "lucide-react";
 import Link from "next/link";
@@ -41,34 +41,34 @@ const AuthPromptModal: React.FC<AuthPromptModalProps> = ({ onClose }) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-md px-4 text-foreground"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-md px-5 text-foreground"
       style={{ transformOrigin: "center" }}
       onClick={(e) => {
         if (e.target === e.currentTarget) handleClose();
       }}
     >
-      <div className="w-full max-w-md rounded-xl bg-card border border-border p-6 shadow-xl flex flex-col items-center gap-4 text-center">
-        <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-950 flex items-center justify-center">
+      <div className="w-full max-w-md rounded-xl bg-card border border-border p-5 sm:p-6 shadow-xl flex flex-col items-center gap-4 text-center">
+        <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-950 flex items-center justify-center shrink-0">
           <Heart className="w-6 h-6 text-red-500" />
         </div>
 
-        <div>
-          <h3 className="text-lg font-semibold text-foreground">
+        <div className="flex flex-col gap-1">
+          <h3 className="text-base sm:text-lg font-semibold text-foreground leading-snug">
             Like what you hear?
           </h3>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             Sign in or create an account to like songs and build your favourites
             collection.
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 w-full mt-1">
-          <Button asChild className="flex-1">
+        <div className="flex flex-col gap-2 w-full mt-1">
+          <Button asChild className="w-full">
             <Link href="/login" onClick={handleClose}>
               Sign in
             </Link>
           </Button>
-          <Button asChild variant="secondary" className="flex-1">
+          <Button asChild variant="secondary" className="w-full">
             <Link href="/signup" onClick={handleClose}>
               Create account
             </Link>

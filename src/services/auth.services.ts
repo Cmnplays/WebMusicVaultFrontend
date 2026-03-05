@@ -1,9 +1,10 @@
-import { SignupFormValues } from "@/lib/schemas/auth.schema";
+import { LoginFormValues, SignupFormValues } from "@/lib/schemas/auth.schema";
 import api from "../lib/api";
-interface SignupResponseData {
+interface AuthResponseData {
   user: UserI;
   accessToken: string;
 }
+
 const getUsernameSuggestions = async (
   identifier: string,
   noOfSuggestions: number,
@@ -42,9 +43,9 @@ const verifyUsername = async (username: string): Promise<boolean> => {
 
 const signupService = async (
   data: SignupFormValues,
-): Promise<SignupResponseData> => {
+): Promise<AuthResponseData> => {
   const { confirmPassword, ...dataToSend } = data;
-  const response = await api.post<apiResponse<SignupResponseData>>(
+  const response = await api.post<apiResponse<AuthResponseData>>(
     "/auth/signup",
     dataToSend,
   );
@@ -53,6 +54,16 @@ const signupService = async (
       response.data.message || "There was a problem while registering user",
     );
   }
+  return response.data.data;
+};
+
+const loginService = async (
+  data: LoginFormValues,
+): Promise<AuthResponseData> => {
+  const response = await api.post<apiResponse<AuthResponseData>>(
+    "/auth/login",
+    data,
+  );
   return response.data.data;
 };
 
@@ -75,7 +86,6 @@ const verifyEmail = async (data: {
   email: string;
   otp: string;
 }): Promise<void> => {
-  console.log(data);
   const response = await api.post<apiResponse<boolean>>(
     "/auth/verify-email",
     data,
@@ -92,20 +102,33 @@ const getAccessToken = async (): Promise<string> => {
   const response = await api.get<apiResponse<string>>("/auth/refresh-token", {
     withCredentials: true,
   });
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message ||
+        "There was a problem while getting username suggestions",
+    );
+  }
   return response.data.data;
 };
 
-const getUserDetails = async (): Promise<void> => {
-  const response = await api.get<apiResponse<string>>("/user/", {});
-  console.log(response.data.data);
+const fetchUser = async (): Promise<UserI> => {
+  const response = await api.get<apiResponse<UserI>>("/user/me");
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message ||
+        "There was a problem while getting username suggestions",
+    );
+  }
+  return response.data.data;
 };
 
 export {
   getUsernameSuggestions,
   verifyUsername,
   signupService,
+  loginService,
   requestOtp,
   verifyEmail,
   getAccessToken,
-  getUserDetails,
+  fetchUser,
 };

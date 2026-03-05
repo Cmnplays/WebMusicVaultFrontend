@@ -1,13 +1,20 @@
+"use client";
+import { useAppSelector } from "@/store/hook";
+import AuthLayout from "@/components/AuthLayout";
 import Navbar from "@/components/Navbar/Navbar";
-import React from "react";
+import AccountCard from "@/components/AccountPage/AccountPage";
 
-const Page = () => {
+export default function AccountPage() {
+  const user = useAppSelector((s) => s.auth.user) as UserI | null;
+
   return (
     <>
       <Navbar />
-      Account
+      <AuthLayout page="account">
+        <AccountCard
+        // data={{ ...(user as UserI), uploadedSongs: 1, favouriteSongs: 1 }}
+        />
+      </AuthLayout>
     </>
   );
-};
-
-export default Page;
+}

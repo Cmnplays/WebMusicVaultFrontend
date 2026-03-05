@@ -2,17 +2,26 @@
 import { useState } from "react";
 import { Heart } from "lucide-react";
 import { toggleAddToFav } from "@/services/song.services";
-import { useAppDispatch } from "@/store/hook";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { setSongLikedBy } from "@/reduxSlices/song/songSlice";
+import { setPlaying } from "@/reduxSlices/song/songSlice";
+import { setMountAuthPromptModal } from "@/reduxSlices/song/songSlice";
 interface AddToFavProps {
   songId: string;
   isLiked: boolean;
+  audioRef: AudioRef;
 }
 
-const AddToFav: React.FC<AddToFavProps> = ({ songId, isLiked }) => {
+const AddToFav: React.FC<AddToFavProps> = ({ songId, isLiked, audioRef }) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
+  const accessToken = useAppSelector((state) => state.auth.accessToken);
   const handleClick = async () => {
+    if (!audioRef.current) return;
+    if (!accessToken) {
+      dispatch(setMountAuthPromptModal(true));
+      return;
+    }
     if (loading) return;
     setLoading(true);
     try {

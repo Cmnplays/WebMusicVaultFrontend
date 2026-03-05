@@ -1,3 +1,4 @@
+import { ApiError } from "next/dist/server/api-utils";
 import React from "react";
 
 declare global {
@@ -24,5 +25,15 @@ declare global {
     avatar: string;
     isEmailVerified?: boolean;
     role: "user" | "admin";
+  }
+  interface ApiError extends Error {
+    response: {
+      status: number;
+      data: {
+        code?: string;
+        message?: string;
+        errors?: string[];
+      };
+    };
   }
 }

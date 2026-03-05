@@ -21,7 +21,6 @@ const DownloadConfirmation: React.FC<DownloadConfirmationProps> = ({
 
   useEffect(() => {
     if (!containerRef.current) return;
-
     gsap.fromTo(
       containerRef.current,
       { opacity: 0, scale: 0.95 },
@@ -29,21 +28,27 @@ const DownloadConfirmation: React.FC<DownloadConfirmationProps> = ({
     );
   }, []);
 
+  function animateOut(callback?: () => void) {
+    if (!containerRef.current) return;
+    gsap.to(containerRef.current, {
+      duration: 0.3,
+      opacity: 0,
+      scale: 0.95,
+      ease: "power2.in",
+      onComplete: () => {
+        dispatch(setMountDownloadConfirmation(false));
+        callback?.();
+      },
+    });
+  }
+
   function handleInput(download: boolean) {
     if (download) {
       handleDownload();
-      if (!containerRef.current) return;
-      gsap.to(containerRef.current, {
-        duration: 0.4,
-        opacity: 0,
-        scale: 0.95,
-        ease: "power2.in",
-        onComplete: () => {
-          if (onClose) onClose();
-        },
-      });
+      animateOut(onClose);
+    } else {
+      animateOut();
     }
-    dispatch(setMountDownloadConfirmation(false));
   }
 
   return (

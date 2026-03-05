@@ -23,7 +23,7 @@ const PanelTopControls: React.FC<PanelTopControlsProps> = ({
   return (
     <div className="flex w-full justify-around mb-2 lg:mb-2">
       <DeleteBtn audioRef={audioRef} />
-      <ShareSongBtn songId={songId} />
+      <ShareSongBtn />
       <ClosePanelBtn
         panelRef={panelRef}
         audioRef={audioRef}
@@ -31,7 +31,7 @@ const PanelTopControls: React.FC<PanelTopControlsProps> = ({
         fadeOutPanel={fadeOutPanel}
       />
       <DownloadBtn downloading={downloading} />
-      <AddToFav songId={songId} isLiked={isLiked} />
+      <AddToFav songId={songId} isLiked={isLiked} audioRef={audioRef} />
     </div>
   );
 };

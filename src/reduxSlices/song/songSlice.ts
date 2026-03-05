@@ -17,6 +17,7 @@ interface initialStateType {
   mountDeleteConfirmation: boolean;
   mountDownloadConfirmation: boolean;
   mountShareModal: boolean;
+  mountAuthPromptModal: boolean;
   statusText: string;
   repeat: repeatType;
   shuffle: boolean;
@@ -46,6 +47,7 @@ const initialState: initialStateType = {
   mountDeleteConfirmation: false,
   mountDownloadConfirmation: false,
   mountShareModal: false,
+  mountAuthPromptModal: false,
   statusText: "",
   repeat: "repeat",
   shuffle: false,
@@ -130,6 +132,9 @@ const songSlice = createSlice({
     },
     setMountShareModal: (state, action: PayloadAction<boolean>) => {
       state.mountShareModal = action.payload;
+    },
+    setMountAuthPromptModal: (state, action: PayloadAction<boolean>) => {
+      state.mountAuthPromptModal = action.payload;
     },
     setPanelOpen: (state, action: PayloadAction<boolean>) => {
       state.panelOpen = action.payload;
@@ -228,5 +233,6 @@ export const {
   settempTriggerFetch,
   setNavHeight,
   setSongLikedBy,
+  setMountAuthPromptModal,
 } = songSlice.actions;
 export default songSlice.reducer;

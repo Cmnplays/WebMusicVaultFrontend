@@ -15,36 +15,30 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { RotateCw, CircleCheck, CircleX } from "lucide-react";
-import { SignupFormValues } from "@/lib/schemas/auth.schema";
-
-interface SignupFormProps {
-  form: UseFormReturn<SignupFormValues>;
-  onSubmit: SubmitHandler<SignupFormValues>;
-  onDisplayNameBlur: () => void;
-  changeUsername: (index: number) => void;
-  usernameIndex: number;
-  isUsernameValid: "ok" | "notOk" | undefined;
-  checkUsernameValidity: () => Promise<void>;
+import { KeyRound } from "lucide-react";
+import { setPasswordValues } from "@/lib/schemas/auth.schema";
+interface SetPasswordFormProps {
+  form: UseFormReturn<setPasswordValues>;
+  onSubmit: SubmitHandler<setPasswordValues>;
 }
 
-export function SignupForm({
-  form,
-  onSubmit,
-  onDisplayNameBlur,
-  changeUsername,
-  usernameIndex,
-  isUsernameValid,
-  checkUsernameValidity,
-}: SignupFormProps) {
+export function SetPasswordForm({ form, onSubmit }: SetPasswordFormProps) {
   const { handleSubmit, register } = form;
   const { errors } = useFormState({ control: form.control });
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Create an account</CardTitle>
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+            <KeyRound className="w-4 h-4 text-muted-foreground" />
+          </div>
+        </div>
+        <CardTitle>Add a password to your account</CardTitle>
         <CardDescription>
-          Enter your information below to create your account
+          Looks like you signed in with Google before. You can set a password
+          now so you can also log in with your email next time — totally
+          optional, but handy.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -52,75 +46,7 @@ export function SignupForm({
           <FieldGroup>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="displayName">Full Name</FieldLabel>
-                <Input
-                  {...register("displayName")}
-                  id="displayName"
-                  type="text"
-                  placeholder="John Doe"
-                  onBlur={() => onDisplayNameBlur()}
-                />
-                {errors.displayName && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.displayName.message}
-                  </p>
-                )}
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  {...register("email")}
-                  id="email"
-                  type="email"
-                  placeholder="johndoe@example.com"
-                />
-                {errors.email && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="username">Username</FieldLabel>
-                <div className="relative w-full">
-                  <Input
-                    {...register("username")}
-                    id="username"
-                    type="text"
-                    placeholder="johndoe123"
-                    className="w-full pr-10"
-                    onBlur={() => checkUsernameValidity()}
-                  />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 gap-1.5 ">
-                    {/* {isChecking ? (
-                    <RotateCw className="w-5 h-5 shrink-0 text-muted-foreground animate-spin" />
-                  ) : isAvailable ? (
-                    <CircleCheck className="w-5 h-5 shrink-0 text-green-500" />
-                  ) : (
-                    <CircleX className="w-5 h-5 shrink-0 text-red-500" />
-                  )} */}
-                    {isUsernameValid === "ok" && (
-                      <CircleCheck className="w-5 h-5 shrink-0 text-green-500" />
-                    )}
-                    {isUsernameValid === "notOk" && (
-                      <CircleX className="w-5 h-5 shrink-0 text-red-500" />
-                    )}
-                    <RotateCw
-                      className={`w-5 h-5 shrink-0 text-muted-foreground`}
-                      onClick={() => {
-                        changeUsername(usernameIndex);
-                      }}
-                    />
-                  </div>
-                </div>
-                {errors.username && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.username.message}
-                  </p>
-                )}
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <FieldLabel htmlFor="password">New Password</FieldLabel>
                 <Input
                   {...register("password")}
                   id="password"
@@ -153,18 +79,20 @@ export function SignupForm({
                   </p>
                 )}
               </Field>
-
               <Field>
-                <Button type="submit">Create Account</Button>
+                <Button type="submit" className="w-full">
+                  Set Password
+                </Button>
               </Field>
             </FieldGroup>
+
             <FieldGroup>
               <FieldSeparator>Or continue with</FieldSeparator>
               <Field>
                 <Button
                   variant="outline"
                   type="button"
-                  className="flex items-center justify-center gap-2"
+                  className="flex items-center justify-center gap-2 w-full"
                 >
                   <span className="w-5 h-5 flex items-center">
                     <svg
@@ -192,11 +120,14 @@ export function SignupForm({
                     </svg>
                   </span>
                   <a href="http://localhost:3001/api/v1/auth/google">
-                    Sign up with Google
+                    Continue with Google
                   </a>
                 </Button>
-                <FieldDescription className="px-6 text-center">
-                  Already have an account? <a href="/login">Login</a>
+                <FieldDescription className="text-center">
+                  Just want to browse?{" "}
+                  <a href="/music" className="underline underline-offset-4">
+                    Skip for now
+                  </a>
                 </FieldDescription>
               </Field>
             </FieldGroup>

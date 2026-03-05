@@ -12,11 +12,12 @@ const Navbar = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
   const routesMap = [
-    { name: "Music", to: "/music" },
-    { name: "Upload", to: "/music/upload" },
-    { name: "Search", to: "/music/search" },
-    { name: "Shuffle", to: "/music/shuffle" },
+    { name: "Music", to: "/" },
+    { name: "Shuffle", to: "/shuffle" },
+    { name: "Search", to: "/search" },
+    { name: "Upload", to: "/upload" },
     { name: "About", to: "/about" },
+    { name: "Account", to: "/me" },
   ];
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
@@ -68,10 +69,7 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
         {/* Logo */}
-        <Link
-          href="/music"
-          className="flex items-center cursor-pointer select-none"
-        >
+        <Link href="/" className="flex items-center cursor-pointer select-none">
           {/* Mobile Logo */}
           <span className="flex items-center text-blue-600 lg:hidden tracking-tight">
             <span className="mr-1 font-bold italic text-3xl bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
