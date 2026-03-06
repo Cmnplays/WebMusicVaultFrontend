@@ -70,7 +70,7 @@ const loginService = async (
 
 interface RequestOtpType {
   identifier: string;
-  purpose: "verify-email" | "set-password" | "edit-password";
+  purpose: Purpose;
 }
 const requestOtp = async ({
   identifier,

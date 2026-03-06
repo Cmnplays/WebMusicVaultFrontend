@@ -1,5 +1,5 @@
 "use client";
-import VerifyEmailForm from "@/components/Forms/VerifyEmailForm";
+import { VerifyEmailForm } from "@/components/Forms/VerifyEmailForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { otpSchema } from "@/lib/schemas/auth.schema";
@@ -8,13 +8,12 @@ import { SubmitHandler } from "react-hook-form";
 import { useAppSelector } from "@/store/hook";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import type { OtpPage } from "@/components/Forms/VerifyEmailForm";
 import type { OtpSchemaType } from "@/lib/schemas/auth.schema";
 
 const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const type = searchParams.get("type") ?? "signup";
+  const purpose = searchParams.get("purpose") as Purpose;
   const identifier =
     useAppSelector((state) => state.auth.user?.email) ??
     searchParams.get("identifier");
@@ -28,7 +27,7 @@ const Page = () => {
 
   const onSubmit: SubmitHandler<OtpSchemaType> = async (data) => {
     try {
-      if (type === "set-password") {
+      if (purpose === "set-password" || purpose === "edit-password") {
         const password = sessionStorage.getItem("password");
         const dataToSend = {
           identifier: identifier as string,
@@ -43,13 +42,15 @@ const Page = () => {
     } catch (err) {
       console.error("Failed to send OTP:", err);
     } finally {
+      if (purpose === "edit-password") {
+        router.push("/login");
+        return;
+      }
       router.push("/");
     }
   };
 
-  return (
-    <VerifyEmailForm onSubmit={onSubmit} form={form} type={type as OtpPage} />
-  );
+  return <VerifyEmailForm onSubmit={onSubmit} form={form} purpose={purpose} />;
 };
 
 export default Page;

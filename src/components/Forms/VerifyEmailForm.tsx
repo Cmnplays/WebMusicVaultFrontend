@@ -21,18 +21,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export type OtpPage = "signup" | "set-password" | "edit-password";
+// export type OtpPage = "signup" | "password" | "edit-password";
 interface VerifyEmailProps {
   form: UseFormReturn<{ otp: string }>;
   onSubmit: SubmitHandler<{ otp: string }>;
-  type: OtpPage;
+  purpose: Purpose;
   requestOtp?: () => void;
 }
 
-export default function VerifyEmail({
+export function VerifyEmailForm({
   form,
   onSubmit,
-  type,
+  purpose,
   requestOtp,
 }: VerifyEmailProps) {
   const { handleSubmit, control } = form;
@@ -48,12 +48,12 @@ export default function VerifyEmail({
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Verify Your Email</CardTitle>
             <CardDescription className="text-center">
-              {type === "edit-password" &&
+              {purpose === "edit-password" &&
                 "You are updating your password. Enter the 6-digit code we sent to your email to confirm the change."}
-              {type === "set-password" &&
+              {purpose === "set-password" &&
                 "Create a password for your account by entering the 6-digit code sent to your email."}
-              {type === "signup" &&
-                "Enter the 6-digit code we sent to your email address."}
+              {purpose === "verify-email" &&
+                "Enter the 6-digit code we sent to your email address to verify your email."}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-6">

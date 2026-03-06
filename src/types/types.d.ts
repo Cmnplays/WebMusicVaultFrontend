@@ -36,4 +36,5 @@ declare global {
       };
     };
   }
+  type Purpose = "verify-email" | "set-password" | "edit-password";
 }

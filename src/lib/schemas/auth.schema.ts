@@ -35,6 +35,7 @@ const otp = z.coerce
   .length(6, "Otp must be combination of 6 numbers");
 
 const otpSchema = z.object({ otp });
+const emailSchema = z.object({ email });
 const registerSchema = z
   .object({
     displayName,
@@ -67,5 +68,12 @@ export type RegisterSchemaType = z.infer<typeof registerSchema>;
 export type LoginSchemaType = z.infer<typeof loginSchema>;
 export type SetPasswordSchemaType = z.infer<typeof setPasswordSchema>;
 export type OtpSchemaType = z.infer<typeof otpSchema>;
+export type EmailSchemaType = z.infer<typeof emailSchema>;
 
-export { registerSchema, loginSchema, otpSchema, setPasswordSchema };
+export {
+  registerSchema,
+  loginSchema,
+  otpSchema,
+  setPasswordSchema,
+  emailSchema,
+};

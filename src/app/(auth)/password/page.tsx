@@ -25,11 +25,12 @@ const Page = () => {
   const onSubmit: SubmitHandler<SetPasswordSchemaType> = async (data) => {
     sessionStorage.setItem("password", data.password);
     const identifier = searchParams.get("identifier");
+    const purpose = searchParams.get("purpose");
     await requestOtp({
       identifier: identifier as string,
-      purpose: "set-password",
+      purpose: purpose as Purpose,
     });
-    router.push(`/verify-email?identifier=${identifier}&type=set-password`);
+    router.push(`/verify-email?identifier=${identifier}&purpose=${purpose}`);
   };
 
   return (

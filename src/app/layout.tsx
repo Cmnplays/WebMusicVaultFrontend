@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Providers } from "@/components/Providers";
+import { StoreProvider } from "@/store/StoreProvider";
 import ScrollToTop from "@/components/ScrollToTop";
 
 export const metadata: Metadata = {
@@ -17,10 +17,10 @@ export default function RootLayout({
         {/* Background Layer - Like your React version */}
         <div className="fixed inset-0 -z-10" />
 
-        <Providers>
+        <StoreProvider>
           <ScrollToTop />
           {children}
-        </Providers>
+        </StoreProvider>
       </body>
     </html>
   );

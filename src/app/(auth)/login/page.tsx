@@ -31,7 +31,7 @@ export default function Page() {
       const status = apiError.response?.status;
       const code = apiError.response?.data.code;
       if (status === 403 && code === "GOOGLE_ACCOUNT") {
-        router.push(`/set-password?identifier=${data.identifier}`);
+        router.push(`/password?identifier=${data.identifier}`);
       }
     }
   };
