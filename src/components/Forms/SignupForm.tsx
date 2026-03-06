@@ -16,11 +16,11 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { RotateCw, CircleCheck, CircleX } from "lucide-react";
-import { SignupFormValues } from "@/lib/schemas/auth.schema";
+import { RegisterSchemaType } from "@/lib/schemas/auth.schema";
 
 interface SignupFormProps {
-  form: UseFormReturn<SignupFormValues>;
-  onSubmit: SubmitHandler<SignupFormValues>;
+  form: UseFormReturn<RegisterSchemaType>;
+  onSubmit: SubmitHandler<RegisterSchemaType>;
   onDisplayNameBlur: () => void;
   changeUsername: (index: number) => void;
   usernameIndex: number;

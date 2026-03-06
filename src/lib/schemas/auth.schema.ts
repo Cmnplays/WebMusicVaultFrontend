@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 const username = z
   .string()
   .trim()
@@ -52,14 +53,19 @@ const loginSchema = z.object({
   password,
 });
 
-const setPasswordSchema = z.object({
-  identifier,
-  password,
-  otp,
-  confirmPassword: password,
-});
+const setPasswordSchema = z
+  .object({
+    password,
+    confirmPassword: password,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
-export type SignupFormValues = z.infer<typeof registerSchema>;
-export type LoginFormValues = z.infer<typeof loginSchema>;
-export type setPasswordValues = z.infer<typeof setPasswordSchema>;
+export type RegisterSchemaType = z.infer<typeof registerSchema>;
+export type LoginSchemaType = z.infer<typeof loginSchema>;
+export type SetPasswordSchemaType = z.infer<typeof setPasswordSchema>;
+export type OtpSchemaType = z.infer<typeof otpSchema>;
+
 export { registerSchema, loginSchema, otpSchema, setPasswordSchema };

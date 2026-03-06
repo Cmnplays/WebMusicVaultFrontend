@@ -63,7 +63,6 @@ const SongPlayerPanel = ({
   // }, [playingSong]);
 
   if (!playingSong) return null;
-
   return (
     <div
       ref={panelRef}

@@ -15,11 +15,11 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn, SubmitHandler, useFormState } from "react-hook-form";
-import { LoginFormValues } from "@/lib/schemas/auth.schema";
+import { LoginSchemaType } from "@/lib/schemas/auth.schema";
 
 interface SignupFormProps {
-  form: UseFormReturn<LoginFormValues>;
-  onSubmit: SubmitHandler<LoginFormValues>;
+  form: UseFormReturn<LoginSchemaType>;
+  onSubmit: SubmitHandler<LoginSchemaType>;
 }
 
 export function LoginForm({ form, onSubmit }: SignupFormProps) {

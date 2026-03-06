@@ -3,14 +3,17 @@ import { SetPasswordForm } from "@/components/Forms/SetPasswordForm";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
   setPasswordSchema,
-  setPasswordValues,
+  SetPasswordSchemaType,
 } from "@/lib/schemas/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { requestOtp } from "@/services/auth.services";
 
 const Page = () => {
   const router = useRouter();
-  const form = useForm<setPasswordValues>({
+  const searchParams = useSearchParams();
+  const form = useForm<SetPasswordSchemaType>({
     resolver: zodResolver(setPasswordSchema),
     mode: "onBlur",
     defaultValues: {
@@ -19,11 +22,14 @@ const Page = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<setPasswordValues> = async (data) => {
+  const onSubmit: SubmitHandler<SetPasswordSchemaType> = async (data) => {
     sessionStorage.setItem("password", data.password);
-    router.push(
-      `/verify-email?identifier=${data.identifier}&type=set-password`,
-    );
+    const identifier = searchParams.get("identifier");
+    await requestOtp({
+      identifier: identifier as string,
+      purpose: "set-password",
+    });
+    router.push(`/verify-email?identifier=${identifier}&type=set-password`);
   };
 
   return (

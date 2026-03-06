@@ -9,7 +9,7 @@ import {
 } from "@/services/auth.services";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "@/lib/schemas/auth.schema";
-import { SignupFormValues } from "@/lib/schemas/auth.schema";
+import { RegisterSchemaType } from "@/lib/schemas/auth.schema";
 import { signup } from "@/reduxSlices/auth/authSlice";
 import { useAppDispatch } from "@/store/hook";
 import { useRouter } from "next/navigation";
@@ -19,18 +19,27 @@ export default function Page() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const onSubmit: SubmitHandler<SignupFormValues> = async (data) => {
-    const { accessToken, user } = await signupService(data);
-    dispatch(signup({ user, accessToken }));
+  const onSubmit: SubmitHandler<RegisterSchemaType> = async (data) => {
     try {
-      await requestOtp(user.email);
-    } catch (err) {
-      console.error("Failed to send OTP:", err);
+      const { accessToken, user } = await signupService(data);
+      dispatch(signup({ user, accessToken }));
+      try {
+        await requestOtp({ identifier: user.email, purpose: "verify-email" });
+      } catch (err) {
+        console.error("Failed to send OTP:", err);
+      }
+      router.push("/verify-email?type=signup"); //put this outside the try block of req otp cuz even if the otp fails to come the user can be given a msg of click on resend otp btn to send a new otp cuz there was a problem while sending otp previously
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      const status = apiError.response?.status;
+      const code = apiError.response?.data.code;
+      if (status === 403 && code === "GOOGLE_ACCOUNT") {
+        router.push(`/set-password?identifier=${data.email}`);
+      }
     }
-    router.push("/verify-email?type=signup");
   };
 
-  const form = useForm<SignupFormValues>({
+  const form = useForm<RegisterSchemaType>({
     resolver: zodResolver(registerSchema),
     mode: "onBlur",
     defaultValues: {

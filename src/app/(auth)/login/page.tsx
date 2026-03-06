@@ -1,7 +1,7 @@
 "use client";
 import { loginSchema } from "@/lib/schemas/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginFormValues } from "@/lib/schemas/auth.schema";
+import { LoginSchemaType } from "@/lib/schemas/auth.schema";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { loginService } from "@/services/auth.services";
 import { useAppDispatch } from "@/store/hook";
@@ -12,7 +12,7 @@ import { LoginForm } from "@/components/Forms/LoginForm";
 export default function Page() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const form = useForm<LoginFormValues>({
+  const form = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
     mode: "onBlur",
     defaultValues: {
@@ -21,7 +21,7 @@ export default function Page() {
     },
   });
 
-  const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
+  const onSubmit: SubmitHandler<LoginSchemaType> = async (data) => {
     try {
       const loginData = await loginService(data);
       dispatch(login(loginData));
@@ -31,7 +31,7 @@ export default function Page() {
       const status = apiError.response?.status;
       const code = apiError.response?.data.code;
       if (status === 403 && code === "GOOGLE_ACCOUNT") {
-        router.push("/set-password");
+        router.push(`/set-password?identifier=${data.identifier}`);
       }
     }
   };

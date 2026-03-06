@@ -1,8 +1,4 @@
-import {
-  LoginFormValues,
-  SignupFormValues,
-  setPasswordValues,
-} from "@/lib/schemas/auth.schema";
+import { LoginSchemaType, RegisterSchemaType } from "@/lib/schemas/auth.schema";
 import api from "../lib/api";
 interface AuthResponseData {
   user: UserI;
@@ -47,7 +43,7 @@ const verifyUsername = async (username: string): Promise<boolean> => {
 };
 
 const signupService = async (
-  data: SignupFormValues,
+  data: RegisterSchemaType,
 ): Promise<AuthResponseData> => {
   const { confirmPassword, ...dataToSend } = data;
   const response = await api.post<apiResponse<AuthResponseData>>(
@@ -63,7 +59,7 @@ const signupService = async (
 };
 
 const loginService = async (
-  data: LoginFormValues,
+  data: LoginSchemaType,
 ): Promise<AuthResponseData> => {
   const response = await api.post<apiResponse<AuthResponseData>>(
     "/auth/login",
@@ -72,11 +68,18 @@ const loginService = async (
   return response.data.data;
 };
 
-const requestOtp = async (email: string): Promise<void> => {
+interface RequestOtpType {
+  identifier: string;
+  purpose: "verify-email" | "set-password" | "edit-password";
+}
+const requestOtp = async ({
+  identifier,
+  purpose,
+}: RequestOtpType): Promise<void> => {
   const response = await api.post<apiResponse<boolean>>(
-    "/auth/request-otp?purpose=verify-email",
+    `/auth/request-otp?purpose=${purpose}`,
     {
-      email,
+      identifier,
     },
   );
   if (response.data.status !== 200) {
@@ -127,13 +130,17 @@ const fetchUser = async (): Promise<UserI> => {
   return response.data.data;
 };
 
+interface SetPasswordType {
+  identifier: string;
+  password: string;
+  otp: string;
+}
 const setPassword = async (
-  data: setPasswordValues,
+  data: SetPasswordType,
 ): Promise<setPasswordResponse> => {
-  const { confirmPassword, ...dataToSend } = data;
   const response = await api.post<apiResponse<setPasswordResponse>>(
     "/auth/set-password",
-    dataToSend,
+    data,
   );
   if (response.data.status !== 201) {
     throw new Error(

@@ -16,10 +16,10 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { KeyRound } from "lucide-react";
-import { setPasswordValues } from "@/lib/schemas/auth.schema";
+import { SetPasswordSchemaType } from "@/lib/schemas/auth.schema";
 interface SetPasswordFormProps {
-  form: UseFormReturn<setPasswordValues>;
-  onSubmit: SubmitHandler<setPasswordValues>;
+  form: UseFormReturn<SetPasswordSchemaType>;
+  onSubmit: SubmitHandler<SetPasswordSchemaType>;
 }
 
 export function SetPasswordForm({ form, onSubmit }: SetPasswordFormProps) {
