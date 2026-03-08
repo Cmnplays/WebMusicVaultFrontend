@@ -150,6 +150,17 @@ const setPassword = async (
   return response.data.data;
 };
 
+const logout = async (): Promise<void> => {
+  const response = await api.get<apiResponse<null>>("/auth/logout", {
+    withCredentials: true,
+  });
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message || "There was a problem while logging out",
+    );
+  }
+};
+
 export {
   getUsernameSuggestions,
   verifyUsername,
@@ -160,4 +171,5 @@ export {
   getAccessToken,
   fetchUser,
   setPassword,
+  logout,
 };

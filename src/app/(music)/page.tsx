@@ -59,7 +59,7 @@ const MusicPage: React.FC = () => {
 
   useEffect(() => {
     getUser({ dispatch, accessToken });
-  }, []);
+  }, [accessToken]);
   //for reseting some states when the page changes
   useEffect(() => {
     return () => {

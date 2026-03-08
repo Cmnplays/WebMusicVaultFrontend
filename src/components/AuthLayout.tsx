@@ -13,7 +13,7 @@ const AuthLayout: React.FC<AuthLayout> = ({ children, page }) => {
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   useEffect(() => {
     getUser({ dispatch, accessToken });
-  }, []);
+  }, [accessToken]);
 
   if (!accessToken) return <AuthPromptPage page={page} />;
   return <>{children}</>;

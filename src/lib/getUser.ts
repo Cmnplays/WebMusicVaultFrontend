@@ -8,13 +8,19 @@ interface GetUser {
 }
 export const getUser = async ({ dispatch, accessToken }: GetUser) => {
   try {
-    if (accessToken) return;
+    if (accessToken) {
+      console.log("See, here is accessToken", accessToken);
+      return;
+    }
+    console.log("See, here is accessToken", accessToken);
     dispatch(setLoading(true));
     const newAccessToken = await getAccessToken();
     dispatch(setAccessToken(newAccessToken));
     const user = await fetchUser();
     dispatch(setUserData(user));
   } catch (error) {
+    console.log(error);
+  } finally {
     dispatch(setLoading(false));
   }
 };

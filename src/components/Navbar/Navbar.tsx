@@ -5,8 +5,11 @@ import Link from "next/link.js";
 import gsap from "gsap";
 import { setNavHeight } from "@/reduxSlices/song/songSlice";
 import { useAppDispatch } from "@/store/hook";
-
+import { logout } from "@/services/auth.services";
+import { clearAuth } from "@/reduxSlices/auth/authSlice";
+import { useRouter } from "next/navigation";
 const Navbar = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -113,6 +116,18 @@ const Navbar = () => {
               ></NavItem>
             </li>
           ))}
+          <li>
+            <button
+              onClick={async () => {
+                await logout();
+                dispatch(clearAuth());
+                router.replace("/login");
+              }}
+              className="font-semibold text-lg text-red-500 hover:text-red-600 transition-colors"
+            >
+              Logout
+            </button>
+          </li>
         </ul>
 
         {/* Hamburger button */}
@@ -155,6 +170,18 @@ const Navbar = () => {
               ></NavItem>
             </li>
           ))}
+          <li className="border-t border-gray-100 pt-2">
+            <button
+              onClick={async () => {
+                await logout();
+                dispatch(clearAuth());
+                router.replace("/login");
+              }}
+              className="w-full text-left font-semibold text-lg text-red-500 hover:text-red-600 transition-colors"
+            >
+              Logout
+            </button>
+          </li>
         </ul>
       </div>
     </nav>
