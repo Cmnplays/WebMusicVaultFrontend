@@ -25,9 +25,9 @@ const storage =
 
 const rootReducer = combineReducers({ song: songSlice, auth: authSlice });
 const persistConfig = {
-  key: "root",
+  key: "auth",
   storage,
-  whitelist: ["auth"],
+  whitelist: ["user"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

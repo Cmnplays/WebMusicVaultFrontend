@@ -4,11 +4,13 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 interface initialStateType {
   user: UserI | null;
   accessToken: string | null;
+  shouldFetchUser: boolean;
 }
 
 const initialState: initialStateType = {
   user: null,
   accessToken: null,
+  shouldFetchUser: true,
 };
 
 const authSlice = createSlice({
@@ -39,9 +41,18 @@ const authSlice = createSlice({
     setUserData: (state, action: PayloadAction<UserI>) => {
       state.user = action.payload;
     },
+    toggleShouldFetchUser: (state, action: PayloadAction<boolean>) => {
+      state.shouldFetchUser = action.payload;
+    },
   },
 });
 
-export const { login, clearAuth, signup, setAccessToken, setUserData } =
-  authSlice.actions;
+export const {
+  login,
+  clearAuth,
+  signup,
+  setAccessToken,
+  setUserData,
+  toggleShouldFetchUser,
+} = authSlice.actions;
 export default authSlice.reducer;
