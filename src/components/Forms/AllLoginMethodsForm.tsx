@@ -31,12 +31,12 @@ export function AllLoginMethodsForm() {
               <FieldGroup>
                 <Field>
                   <Button variant="outline" asChild className="w-full">
-                    <Link href="/">Continue without an account</Link>
+                    <Link href="/">Continue as a guest</Link>
                   </Button>
                 </Field>
               </FieldGroup>
               <FieldGroup>
-                <FieldSeparator>Or sign in with</FieldSeparator>
+                <FieldSeparator>Or continue with</FieldSeparator>
                 <Field>
                   <Button
                     variant="outline"
@@ -78,7 +78,7 @@ export function AllLoginMethodsForm() {
                 </Field>
               </FieldGroup>
               <FieldGroup>
-                <FieldSeparator>Or log in with email</FieldSeparator>
+                <FieldSeparator>Or</FieldSeparator>
                 <Field>
                   <Button asChild className="w-full">
                     <Link href="/login/email">Log in with email</Link>

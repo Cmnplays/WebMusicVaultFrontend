@@ -23,8 +23,8 @@ export function AllSignupMethods() {
           <CardHeader>
             <CardTitle>Create an account</CardTitle>
             <CardDescription>
-              Sign up to like and upload songs, or continue as a guest to just
-              listen.
+              Sign up to like Songs, create Playlists and upload Songs, or
+              continue as a guest to just Listen.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -82,9 +82,9 @@ export function AllSignupMethods() {
               </FieldGroup>
 
               <FieldGroup>
-                <FieldSeparator>Or sign up with email</FieldSeparator>
+                <FieldSeparator>Or </FieldSeparator>
                 <Button type="submit" className="w-full">
-                  <Link href={"/signup/email"}>Sign Up</Link>
+                  <Link href={"/signup/email"}>Sign up with email</Link>
                 </Button>
                 <FieldDescription className="px-6 text-center">
                   Already have an account? <Link href="/login">Login</Link>
