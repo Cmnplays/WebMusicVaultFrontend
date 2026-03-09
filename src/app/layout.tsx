@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { StoreProvider } from "@/store/StoreProvider";
 import ScrollToTop from "@/components/ScrollToTop";
+import FetchUserLayout from "@/components/FetchUserLayout";
 
 export const metadata: Metadata = {
   title: "WebMusicVault",
@@ -14,12 +15,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`relative overflow-x-hidden`}>
-        {/* Background Layer - Like your React version */}
         <div className="fixed inset-0 -z-10" />
-
         <StoreProvider>
           <ScrollToTop />
-          {children}
+          <FetchUserLayout>{children}</FetchUserLayout>
         </StoreProvider>
       </body>
     </html>

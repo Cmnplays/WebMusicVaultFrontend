@@ -1,6 +1,6 @@
 "use client";
 import { useAppSelector } from "@/store/hook";
-import AuthLayout from "@/components/AuthLayout";
+import AuthLayout from "@/components/ProtectedLayout";
 import Navbar from "@/components/Navbar/Navbar";
 import AccountCard from "@/components/AccountPage/AccountPage";
 

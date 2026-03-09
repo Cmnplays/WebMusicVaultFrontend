@@ -19,7 +19,8 @@ import {
 import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
 import ShareSongModal from "@/components/Modal/ShareSongModal";
 import AuthPromptModal from "@/components/Modal/AuthPromptModal";
-import AuthLayout from "@/components/AuthLayout";
+import AuthLayout from "@/components/ProtectedLayout";
+import FetchUserLayout from "@/components/FetchUserLayout";
 
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -67,7 +68,7 @@ const MusicPage: React.FC = () => {
     };
   }, [dispatch]);
   return (
-    <AuthLayout authorization={false}>
+    <FetchUserLayout>
       <main
         className={`max-w-5xl mx-auto p-4 text-white ${playing && "mb-[192px]"}`}
       >
@@ -167,7 +168,7 @@ const MusicPage: React.FC = () => {
           </div>
         )}
       </main>
-    </AuthLayout>
+    </FetchUserLayout>
   );
 };
 

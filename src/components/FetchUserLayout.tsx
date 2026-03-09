@@ -1,21 +1,13 @@
 "use client";
-
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import React, { useEffect } from "react";
-import AuthPromptPage from "./screens/AuthPromptPage";
 import { getUser } from "@/lib/getUser";
 
-interface AuthLayout {
+interface FetchUserLayoutProps {
   children: React.ReactNode;
-  page?: "account" | "upload";
-  authorization?: boolean;
 }
 
-const AuthLayout: React.FC<AuthLayout> = ({
-  children,
-  page = "account",
-  authorization = true,
-}) => {
+const FetchUserLayout: React.FC<FetchUserLayoutProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
   const user = useAppSelector((state) => state.auth.user);
@@ -26,8 +18,7 @@ const AuthLayout: React.FC<AuthLayout> = ({
     getUser({ dispatch, username: user?.username });
   }, [shouldFetchUser, dispatch, user?.username]);
 
-  if (!user && authorization) return <AuthPromptPage page={page} />;
   return <>{children}</>;
 };
 
-export default AuthLayout;
+export default FetchUserLayout;
