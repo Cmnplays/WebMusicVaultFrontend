@@ -1,6 +1,6 @@
 "use client";
 import { useAppSelector } from "@/store/hook";
-import AuthLayout from "@/components/ProtectedLayout";
+import ProtectedLayout from "@/components/ProtectedLayout";
 import Navbar from "@/components/Navbar/Navbar";
 import AccountCard from "@/components/AccountPage/AccountPage";
 
@@ -9,12 +9,12 @@ export default function AccountPage() {
 
   return (
     <>
-      <Navbar />
-      <AuthLayout page="account">
+      <ProtectedLayout page="account">
+        <Navbar />
         <AccountCard
         // data={{ ...(user as UserI), uploadedSongs: 1, favouriteSongs: 1 }}
         />
-      </AuthLayout>
+      </ProtectedLayout>
     </>
   );
 }

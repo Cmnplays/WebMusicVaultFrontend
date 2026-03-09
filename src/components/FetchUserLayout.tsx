@@ -14,9 +14,8 @@ const FetchUserLayout: React.FC<FetchUserLayoutProps> = ({ children }) => {
 
   useEffect(() => {
     if (!shouldFetchUser) return;
-
     getUser({ dispatch, username: user?.username });
-  }, [shouldFetchUser, dispatch, user?.username]);
+  }, []);
 
   return <>{children}</>;
 };

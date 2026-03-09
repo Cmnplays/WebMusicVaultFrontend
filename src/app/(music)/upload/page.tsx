@@ -1,4 +1,5 @@
 "use client";
+import ProtectedLayout from "@/components/ProtectedLayout";
 import AuthLayout from "@/components/ProtectedLayout";
 import axios from "axios";
 import React, { useRef, useState } from "react";
@@ -91,7 +92,7 @@ const UploadPage: React.FC = () => {
     }
   };
   return (
-    <AuthLayout page="upload">
+    <ProtectedLayout page="upload">
       <div className="min-h-screen bg-transparent flex justify-center items-start p-4">
         <div className="w-full max-w-md bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl p-6 mt-8 flex flex-col gap-4 text-purple-100">
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-white drop-shadow">
@@ -203,7 +204,7 @@ const UploadPage: React.FC = () => {
           </div>
         )}
       </div>
-    </AuthLayout>
+    </ProtectedLayout>
   );
 };
 
