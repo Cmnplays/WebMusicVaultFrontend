@@ -9,38 +9,40 @@ import { fadeOutPanel } from "@/hooks/useAudioPlayer";
 import MusicHeader from "@/components/MusicPage/MusicPageHeader";
 import SongList from "@/components/SongList/SongList";
 import SongListSkeleton from "@/components/SongList/SongListSkeleton";
+import { setTempSongs } from "@/reduxSlices/song/songSlice";
 import {
-  setTempSongs,
   setPlaying,
   setPanelOpen,
   setPlayingSong,
-  setLoading,
-} from "@/reduxSlices/song/songSlice";
+} from "@/reduxSlices/player/playerSlice";
+import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
 import ShareSongModal from "@/components/Modal/ShareSongModal";
 import AuthPromptModal from "@/components/Modal/AuthPromptModal";
 
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const statusText = useAppSelector((state) => state.song.statusText);
+  const statusText = useAppSelector((state) => state.ui.statusText);
   const songs = useAppSelector((state) => state.song.songs);
-  const loading = useAppSelector((state) => state.song.loading);
-  const playing = useAppSelector((state) => state.song.playing);
-  const downloading = useAppSelector((state) => state.song.downloading);
-  const deleting = useAppSelector((state) => state.song.deleting);
+  const loading = useAppSelector((state) => state.ui.loading);
+  const playing = useAppSelector((state) => state.player.playing);
+  const playingSong = useAppSelector((state) => state.player.playingSong);
+
+  const downloading = useAppSelector((state) => state.ui.downloading);
+  const deleting = useAppSelector((state) => state.ui.deleting);
   const mountDeleteConfirmation = useAppSelector(
-    (state) => state.song.mountDeleteConfirmation,
+    (state) => state.ui.mountDeleteConfirmation,
   );
   const mountDownloadConfirmation = useAppSelector(
-    (state) => state.song.mountDownloadConfirmation,
+    (state) => state.ui.mountDownloadConfirmation,
   );
-  const mountShareModal = useAppSelector((state) => state.song.mountShareModal);
+  const mountShareModal = useAppSelector((state) => state.ui.mountShareModal);
   const mountAuthPromptModal = useAppSelector(
-    (state) => state.song.mountAuthPromptModal,
+    (state) => state.ui.mountAuthPromptModal,
   );
+
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
   const sortBy = useAppSelector((state) => state.song.sortBy);
-  const playingSong = useAppSelector((state) => state.song.playingSong);
   const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
 
   const audioRef = useRef<HTMLAudioElement>(null);

@@ -1,6 +1,5 @@
 "use client";
 import ProtectedLayout from "@/components/ProtectedLayout";
-import AuthLayout from "@/components/ProtectedLayout";
 import axios from "axios";
 import React, { useRef, useState } from "react";
 const apiBase = process.env.NEXT_PUBLIC_API_URL;

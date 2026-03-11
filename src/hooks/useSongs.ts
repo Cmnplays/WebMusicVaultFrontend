@@ -8,10 +8,6 @@ import axios from "axios";
 import { fadeOutPanel } from "./useAudioPlayer";
 import {
   setSongs,
-  setStatusText,
-  setLoading,
-  setPanelOpen,
-  setPlayingSong,
   handleSortByChange,
   setSortChanged,
   setSortOrder,
@@ -19,6 +15,8 @@ import {
   setNextCursor,
   setSortBy,
 } from "../reduxSlices/song/songSlice";
+import { setStatusText, setLoading } from "@/reduxSlices/ui/uiSlice";
+import { setPanelOpen, setPlayingSong } from "@/reduxSlices/player/playerSlice";
 
 export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
   const dispatch = useAppDispatch();

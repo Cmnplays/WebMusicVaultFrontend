@@ -14,7 +14,7 @@ import {
   setDuration,
   setCurrentTime,
   setPanelTrigger,
-} from "../reduxSlices/song/songSlice";
+} from "../reduxSlices/player/playerSlice";
 
 export const fadeOutPanel = (
   panelElement: HTMLDivElement,
@@ -45,11 +45,11 @@ export const useAudioPlayer = ({
   customFns?: customFnType;
 }) => {
   const dispatch = useAppDispatch();
-  const panelOpen = useAppSelector((state) => state.song.panelOpen);
-  const playing = useAppSelector((state) => state.song.playing);
-  const repeat = useAppSelector((state) => state.song.repeat);
-  const shuffle = useAppSelector((state) => state.song.shuffle);
-  const playingSong = useAppSelector((state) => state.song.playingSong);
+  const panelOpen = useAppSelector((state) => state.player.panelOpen);
+  const playing = useAppSelector((state) => state.player.playing);
+  const repeat = useAppSelector((state) => state.player.repeat);
+  const shuffle = useAppSelector((state) => state.player.shuffle);
+  const playingSong = useAppSelector((state) => state.player.playingSong);
 
   //    Play or pause audio based on playingSong change
   useEffect(() => {

@@ -12,7 +12,7 @@ const AuthPromptPage = ({
   feature = "this page",
   page,
 }: AuthPromptPageProps) => {
-  const loading = useAppSelector((state) => state.song.loading);
+  const loading = useAppSelector((state) => state.ui.loading);
   if (loading && page === "account") return <AccountSkeleton />;
   return (
     <div className="flex min-h-svh w-full items-center justify-center px-5 py-10">

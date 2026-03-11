@@ -30,14 +30,14 @@ const SongPlayerPanel = ({
   fadeOutPanel,
   excludeTopControls = false,
 }: SongPanelProps) => {
-  const playing = useAppSelector((state) => state.song.playing);
-  const duration = useAppSelector((state) => state.song.duration);
-  const currentTime = useAppSelector((state) => state.song.currentTime);
-  const panelTrigger = useAppSelector((state) => state.song.panelTrigger);
-  const playingSong = useAppSelector((state) => state.song.playingSong);
-  const downloading = useAppSelector((state) => state.song.downloading);
-  const repeat = useAppSelector((state) => state.song.repeat);
-  const shuffle = useAppSelector((state) => state.song.shuffle);
+  const playing = useAppSelector((state) => state.player.playing);
+  const duration = useAppSelector((state) => state.player.duration);
+  const currentTime = useAppSelector((state) => state.player.currentTime);
+  const panelTrigger = useAppSelector((state) => state.player.panelTrigger);
+  const playingSong = useAppSelector((state) => state.player.playingSong);
+  const downloading = useAppSelector((state) => state.ui.downloading);
+  const repeat = useAppSelector((state) => state.player.repeat);
+  const shuffle = useAppSelector((state) => state.player.shuffle);
 
   const handleSliderChange = useHandleSliderChange(audioRef);
 

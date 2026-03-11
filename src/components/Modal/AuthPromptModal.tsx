@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useAppDispatch } from "@/store/hook";
-import { setMountAuthPromptModal } from "@/reduxSlices/song/songSlice";
+import { setMountAuthPromptModal } from "@/reduxSlices/ui/uiSlice";
 import { Button } from "../ui/button";
 import { Heart } from "lucide-react";
 import Link from "next/link";

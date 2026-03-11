@@ -4,7 +4,7 @@ import { Heart } from "lucide-react";
 import { toggleAddToFav } from "@/services/song.services";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { setSongLikedBy } from "@/reduxSlices/song/songSlice";
-import { setMountAuthPromptModal } from "@/reduxSlices/song/songSlice";
+import { setMountAuthPromptModal } from "@/reduxSlices/ui/uiSlice";
 interface AddToFavProps {
   songId: string;
   isLiked: boolean;

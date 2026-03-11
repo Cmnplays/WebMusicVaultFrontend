@@ -1,6 +1,6 @@
 "use client";
 import { useAppDispatch } from "@/store/hook";
-import { setMountDownloadConfirmation } from "@/reduxSlices/song/songSlice";
+import { setMountDownloadConfirmation } from "@/reduxSlices/ui/uiSlice";
 import { Download } from "lucide-react";
 interface DownloadBtnProps {
   downloading: boolean;

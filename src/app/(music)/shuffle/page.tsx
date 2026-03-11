@@ -3,46 +3,44 @@ import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import { getRandomSong, type Song } from "@/services/song.services";
-import {
-  setMountDownloadConfirmation,
-  setPanelOpen,
-  setLoading,
-} from "@/reduxSlices/song/songSlice";
-import { formatDuration } from "@/components/formatDuration";
 import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
 import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
-import {
-  setMountDeleteConfirmation,
-  setPlaying,
-  setPlayingSong,
-} from "@/reduxSlices/song/songSlice";
 import { useHandleSliderChange } from "@/components/useHandleSliderChange";
-import Marquee from "react-fast-marquee";
 import SongPlayerPanel from "@/components/ShufflePage/PlayerPanel";
 import RecentlyPlayedPanel from "@/components/ShufflePage/RecentlyPlayedPanel";
 
+import { setLoading } from "@/reduxSlices/ui/uiSlice";
+import {
+  setPlaying,
+  setPlayingSong,
+  setPanelOpen,
+} from "@/reduxSlices/player/playerSlice";
 const ShufflePlayer = () => {
-  const playingSong = useAppSelector((state) => state.song.playingSong);
+  const dispatch = useAppDispatch();
+
+  const playingSong = useAppSelector((state) => state.player.playingSong);
+  const playing = useAppSelector((state) => state.player.playing);
+  const currentTime = useAppSelector((state) => state.player.currentTime);
+  const duration = useAppSelector((state) => state.player.duration);
+
+  const downloading = useAppSelector((state) => state.ui.downloading);
+  const deleting = useAppSelector((state) => state.ui.deleting);
+  const loading = useAppSelector((state) => state.ui.loading);
+
+  const mountDeleteConfirmation = useAppSelector(
+    (state) => state.ui.mountDeleteConfirmation,
+  );
+  const mountDownloadConfirmation = useAppSelector(
+    (state) => state.ui.mountDownloadConfirmation,
+  );
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const dispatch = useAppDispatch();
-  const playing = useAppSelector((state) => state.song.playing);
-  const currentTime = useAppSelector((state) => state.song.currentTime);
-  const duration = useAppSelector((state) => state.song.duration);
-  const downloading = useAppSelector((state) => state.song.downloading);
   const [triggerNext, setTriggerNext] = useState(false);
   const [previousSongs, setPreviousSongs] = useState<Song[]>([]);
   const handleSliderChange = useHandleSliderChange(audioRef);
   const listRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
-  const loading = useAppSelector((state) => state.song.loading);
-  const deleting = useAppSelector((state) => state.song.deleting);
-  const mountDeleteConfirmation = useAppSelector(
-    (state) => state.song.mountDeleteConfirmation,
-  );
-  const mountDownloadConfirmation = useAppSelector(
-    (state) => state.song.mountDownloadConfirmation,
-  );
 
   useEffect(() => {
     const returnRandSong = async () => {

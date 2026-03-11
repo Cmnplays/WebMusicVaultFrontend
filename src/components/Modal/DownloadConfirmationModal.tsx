@@ -2,7 +2,7 @@
 import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useHandleDownload } from "@/hooks/useHandleDownload";
-import { setMountDownloadConfirmation } from "@/reduxSlices/song/songSlice";
+import { setMountDownloadConfirmation } from "@/reduxSlices/ui/uiSlice";
 import { useAppDispatch } from "@/store/hook";
 import { Button } from "../ui/button";
 

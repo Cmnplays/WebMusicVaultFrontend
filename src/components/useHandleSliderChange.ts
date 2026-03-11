@@ -1,7 +1,7 @@
 import { useAppDispatch } from "../store/hook";
-import { setCurrentTime } from "../reduxSlices/song/songSlice";
+import { setCurrentTime } from "../reduxSlices/player/playerSlice";
 export const useHandleSliderChange = (
-  audioRef: React.RefObject<HTMLAudioElement | null>
+  audioRef: React.RefObject<HTMLAudioElement | null>,
 ) => {
   const dispatch = useAppDispatch();
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {

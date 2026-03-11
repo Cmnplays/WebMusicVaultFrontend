@@ -3,8 +3,9 @@ import { useRef, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import {
   setTriggerFetch,
-  settempTriggerFetch,
+  setTempTriggerFetch,
 } from "../reduxSlices/song/songSlice";
+import {} from "@/reduxSlices/player/playerSlice";
 const useInfiniteScroll = ({
   isTemp = false,
   sentinelRef,
@@ -12,7 +13,7 @@ const useInfiniteScroll = ({
   isTemp?: boolean;
   sentinelRef: React.RefObject<HTMLDivElement | null>;
 }) => {
-  const loading = useAppSelector((state) => state.song.loading);
+  const loading = useAppSelector((state) => state.ui.loading);
   const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
   const tempHasMoreSongs = useAppSelector(
     (state) => state.song.tempHasMoreSongs,
@@ -33,7 +34,7 @@ const useInfiniteScroll = ({
         }
         if (isTemp) {
           if (!tempHasMoreSongs) return;
-          dispatch(settempTriggerFetch());
+          dispatch(setTempTriggerFetch());
           return;
         }
         if (!hasMoreSongs) return;

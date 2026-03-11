@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Button } from "@/components/ui/button";
-import { setMountShareModal } from "@/reduxSlices/song/songSlice";
+import { setMountShareModal } from "@/reduxSlices/ui/uiSlice";
 import { useAppDispatch } from "@/store/hook";
 import { Copy, Check, X } from "lucide-react";
 

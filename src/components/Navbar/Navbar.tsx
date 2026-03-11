@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { NavItem } from "./NavItem";
 import Link from "next/link.js";
 import gsap from "gsap";
-import { setNavHeight } from "@/reduxSlices/song/songSlice";
+import { setNavHeight } from "@/reduxSlices/ui/uiSlice";
 import { useAppDispatch } from "@/store/hook";
 import { logout } from "@/services/auth.services";
 import { clearAuth } from "@/reduxSlices/auth/authSlice";

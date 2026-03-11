@@ -5,7 +5,7 @@ import {
   setUserData,
   toggleShouldFetchUser,
 } from "@/reduxSlices/auth/authSlice";
-import { setLoading } from "@/reduxSlices/song/songSlice";
+import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import { fetchUser, getAccessToken } from "@/services/auth.services";
 
 interface GetUser {

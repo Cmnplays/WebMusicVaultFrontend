@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useAppDispatch } from "@/store/hook";
-import { setRepeat } from "@/reduxSlices/song/songSlice";
+import { setRepeat } from "@/reduxSlices/player/playerSlice";
 import { repeatType } from "@/hooks/useAudioPlayer";
 import { Repeat, Repeat1 } from "lucide-react";
 

@@ -1,9 +1,7 @@
 "use client";
 import { useAppDispatch } from "@/store/hook";
-import {
-  setPlaying,
-  setMountDeleteConfirmation,
-} from "@/reduxSlices/song/songSlice";
+import { setPlaying } from "@/reduxSlices/player/playerSlice";
+import { setMountDeleteConfirmation } from "@/reduxSlices/ui/uiSlice";
 import { Trash } from "lucide-react";
 interface DeleteBtnProps {
   audioRef: AudioRef;

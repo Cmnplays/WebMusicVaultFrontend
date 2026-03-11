@@ -4,11 +4,13 @@ import gsap from "gsap";
 import { deleteSong } from "../../services/song.services";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import {
-  setDeleting,
-  setMountDeleteConfirmation,
   deleteSong as excludeSong,
   deleteTempSong as excludeTempSong,
-} from "../../reduxSlices/song/songSlice";
+} from "@/reduxSlices/song/songSlice";
+import {
+  setDeleting,
+  setMountDeleteConfirmation,
+} from "@/reduxSlices/ui/uiSlice";
 import { Button } from "@/components/ui/button";
 
 interface DeleteConfirmationProps {
@@ -27,7 +29,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
   customExcludeFn,
 }) => {
   const dispatch = useAppDispatch();
-  const deleting = useAppSelector((state) => state.song.deleting);
+  const deleting = useAppSelector((state) => state.ui.deleting);
 
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");

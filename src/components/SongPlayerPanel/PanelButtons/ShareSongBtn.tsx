@@ -1,7 +1,8 @@
 "use client";
 import { Share2 } from "lucide-react";
 import { useAppDispatch } from "@/store/hook";
-import { setMountShareModal, setPlaying } from "@/reduxSlices/song/songSlice";
+import { setMountShareModal } from "@/reduxSlices/ui/uiSlice";
+import { setPlaying } from "@/reduxSlices/player/playerSlice";
 const ShareSongBtn: React.FC = () => {
   const dispatch = useAppDispatch();
 

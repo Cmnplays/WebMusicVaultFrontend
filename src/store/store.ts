@@ -2,6 +2,8 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import songSlice from "@/reduxSlices/song/songSlice";
 import authSlice from "@/reduxSlices/auth/authSlice";
+import playerSlice from "@/reduxSlices/player/playerSlice";
+import uiSlice from "@/reduxSlices/ui/uiSlice";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 
 const createNoopStorage = () => {
@@ -23,7 +25,12 @@ const storage =
     ? createWebStorage("local")
     : createNoopStorage();
 
-const rootReducer = combineReducers({ song: songSlice, auth: authSlice });
+const rootReducer = combineReducers({
+  song: songSlice,
+  auth: authSlice,
+  player: playerSlice,
+  ui: uiSlice,
+});
 const persistConfig = {
   key: "auth",
   storage,

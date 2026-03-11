@@ -4,40 +4,43 @@ import { searchSong } from "@/services/song.services";
 import type { songsReturnType } from "@/services/song.services";
 import SongList from "@/components/SongList/SongList";
 import { useAppSelector, useAppDispatch } from "@/store/hook";
-import SongPlayerPanel from "@/components/SongPlayerPanel";
+import SongPlayerPanel from "@/components/ShufflePage/PlayerPanel";
 import { fadeOutPanel } from "@/hooks/useAudioPlayer";
+import { useAudioPlayer } from "@/hooks/useAudioPlayer";
+import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
+import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
+import SearchInput from "@/components/SearchInput";
+import axios from "axios";
+
+import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import {
-  setLoading,
-  setPanelOpen,
-  setPlaying,
-  setPlayingSong,
   setTempSongs,
   replaceTempSongs,
   setTempHasMoreSongs,
   setTempNextCursor,
 } from "@/reduxSlices/song/songSlice";
-import { useAudioPlayer } from "@/hooks/useAudioPlayer";
-import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
-import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
-import axios from "axios";
-import SearchInput from "@/components/SearchInput";
+import {
+  setPanelOpen,
+  setPlaying,
+  setPlayingSong,
+} from "@/reduxSlices/player/playerSlice";
 
 const SearchSongs = () => {
+  const dispatch = useAppDispatch();
   const searchedSongs = useAppSelector((state) => state.song.tempSongs);
-  const playing = useAppSelector((state) => state.song.playing);
-  const playingSong = useAppSelector((state) => state.song.playingSong);
-  const loading = useAppSelector((state) => state.song.loading);
+  const playing = useAppSelector((state) => state.player.playing);
+  const playingSong = useAppSelector((state) => state.player.playingSong);
+  const loading = useAppSelector((state) => state.ui.loading);
   const tempNextCursor = useAppSelector((state) => state.song.tempNextCursor);
   const hasMoreSongs = useAppSelector((state) => state.song.tempHasMoreSongs);
-  const downloading = useAppSelector((state) => state.song.downloading);
-  const deleting = useAppSelector((state) => state.song.deleting);
+  const downloading = useAppSelector((state) => state.ui.downloading);
+  const deleting = useAppSelector((state) => state.ui.deleting);
   const mountDeleteConfirmation = useAppSelector(
-    (state) => state.song.mountDeleteConfirmation,
+    (state) => state.ui.mountDeleteConfirmation,
   );
   const mountDownloadConfirmation = useAppSelector(
-    (state) => state.song.mountDownloadConfirmation,
+    (state) => state.ui.mountDownloadConfirmation,
   );
-  const dispatch = useAppDispatch();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
