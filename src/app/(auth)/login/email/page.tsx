@@ -8,6 +8,10 @@ import { useAppDispatch } from "@/store/hook";
 import { login } from "@/reduxSlices/auth/authSlice";
 import { useRouter } from "next/navigation";
 import { EmailLoginForm } from "@/components/Forms/EmailLoginForm";
+import { setLoading } from "@/reduxSlices/ui/uiSlice";
+import { toastList } from "@/lib/toastList";
+import { ErrorCode } from "@/constants/ErrorCode";
+import { StatusCode } from "@/constants/StatusCode";
 
 export default function Page() {
   const dispatch = useAppDispatch();
@@ -23,16 +27,36 @@ export default function Page() {
 
   const onSubmit: SubmitHandler<LoginSchemaType> = async (data) => {
     try {
+      dispatch(setLoading(true));
       const loginData = await loginService(data);
       dispatch(login(loginData));
+      toastList.loginSuccess();
       router.push("/");
     } catch (error: unknown) {
       const apiError = error as ApiError;
       const status = apiError.response?.status;
       const code = apiError.response?.data.code;
-      if (status === 403 && code === "GOOGLE_ACCOUNT") {
-        router.push(`/password?identifier=${data.identifier}`);
+
+      switch (status) {
+        case StatusCode.BadRequest:
+          if (code === ErrorCode.VALIDATION_ERROR) {
+            toastList.validationError();
+          } else {
+            toastList.invalidCredentials();
+          }
+          break;
+        case StatusCode.Unauthorized:
+          toastList.invalidCredentials();
+          break;
+        case StatusCode.Forbidden:
+          if (code === ErrorCode.GOOGLE_ACCOUNT) {
+            router.push(`/password?identifier=${data.identifier}`);
+            toastList.googleAccount();
+          }
+          break;
       }
+    } finally {
+      dispatch(setLoading(false));
     }
   };
   return (

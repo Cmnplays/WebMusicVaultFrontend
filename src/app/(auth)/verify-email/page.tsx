@@ -5,13 +5,15 @@ import { useForm } from "react-hook-form";
 import { otpSchema } from "@/lib/schemas/auth.schema";
 import { setPassword, verifyEmail } from "@/services/auth.services";
 import { SubmitHandler } from "react-hook-form";
-import { useAppSelector } from "@/store/hook";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import type { OtpSchemaType } from "@/lib/schemas/auth.schema";
+import { setLoading } from "@/reduxSlices/ui/uiSlice";
 
 const Page = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const purpose = searchParams.get("purpose") as Purpose;
   const identifier =
@@ -27,6 +29,7 @@ const Page = () => {
 
   const onSubmit: SubmitHandler<OtpSchemaType> = async (data) => {
     try {
+      dispatch(setLoading(true));
       if (purpose === "set-password" || purpose === "edit-password") {
         const password = sessionStorage.getItem("password");
         const dataToSend = {
@@ -42,6 +45,7 @@ const Page = () => {
     } catch (err) {
       console.error("Failed to send OTP:", err);
     } finally {
+      dispatch(setLoading(false));
       if (purpose === "edit-password") {
         router.push("/login");
         return;

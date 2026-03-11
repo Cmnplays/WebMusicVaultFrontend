@@ -14,6 +14,7 @@ import { signup } from "@/reduxSlices/auth/authSlice";
 import { useAppDispatch } from "@/store/hook";
 import { useRouter } from "next/navigation";
 import { requestOtp } from "@/services/auth.services";
+import { setLoading } from "@/reduxSlices/ui/uiSlice";
 
 export default function Page() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function Page() {
 
   const onSubmit: SubmitHandler<RegisterSchemaType> = async (data) => {
     try {
+      dispatch(setLoading(true));
       const { accessToken, user } = await signupService(data);
       dispatch(signup({ user, accessToken }));
       try {
@@ -36,6 +38,8 @@ export default function Page() {
       if (status === 403 && code === "GOOGLE_ACCOUNT") {
         router.push(`/password?identifier=${data.email}`);
       }
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 

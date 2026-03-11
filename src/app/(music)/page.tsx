@@ -19,6 +19,7 @@ import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
 import ShareSongModal from "@/components/Modal/ShareSongModal";
 import AuthPromptModal from "@/components/Modal/AuthPromptModal";
+import { showToast, showToastProps } from "@/hooks/useToast";
 
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -48,6 +49,8 @@ const MusicPage: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
+  const toast = useAppSelector((state) => state.ui.toast);
+
   const {
     handlePlayClick,
     handleAudioEnded,
@@ -67,6 +70,11 @@ const MusicPage: React.FC = () => {
       dispatch(setLoading(false));
     };
   }, [dispatch]);
+
+  //toast messages
+  useEffect(() => {
+    showToast(toast as showToastProps);
+  }, [toast]);
   return (
     <main
       className={`max-w-5xl mx-auto p-4 text-white ${playing && "mb-[192px]"}`}

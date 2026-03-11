@@ -3,10 +3,20 @@ import { useAppSelector } from "@/store/hook";
 import { useRouter } from "next/navigation";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const loading = useAppSelector((state) => state.ui.loading);
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   if (accessToken) {
     router.replace("/");
     return;
   }
-  return <div className="bg-zinc-950">{children}</div>;
+  return (
+    <div className="bg-zinc-950">
+      {children}
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
+        </div>
+      )}
+    </div>
+  );
 }
