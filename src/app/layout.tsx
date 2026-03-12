@@ -4,6 +4,7 @@ import { StoreProvider } from "@/store/StoreProvider";
 import ScrollToTop from "@/components/ScrollToTop";
 import FetchUserLayout from "@/components/FetchUserLayout";
 import { Toaster } from "@/components/ui/sonner";
+import AuthCallbackHandler from "@/components/AuthCbHandler";
 
 export const metadata: Metadata = {
   title: "WebMusicVault",
@@ -21,6 +22,7 @@ export default function RootLayout({
           <ScrollToTop />
           <FetchUserLayout>{children}</FetchUserLayout>
           <Toaster />
+          <AuthCallbackHandler />
         </StoreProvider>
       </body>
     </html>

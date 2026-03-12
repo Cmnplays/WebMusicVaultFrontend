@@ -10,15 +10,24 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import type { OtpSchemaType } from "@/lib/schemas/auth.schema";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
+import { StatusCode } from "@/constants/StatusCode";
+import { ErrorCode } from "@/constants/ErrorCode";
+import { toastList } from "@/lib/toastList";
+import {
+  toggleShouldAccessAuthLayer,
+  toggleShouldFetchUser,
+} from "@/reduxSlices/auth/authSlice";
+import { reqOtp } from "@/lib/reqOtp";
 
 const Page = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const purpose = searchParams.get("purpose") as Purpose;
-  const identifier =
-    useAppSelector((state) => state.auth.user?.email) ??
-    searchParams.get("identifier");
+  const identifier = useAppSelector(
+    (state) =>
+      state.auth.user?.email ?? (searchParams.get("identifier") as string),
+  );
   const form = useForm<OtpSchemaType>({
     resolver: zodResolver(otpSchema),
     mode: "onBlur",
@@ -26,6 +35,10 @@ const Page = () => {
       otp: "",
     },
   });
+
+  const resendOtp = () => {
+    reqOtp({ identifier, purpose });
+  };
 
   const onSubmit: SubmitHandler<OtpSchemaType> = async (data) => {
     try {
@@ -38,23 +51,57 @@ const Page = () => {
           otp: data.otp,
         };
         await setPassword(dataToSend);
+        dispatch(toggleShouldFetchUser(true));
         return;
       }
       const dataToSend = { email: identifier as string, otp: data.otp };
       await verifyEmail(dataToSend);
-    } catch (err) {
-      console.error("Failed to send OTP:", err);
+      dispatch(toggleShouldAccessAuthLayer(false));
+      toastList.accountCreated();
+    } catch (error) {
+      console.error("Failed to send OTP:", error);
+      const apiError = error as ApiError;
+      const status = apiError.response?.status;
+      const code = apiError.response?.data.code;
+      switch (status) {
+        case StatusCode.BadRequest:
+          if (code === ErrorCode.VALIDATION_ERROR) {
+            toastList.validationError();
+          } else if (code === ErrorCode.OTP_NOT_FOUND) {
+            toastList.otpNotFound();
+          } else if (code === ErrorCode.OTP_EXPIRED) {
+            toastList.otpExpired();
+          } else {
+            toastList.otpVerificationFailed();
+          }
+          break;
+        case StatusCode.NotFound:
+          toastList.otpVerificationFailed();
+          break;
+        case StatusCode.TooManyRequests:
+          toastList.tooManyOtpRequests();
+          break;
+        default:
+          toastList.internalServerError();
+      }
     } finally {
       dispatch(setLoading(false));
-      if (purpose === "edit-password") {
+      if (purpose === "edit-password" || purpose === "set-password") {
         router.push("/login");
+        toastList.passwordSetSuccess(purpose);
         return;
       }
-      router.push("/");
     }
   };
 
-  return <VerifyEmailForm onSubmit={onSubmit} form={form} purpose={purpose} />;
+  return (
+    <VerifyEmailForm
+      onSubmit={onSubmit}
+      form={form}
+      purpose={purpose}
+      resendOtp={resendOtp}
+    />
+  );
 };
 
 export default Page;

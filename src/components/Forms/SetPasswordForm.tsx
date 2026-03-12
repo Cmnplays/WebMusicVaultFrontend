@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { KeyRound } from "lucide-react";
 import { SetPasswordSchemaType } from "@/lib/schemas/auth.schema";
+import Link from "next/link";
 interface SetPasswordFormProps {
   form: UseFormReturn<SetPasswordSchemaType>;
   onSubmit: SubmitHandler<SetPasswordSchemaType>;
@@ -125,9 +126,9 @@ export function SetPasswordForm({ form, onSubmit }: SetPasswordFormProps) {
                 </Button>
                 <FieldDescription className="text-center">
                   Just want to browse?{" "}
-                  <a href="/music" className="underline underline-offset-4">
+                  <Link href="/" className="underline underline-offset-4">
                     Skip for now
-                  </a>
+                  </Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

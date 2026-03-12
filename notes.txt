@@ -1,6 +1,14 @@
-ok so added the share and add to favourites button, both the button works. Also added a likedSongs field in user model in the backend made apis for gettingASongLikedStatus and toggleAddToFav(liked).
-And, lastly added a page for playing song in a page with link which we share, so  there for now  nothing works just added the layout kinda thing, now when i do code   i'll read this and start from there. Also one thing added the slices or say basically added auth in the redux store for the login and logout things but   there the  type of user  is kaamchalau need to update that, will do when i finish this  main music page, then i   will do the login and signup page setups   and also that store and all.Lastly also found out that the like button(add to fav btn) is still laggy i mean  glitchy something is wrong so need to fix that
+1: suppose a user submitted the signup for but didnot verify , other user or same user with same to same details if submits form then don't create  a user just redirect to otp i mean just return res backend suggestion                         
+2:add virtual scrolling for infinite scrolling
+3:add lazy loading for good ux
 
 
 
-so fixed the otp page, now one thing, the pages need to be secured, like otp page can't be acessed by anyone anytime there should be criteria. check claude code historoy for more knowledge
+login page (credentials) done.
+forgot password page done.
+password page done.
+signup page (credentials) done.
+verify-email page done.
+if use created a account but skipped i the part of otp verification, so then what we can do if user tries to log in with that info
+then we can do is that we can just ask him to verify account by entering otp to show that he's the actual user
+backedn suggestion.

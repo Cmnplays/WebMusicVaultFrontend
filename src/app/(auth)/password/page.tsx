@@ -8,8 +8,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import { requestOtp } from "@/services/auth.services";
-
+import { toastList } from "@/lib/toastList";
+import { reqOtp } from "@/lib/reqOtp";
 const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -25,12 +25,12 @@ const Page = () => {
   const onSubmit: SubmitHandler<SetPasswordSchemaType> = async (data) => {
     sessionStorage.setItem("password", data.password);
     const identifier = searchParams.get("identifier");
-    const purpose = searchParams.get("purpose");
-    await requestOtp({
-      identifier: identifier as string,
-      purpose: purpose as Purpose,
-    });
-    router.push(`/verify-email?identifier=${identifier}&purpose=${purpose}`);
+    const purpose = searchParams.get("purpose") as Purpose;
+    const res = await reqOtp({ identifier: identifier as string, purpose });
+    if (res) {
+      router.push(`/verify-email?identifier=${identifier}&purpose=${purpose}`);
+      toastList.otpSent();
+    }
   };
 
   return (

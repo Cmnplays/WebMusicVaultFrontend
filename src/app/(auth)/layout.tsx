@@ -1,14 +1,21 @@
 "use client";
 import { useAppSelector } from "@/store/hook";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const loading = useAppSelector((state) => state.ui.loading);
+  const shouldAccessAuthLayer = useAppSelector(
+    (state) => state.auth.shouldAccessAuthLayer,
+  );
   const accessToken = useAppSelector((state) => state.auth.accessToken);
-  if (accessToken) {
-    router.replace("/");
-    return;
-  }
+  useEffect(() => {
+    if (accessToken && !shouldAccessAuthLayer) {
+      router.replace("/");
+      return;
+    }
+  }, []);
+
   return (
     <div className="bg-zinc-950">
       {children}

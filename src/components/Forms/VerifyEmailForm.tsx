@@ -26,14 +26,14 @@ interface VerifyEmailProps {
   form: UseFormReturn<{ otp: string }>;
   onSubmit: SubmitHandler<{ otp: string }>;
   purpose: Purpose;
-  requestOtp?: () => void;
+  resendOtp: () => void;
 }
 
 export function VerifyEmailForm({
   form,
   onSubmit,
   purpose,
-  requestOtp,
+  resendOtp,
 }: VerifyEmailProps) {
   const { handleSubmit, control } = form;
   const { errors, isSubmitting } = useFormState({ control });
@@ -100,7 +100,7 @@ export function VerifyEmailForm({
               Didn&apos;t receive a code?{" "}
               <button
                 type="button"
-                onClick={() => requestOtp?.()}
+                onClick={() => resendOtp()}
                 className="underline underline-offset-4 hover:text-primary"
               >
                 Resend

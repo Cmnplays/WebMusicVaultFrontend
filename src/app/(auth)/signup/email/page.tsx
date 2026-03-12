@@ -13,9 +13,11 @@ import { RegisterSchemaType } from "@/lib/schemas/auth.schema";
 import { signup } from "@/reduxSlices/auth/authSlice";
 import { useAppDispatch } from "@/store/hook";
 import { useRouter } from "next/navigation";
-import { requestOtp } from "@/services/auth.services";
+import { reqOtp } from "@/lib/reqOtp";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
-
+import { StatusCode } from "@/constants/StatusCode";
+import { ErrorCode } from "@/constants/ErrorCode";
+import { toastList } from "@/lib/toastList";
 export default function Page() {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -25,18 +27,48 @@ export default function Page() {
       dispatch(setLoading(true));
       const { accessToken, user } = await signupService(data);
       dispatch(signup({ user, accessToken }));
-      try {
-        await requestOtp({ identifier: user.email, purpose: "verify-email" });
-      } catch (err) {
-        console.error("Failed to send OTP:", err);
+      const res = await reqOtp({
+        identifier: user.email,
+        purpose: "verify-email",
+      });
+      if (res) {
+        router.push("/verify-email?purpose=verify-email");
       }
-      router.push("/verify-email?type=signup"); //put this outside the try block of req otp cuz even if the otp fails to come the user can be given a msg of click on resend otp btn to send a new otp cuz there was a problem while sending otp previously
     } catch (error: unknown) {
       const apiError = error as ApiError;
       const status = apiError.response?.status;
       const code = apiError.response?.data.code;
-      if (status === 403 && code === "GOOGLE_ACCOUNT") {
-        router.push(`/password?identifier=${data.email}`);
+
+      switch (status) {
+        case StatusCode.BadRequest:
+          if (code === ErrorCode.VALIDATION_ERROR) {
+            toastList.validationError();
+          } else {
+            toastList.invalidCredentials();
+          }
+          break;
+        case StatusCode.Unauthorized:
+          toastList.invalidCredentials();
+          break;
+        case StatusCode.Forbidden:
+          if (code === ErrorCode.GOOGLE_ACCOUNT) {
+            router.push(`/password?identifier=${data.email}`);
+            toastList.googleAccount();
+          }
+          break;
+        case StatusCode.Conflict:
+          if (code === ErrorCode.EMAIL_EXISTS) {
+            toastList.emailExists();
+          } else if (code === ErrorCode.EMAIL_NOT_VERIFIED) {
+            // toastList.emailNotVerified();
+            router.push(
+              `/verify-email/?purpose=verify-email&identifier=${data.email}`,
+            );
+            reqOtp({ identifier: data.email, purpose: "verify-email" });
+          }
+          break;
+        default:
+          toastList.internalServerError();
       }
     } finally {
       dispatch(setLoading(false));

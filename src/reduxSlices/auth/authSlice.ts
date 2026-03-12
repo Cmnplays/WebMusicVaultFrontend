@@ -5,12 +5,14 @@ interface initialStateType {
   user: UserI | null;
   accessToken: string | null;
   shouldFetchUser: boolean;
+  shouldAccessAuthLayer: boolean;
 }
 
 const initialState: initialStateType = {
   user: null,
   accessToken: null,
   shouldFetchUser: true,
+  shouldAccessAuthLayer: true,
 };
 
 const authSlice = createSlice({
@@ -44,6 +46,9 @@ const authSlice = createSlice({
     toggleShouldFetchUser: (state, action: PayloadAction<boolean>) => {
       state.shouldFetchUser = action.payload;
     },
+    toggleShouldAccessAuthLayer: (state, action: PayloadAction<boolean>) => {
+      state.shouldAccessAuthLayer = action.payload;
+    },
   },
 });
 
@@ -54,5 +59,6 @@ export const {
   setAccessToken,
   setUserData,
   toggleShouldFetchUser,
+  toggleShouldAccessAuthLayer,
 } = authSlice.actions;
 export default authSlice.reducer;

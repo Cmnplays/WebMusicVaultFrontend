@@ -5,7 +5,10 @@ import { LoginSchemaType } from "@/lib/schemas/auth.schema";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { loginService } from "@/services/auth.services";
 import { useAppDispatch } from "@/store/hook";
-import { login } from "@/reduxSlices/auth/authSlice";
+import {
+  login,
+  toggleShouldAccessAuthLayer,
+} from "@/reduxSlices/auth/authSlice";
 import { useRouter } from "next/navigation";
 import { EmailLoginForm } from "@/components/Forms/EmailLoginForm";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
@@ -31,6 +34,7 @@ export default function Page() {
       const loginData = await loginService(data);
       dispatch(login(loginData));
       toastList.loginSuccess();
+      dispatch(toggleShouldAccessAuthLayer(false));
       router.push("/");
     } catch (error: unknown) {
       const apiError = error as ApiError;
@@ -54,6 +58,8 @@ export default function Page() {
             toastList.googleAccount();
           }
           break;
+        default:
+          toastList.internalServerError();
       }
     } finally {
       dispatch(setLoading(false));
