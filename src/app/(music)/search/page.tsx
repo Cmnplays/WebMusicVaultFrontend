@@ -24,6 +24,7 @@ import {
   setPlaying,
   setPlayingSong,
 } from "@/reduxSlices/player/playerSlice";
+import UnavailableYet from "@/components/UnavailableYet";
 
 const SearchSongs = () => {
   const dispatch = useAppDispatch();
@@ -153,116 +154,117 @@ const SearchSongs = () => {
     };
   }, [dispatch]);
 
-  return (
-    <div className="max-w-5xl h-screen mx-auto p-4 text-white">
-      <SearchInput
-        debounceSearch={debounceSearch}
-        inputRef={inputRef}
-        query={query}
-        setQuery={setQuery}
-      />
+  // return (
+  //   <div className="max-w-5xl h-screen mx-auto p-4 text-white">
+  //     <SearchInput
+  //       debounceSearch={debounceSearch}
+  //       inputRef={inputRef}
+  //       query={query}
+  //       setQuery={setQuery}
+  //     />
 
-      {/* Song List */}
-      <SongList
-        handlePlayClick={handlePlayClick}
-        playing={playing}
-        playingSong={playingSong}
-        songs={searchedSongs}
-        isTemp={true}
-      />
+  //     {/* Song List */}
+  //     <SongList
+  //       handlePlayClick={handlePlayClick}
+  //       playing={playing}
+  //       playingSong={playingSong}
+  //       songs={searchedSongs}
+  //       isTemp={true}
+  //     />
 
-      {/* Load More Button */}
-      {hasMoreSongs && !loading && searchedSongs.length > 0 && (
-        <div className="flex justify-center mt-4">
-          <button
-            className="
-            px-4 py-2 rounded-lg
-            bg-purple-700 text-white
-            hover:bg-purple-600
-            transition-all duration-200
-            shadow-md hover:shadow-lg
-          "
-            onClick={loadMoreSongs}
-          >
-            Load More
-          </button>
-        </div>
-      )}
+  //     {/* Load More Button */}
+  //     {hasMoreSongs && !loading && searchedSongs.length > 0 && (
+  //       <div className="flex justify-center mt-4">
+  //         <button
+  //           className="
+  //           px-4 py-2 rounded-lg
+  //           bg-purple-700 text-white
+  //           hover:bg-purple-600
+  //           transition-all duration-200
+  //           shadow-md hover:shadow-lg
+  //         "
+  //           onClick={loadMoreSongs}
+  //         >
+  //           Load More
+  //         </button>
+  //       </div>
+  //     )}
 
-      {/* Audio Element */}
-      <audio
-        ref={audioRef}
-        onEnded={handleAudioEnded}
-        preload="metadata"
-        hidden
-      />
+  //     {/* Audio Element */}
+  //     <audio
+  //       ref={audioRef}
+  //       onEnded={handleAudioEnded}
+  //       preload="metadata"
+  //       hidden
+  //     />
 
-      {/* Player Panel */}
-      {playingSong && (
-        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-5xl z-50">
-          <SongPlayerPanel
-            audioRef={audioRef as React.RefObject<HTMLAudioElement>}
-            panelRef={panelRef}
-            fadeOutPanel={fadeOutPanel}
-            handlePlayPause={() => {
-              if (!playing) {
-                audioRef.current?.play();
-                dispatch(setPlaying(true));
-                return;
-              }
-              audioRef.current?.pause();
-              dispatch(setPlaying(false));
-            }}
-            moveToNextSong={moveToNextSong}
-            moveToPreviousSong={moveToPreviousSong}
-          />
-        </div>
-      )}
+  //     {/* Player Panel */}
+  //     {playingSong && (
+  //       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-5xl z-50">
+  //         <SongPlayerPanel
+  //           audioRef={audioRef as React.RefObject<HTMLAudioElement>}
+  //           panelRef={panelRef}
+  //           fadeOutPanel={fadeOutPanel}
+  //           handlePlayPause={() => {
+  //             if (!playing) {
+  //               audioRef.current?.play();
+  //               dispatch(setPlaying(true));
+  //               return;
+  //             }
+  //             audioRef.current?.pause();
+  //             dispatch(setPlaying(false));
+  //           }}
+  //           moveToNextSong={moveToNextSong}
+  //           moveToPreviousSong={moveToPreviousSong}
+  //         />
+  //       </div>
+  //     )}
 
-      {/* Loading / Error */}
-      {(loading || error) && (
-        <p className="text-center mt-4 text-purple-200">
-          {statusText || "Loading..."}
-        </p>
-      )}
+  //     {/* Loading / Error */}
+  //     {(loading || error) && (
+  //       <p className="text-center mt-4 text-purple-200">
+  //         {statusText || "Loading..."}
+  //       </p>
+  //     )}
 
-      {/* No Songs Found */}
-      {!loading && searchedSongs.length === 0 && query && (
-        <p className="text-center mt-4 text-purple-300 italic">
-          No songs found. Try a different vibe or artist name 🎧
-        </p>
-      )}
+  //     {/* No Songs Found */}
+  //     {!loading && searchedSongs.length === 0 && query && (
+  //       <p className="text-center mt-4 text-purple-300 italic">
+  //         No songs found. Try a different vibe or artist name 🎧
+  //       </p>
+  //     )}
 
-      {/* End of List */}
-      {!hasMoreSongs && searchedSongs.length > 0 && !loading && (
-        <p className="text-center mt-4 text-purple-200">
-          You have reached the end of the list.
-        </p>
-      )}
+  //     {/* End of List */}
+  //     {!hasMoreSongs && searchedSongs.length > 0 && !loading && (
+  //       <p className="text-center mt-4 text-purple-200">
+  //         You have reached the end of the list.
+  //       </p>
+  //     )}
 
-      {/* Delete Confirmation */}
-      {mountDeleteConfirmation && playingSong && (
-        <DeleteConfirmation
-          title={playingSong.title}
-          songId={playingSong._id}
-          moveToNextSong={moveToNextSong}
-          temp={true}
-        />
-      )}
+  //     {/* Delete Confirmation */}
+  //     {mountDeleteConfirmation && playingSong && (
+  //       <DeleteConfirmation
+  //         title={playingSong.title}
+  //         songId={playingSong._id}
+  //         moveToNextSong={moveToNextSong}
+  //         temp={true}
+  //       />
+  //     )}
 
-      {/* Download Confirmation */}
-      {mountDownloadConfirmation && (
-        <DownloadConfirmation title={playingSong!.title} />
-      )}
+  //     {/* Download Confirmation */}
+  //     {mountDownloadConfirmation && (
+  //       <DownloadConfirmation title={playingSong!.title} />
+  //     )}
 
-      {/* Global Loader */}
-      {(downloading || deleting || loading) && (
-        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
-        </div>
-      )}
-    </div>
-  );
+  //     {/* Global Loader */}
+  //     {(downloading || deleting || loading) && (
+  //       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+  //         <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
+  //       </div>
+  //     )}
+  //   </div>
+  // );
+  return <UnavailableYet />;
 };
 
 export default SearchSongs;

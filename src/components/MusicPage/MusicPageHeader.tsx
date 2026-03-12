@@ -23,20 +23,17 @@ const MusicHeader: React.FC<MusicPageHeaderProps> = ({
   HandleSortOrder,
 }) => {
   return (
-    <div className="flex justify-between items-center mb-4">
-      {/* Title */}
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
       <h2 className="text-3xl font-extrabold text-white tracking-tight leading-tight">
         Music Collection
       </h2>
 
-      {/* Controls */}
-      <div className="flex items-center gap-3">
-        {/* Sort By */}
+      <div className="flex items-center gap-3 w-full sm:w-auto">
         <Select
           value={sortBy}
           onValueChange={(val) => HandleSortBy(val as sortByT)}
         >
-          <SelectTrigger className="h-9 w-40 text-sm flex items-center gap-2">
+          <SelectTrigger className="h-9 flex-1 sm:w-40 text-sm flex items-center gap-2">
             <ArrowUpDown size={16} className="text-zinc-400" />
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
@@ -50,12 +47,12 @@ const MusicHeader: React.FC<MusicPageHeaderProps> = ({
             </SelectGroup>
           </SelectContent>
         </Select>
-        {/* Sort Order */}
+
         <Select
           value={sortOrder}
           onValueChange={(val) => HandleSortOrder(val as sortOrderT)}
         >
-          <SelectTrigger className="h-9 w-40 text-sm flex items-center gap-2">
+          <SelectTrigger className="h-9 flex-1 sm:w-40 text-sm flex items-center gap-2">
             {sortOrder === "asc" ? (
               <ArrowUp size={16} className="text-zinc-400" />
             ) : (

@@ -71,7 +71,7 @@ const MusicPage: React.FC = () => {
 
   return (
     <main
-      className={`max-w-5xl mx-auto p-4 text-white ${playing && "mb-[192px]"}`}
+      className={`max-w-5xl mx-auto p-4 min-h-screen text-white ${playing && "mb-[192px]"}`}
     >
       {/* Header */}
       <MusicHeader

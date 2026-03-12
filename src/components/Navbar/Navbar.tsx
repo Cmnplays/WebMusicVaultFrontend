@@ -17,6 +17,7 @@ const Navbar = () => {
   const routesMap = [
     { name: "Music", to: "/" },
     { name: "Shuffle", to: "/shuffle" },
+    { name: "Playlist", to: "/playlist" },
     { name: "Search", to: "/search" },
     { name: "Upload", to: "/upload" },
     { name: "About", to: "/about" },
@@ -105,7 +106,7 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop nav links */}
-        <ul className="hidden md:flex space-x-6 font-semibold text-lg">
+        <ul className="hidden lg:flex space-x-4 font-semibold text-lg">
           {routesMap.map((link) => (
             <li key={link.to}>
               <NavItem
@@ -133,8 +134,7 @@ const Navbar = () => {
         {/* Hamburger button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-gray-800 md:hidden flex flex-col justify-center items-center space-y-1 p-1 rounded hover:bg-gray-50 shadow-sm transition-all"
-          aria-label="Toggle menu"
+          className="text-gray-800 lg:hidden flex flex-col justify-center items-center space-y-1 p-1 rounded hover:bg-gray-50 shadow-sm transition-all"
         >
           <span
             className={`w-8 h-1 bg-purple-600 rounded transform transition-all ${
@@ -157,7 +157,7 @@ const Navbar = () => {
       {/* Mobile menu */}
       <div
         ref={menuRef}
-        className={`md:hidden px-6 py-4 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] overflow-hidden rounded-xl mt-2 mb-3 mx-2`}
+        className="lg:hidden px-6 py-4 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] overflow-hidden rounded-xl mt-2 mb-3 mx-2"
       >
         <ul className="space-y-3">
           {routesMap.map((link) => (

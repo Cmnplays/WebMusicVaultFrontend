@@ -78,7 +78,7 @@ const searchSong = async ({
 };
 
 const getSongsLength = async (): Promise<number> => {
-  const response = await api.get(`/about`);
+  const response = await api.get(`/public/about`);
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to get songs length");
   }

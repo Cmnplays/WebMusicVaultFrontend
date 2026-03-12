@@ -18,7 +18,7 @@ const About = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-transparent p-4 sm:p-6 flex flex-col gap-10 font-sans text-purple-100">
+      <div className="min-h-screen p-4 sm:p-6 flex flex-col gap-10 font-sans text-purple-100 bg-[#5520A5]">
         {/* Header */}
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-4xl sm:text-5xl font-bold text-white drop-shadow-md">

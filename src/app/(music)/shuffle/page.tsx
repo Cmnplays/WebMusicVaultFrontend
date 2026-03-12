@@ -15,6 +15,7 @@ import {
   setPlayingSong,
   setPanelOpen,
 } from "@/reduxSlices/player/playerSlice";
+import UnavailableYet from "@/components/UnavailableYet";
 const ShufflePlayer = () => {
   const dispatch = useAppDispatch();
 
@@ -120,57 +121,58 @@ const ShufflePlayer = () => {
     moveToNextSong();
   }
 
-  return (
-    <div className="h-[100vh] text-white flex flex-col items-center p-2 lg:flex-row lg:items-start lg:gap-6">
-      <RecentlyPlayedPanel
-        handlePlayClick={handlePlayClick}
-        playingSong={playingSong}
-        previousSongs={previousSongs}
-        listRef={listRef}
-        itemRefs={itemRefs}
-      />
+  // return (
+  //   <div className="h-[100vh] text-white flex flex-col items-center p-2 lg:flex-row lg:items-start lg:gap-6">
+  //     <RecentlyPlayedPanel
+  //       handlePlayClick={handlePlayClick}
+  //       playingSong={playingSong}
+  //       previousSongs={previousSongs}
+  //       listRef={listRef}
+  //       itemRefs={itemRefs}
+  //     />
 
-      <SongPlayerPanel
-        audioRef={audioRef}
-        currentTime={currentTime}
-        duration={duration}
-        downloading={downloading}
-        handleSliderChange={handleSliderChange}
-        moveToNextSong={moveToNextSong}
-        moveToPreviousSong={moveToPreviousSong}
-        loading={loading}
-        playing={playing}
-        playingSong={playingSong}
-      />
+  //     <SongPlayerPanel
+  //       audioRef={audioRef}
+  //       currentTime={currentTime}
+  //       duration={duration}
+  //       downloading={downloading}
+  //       handleSliderChange={handleSliderChange}
+  //       moveToNextSong={moveToNextSong}
+  //       moveToPreviousSong={moveToPreviousSong}
+  //       loading={loading}
+  //       playing={playing}
+  //       playingSong={playingSong}
+  //     />
 
-      {mountDeleteConfirmation && (
-        <DeleteConfirmation
-          title={playingSong!.title}
-          songId={playingSong!._id}
-          moveToNextSong={moveToNextSong}
-          temp={true}
-          customExcludeFn={excludeSongFn}
-        />
-      )}
+  //     {mountDeleteConfirmation && (
+  //       <DeleteConfirmation
+  //         title={playingSong!.title}
+  //         songId={playingSong!._id}
+  //         moveToNextSong={moveToNextSong}
+  //         temp={true}
+  //         customExcludeFn={excludeSongFn}
+  //       />
+  //     )}
 
-      {mountDownloadConfirmation && (
-        <DownloadConfirmation title={playingSong!.title} />
-      )}
+  //     {mountDownloadConfirmation && (
+  //       <DownloadConfirmation title={playingSong!.title} />
+  //     )}
 
-      {(loading || deleting || downloading) && (
-        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
-        </div>
-      )}
+  //     {(loading || deleting || downloading) && (
+  //       <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+  //         <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
+  //       </div>
+  //     )}
 
-      <audio
-        ref={audioRef}
-        onEnded={moveToNextSong}
-        preload="metadata"
-        hidden
-      />
-    </div>
-  );
+  //     <audio
+  //       ref={audioRef}
+  //       onEnded={moveToNextSong}
+  //       preload="metadata"
+  //       hidden
+  //     />
+  //   </div>
+  // );
+
+  return <UnavailableYet />;
 };
-
 export default ShufflePlayer;
