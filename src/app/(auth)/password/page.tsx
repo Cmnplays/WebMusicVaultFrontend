@@ -10,9 +10,12 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { toastList } from "@/lib/toastList";
 import { reqOtp } from "@/lib/reqOtp";
+import { useAppDispatch } from "@/store/hook";
+import { setLoading } from "@/reduxSlices/ui/uiSlice";
 const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const dispatch = useAppDispatch();
   const form = useForm<SetPasswordSchemaType>({
     resolver: zodResolver(setPasswordSchema),
     mode: "onBlur",
@@ -21,18 +24,23 @@ const Page = () => {
       confirmPassword: "",
     },
   });
-
   const onSubmit: SubmitHandler<SetPasswordSchemaType> = async (data) => {
-    sessionStorage.setItem("password", data.password);
-    const identifier = searchParams.get("identifier");
-    const purpose = searchParams.get("purpose") as Purpose;
-    const res = await reqOtp({ identifier: identifier as string, purpose });
-    if (res) {
-      router.push(`/verify-email?identifier=${identifier}&purpose=${purpose}`);
-      toastList.otpSent();
+    try {
+      dispatch(setLoading(true));
+      sessionStorage.setItem("password", data.password);
+      const identifier = searchParams.get("identifier");
+      const purpose = searchParams.get("purpose") as Purpose;
+      const res = await reqOtp({ identifier: identifier as string, purpose });
+      if (res) {
+        router.push(
+          `/verify-email?identifier=${identifier}&purpose=${purpose}`,
+        );
+        toastList.otpSent();
+      }
+    } finally {
+      dispatch(setLoading(false));
     }
   };
-
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">

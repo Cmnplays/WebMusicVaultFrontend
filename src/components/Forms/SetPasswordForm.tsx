@@ -120,9 +120,7 @@ export function SetPasswordForm({ form, onSubmit }: SetPasswordFormProps) {
                       />
                     </svg>
                   </span>
-                  <a href="http://localhost:3001/api/v1/auth/google">
-                    Continue with Google
-                  </a>
+                  <a href="http://localhost:3001/api/v1/auth/google">Google</a>
                 </Button>
                 <FieldDescription className="text-center">
                   Just want to browse?{" "}

@@ -35,7 +35,7 @@ export default function Page() {
       dispatch(login(loginData));
       toastList.loginSuccess();
       dispatch(toggleShouldAccessAuthLayer(false));
-      router.push("/");
+      router.replace("/");
     } catch (error: unknown) {
       const apiError = error as ApiError;
       const status = apiError.response?.status;
@@ -54,7 +54,9 @@ export default function Page() {
           break;
         case StatusCode.Forbidden:
           if (code === ErrorCode.GOOGLE_ACCOUNT) {
-            router.push(`/password?identifier=${data.identifier}`);
+            router.push(
+              `/password?identifier=${data.identifier}&purpose=set-password`,
+            );
             toastList.googleAccount();
           }
           break;

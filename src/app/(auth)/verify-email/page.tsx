@@ -36,10 +36,14 @@ const Page = () => {
     },
   });
 
-  const resendOtp = () => {
-    reqOtp({ identifier, purpose });
+  const resendOtp = async () => {
+    try {
+      dispatch(setLoading(true));
+      await reqOtp({ identifier, purpose });
+    } finally {
+      dispatch(setLoading(false));
+    }
   };
-
   const onSubmit: SubmitHandler<OtpSchemaType> = async (data) => {
     try {
       dispatch(setLoading(true));
@@ -52,17 +56,20 @@ const Page = () => {
         };
         await setPassword(dataToSend);
         dispatch(toggleShouldFetchUser(true));
+        router.replace("/login");
+        toastList.passwordSetSuccess(purpose);
         return;
       }
       const dataToSend = { email: identifier as string, otp: data.otp };
       await verifyEmail(dataToSend);
       dispatch(toggleShouldAccessAuthLayer(false));
       toastList.accountCreated();
+      router.replace("/");
     } catch (error) {
-      console.error("Failed to send OTP:", error);
       const apiError = error as ApiError;
       const status = apiError.response?.status;
       const code = apiError.response?.data.code;
+
       switch (status) {
         case StatusCode.BadRequest:
           if (code === ErrorCode.VALIDATION_ERROR) {
@@ -75,6 +82,9 @@ const Page = () => {
             toastList.otpVerificationFailed();
           }
           break;
+        case StatusCode.Unauthorized:
+          toastList.invalidCredentials();
+          break;
         case StatusCode.NotFound:
           toastList.otpVerificationFailed();
           break;
@@ -86,11 +96,6 @@ const Page = () => {
       }
     } finally {
       dispatch(setLoading(false));
-      if (purpose === "edit-password" || purpose === "set-password") {
-        router.push("/login");
-        toastList.passwordSetSuccess(purpose);
-        return;
-      }
     }
   };
 

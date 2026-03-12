@@ -142,7 +142,7 @@ const setPassword = async (
     "/auth/set-password",
     data,
   );
-  if (response.data.status !== 201) {
+  if (response.data.status !== 200) {
     throw new Error(
       response.data.message || "There was a problem while registering user",
     );

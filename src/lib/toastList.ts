@@ -17,9 +17,10 @@ export const toastList = {
     }),
   invalidCredentials: () =>
     showToast({
-      message: "Login failed. Please check your credentials.",
+      message: "Invalid email/username or password",
       type: "error",
     }),
+
   emailExists: () =>
     showToast({ message: "This email is already registered.", type: "error" }),
   usernameExists: (username?: string) =>
@@ -30,7 +31,7 @@ export const toastList = {
   emailNotVerified: () =>
     showToast({
       message:
-        "Account not verified. Please check your email for the verification link.",
+        "Account not verified. Please check your email for the verification code.",
       type: "error",
     }),
   passwordAlreadySet: () =>

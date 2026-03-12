@@ -21,12 +21,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-// export type OtpPage = "signup" | "password" | "edit-password";
 interface VerifyEmailProps {
   form: UseFormReturn<{ otp: string }>;
   onSubmit: SubmitHandler<{ otp: string }>;
   purpose: Purpose;
-  resendOtp: () => void;
+  resendOtp: () => Promise<void>;
 }
 
 export function VerifyEmailForm({

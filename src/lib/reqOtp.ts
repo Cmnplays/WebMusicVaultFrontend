@@ -13,6 +13,7 @@ export const reqOtp = async ({
 }: reqOtpProps): Promise<boolean> => {
   try {
     await requestOtp({ identifier, purpose });
+    toastList.otpSent();
     return true;
   } catch (error) {
     const apiError = error as ApiError;
@@ -21,7 +22,7 @@ export const reqOtp = async ({
 
     switch (status) {
       case StatusCode.NotFound:
-        toastList.genericError("Account not found. Please sign up again.");
+        toastList.genericError("Invalid email/username or password");
         break;
       case StatusCode.Conflict:
         if (purpose === "set-password") {
@@ -34,6 +35,9 @@ export const reqOtp = async ({
         if (code === ErrorCode.GOOGLE_ACCOUNT) {
           toastList.googleAccount();
         }
+        break;
+      case StatusCode.Unauthorized:
+        toastList.otpVerificationFailed();
         break;
       case StatusCode.TooManyRequests:
         toastList.tooManyOtpRequests();
