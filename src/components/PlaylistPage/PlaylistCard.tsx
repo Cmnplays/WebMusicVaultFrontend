@@ -2,13 +2,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { ListMusic, Music2, User } from "lucide-react";
-
-interface Playlist {
-  _id: string;
-  name: string;
-  owner: string;
-  songs: string[];
-}
+import type { Playlist } from "@/services/playlist.services";
 
 const PlaylistCard: React.FC<{ playlist: Playlist }> = ({ playlist }) => {
   const router = useRouter();
@@ -29,7 +23,7 @@ const PlaylistCard: React.FC<{ playlist: Playlist }> = ({ playlist }) => {
         <div className="flex items-center gap-3 mt-0.5">
           <span className="flex items-center gap-1 text-xs text-purple-300">
             <User className="w-3 h-3" />
-            {playlist.owner}
+            {playlist.owner.username}
           </span>
           <span className="flex items-center gap-1 text-xs text-purple-300">
             <Music2 className="w-3 h-3" />

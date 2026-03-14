@@ -2,6 +2,7 @@
 import { useAppSelector } from "@/store/hook";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import AuthNavbar from "@/components/Navbar/AuthNavbar";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const loading = useAppSelector((state) => state.ui.loading);
@@ -17,7 +18,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="bg-zinc-950">
+    <div className="bg-zinc-950 relative">
+      <AuthNavbar />
       {children}
       {loading && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">

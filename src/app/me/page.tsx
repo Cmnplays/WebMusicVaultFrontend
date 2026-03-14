@@ -8,15 +8,14 @@ import UnavailableYet from "@/components/UnavailableYet";
 export default function AccountPage() {
   const user = useAppSelector((s) => s.auth.user) as UserI | null;
 
-  // return (
-  //   <>
-  //     <ProtectedLayout page="account">
-  //       <Navbar />
-  //       <AccountCard
-  //       // data={{ ...(user as UserI), uploadedSongs: 1, favouriteSongs: 1 }}
-  //       />
-  //     </ProtectedLayout>
-  //   </>
-  // );
-  return <UnavailableYet />;
+  return (
+    <>
+      <ProtectedLayout page="account">
+        <Navbar />
+        <AccountCard
+        // data={{ ...(user as UserI), uploadedSongs: 1, favouriteSongs: 1 }}
+        />
+      </ProtectedLayout>
+    </>
+  );
 }

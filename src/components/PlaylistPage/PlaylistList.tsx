@@ -2,14 +2,7 @@
 "use client";
 import { ListMusic } from "lucide-react";
 import PlaylistCard from "@/components/PlaylistPage/PlaylistCard";
-
-interface Playlist {
-  _id: string;
-  name: string;
-  owner: string;
-  songs: string[];
-}
-
+import type { Playlist } from "@/services/playlist.services";
 interface PlaylistListProps {
   playlists: Playlist[];
 }

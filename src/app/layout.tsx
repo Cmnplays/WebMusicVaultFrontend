@@ -9,6 +9,9 @@ import AuthCallbackHandler from "@/components/AuthCbHandler";
 export const metadata: Metadata = {
   title: "WebMusicVault",
   description: "Developer - Aaditya",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
