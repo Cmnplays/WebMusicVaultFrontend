@@ -21,11 +21,11 @@ export function NavItem({
 
   const classesByVariant = {
     desktop: isActive
-      ? "px-3 py-1 rounded-lg shadow-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white transform transition-all hover:scale-105"
-      : "px-3 py-1 rounded-lg text-blue-600 hover:text-purple-700 hover:scale-105 transform transition-all duration-200",
+      ? "px-3 py-1.5 rounded-lg text-sm font-semibold text-white bg-purple-600/40 border border-purple-400/30 transition-all"
+      : "px-3 py-1.5 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10 transition-all duration-200",
     mobile: isActive
-      ? "block font-semibold px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md transition-all"
-      : "block font-semibold px-4 py-2 rounded-lg text-purple-700 hover:bg-purple-50 hover:translate-x-1 transform transition-all",
+      ? "block px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-purple-600/40 border border-purple-400/30 transition-all"
+      : "block px-4 py-2.5 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10 transition-all",
   };
 
   return (

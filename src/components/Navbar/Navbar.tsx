@@ -8,21 +8,30 @@ import { useAppDispatch } from "@/store/hook";
 import { logout } from "@/services/auth.services";
 import { clearAuth } from "@/reduxSlices/auth/authSlice";
 import { useRouter } from "next/navigation";
+
 const Navbar = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
+
   const routesMap = [
     { name: "Music", to: "/" },
-    { name: "Shuffle", to: "/shuffle" },
+    // { name: "Shuffle", to: "/shuffle" },
     { name: "Playlist", to: "/playlist" },
-    { name: "Search", to: "/search" },
-    { name: "Upload", to: "/upload" },
+    // { name: "Search", to: "/search" },
+    // { name: "Upload", to: "/upload" },
     { name: "About", to: "/about" },
     { name: "Account", to: "/me" },
   ];
+
+  const handleLogout = async () => {
+    await logout();
+    dispatch(clearAuth());
+    router.replace("/login");
+  };
+
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
     const updateHeight = () => {
@@ -35,7 +44,6 @@ const Navbar = () => {
 
   useEffect(() => {
     if (!menuRef.current || typeof window === "undefined") return;
-
     if (isOpen) {
       gsap.to(menuRef.current, {
         height: "auto",
@@ -68,45 +76,49 @@ const Navbar = () => {
 
   return (
     <nav
-      className="bg-white border-b border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.06)] sticky top-0 z-50 rounded-b-xl"
+      className="bg-[#1a0635] border-b border-purple-500/10 shadow-[0_2px_20px_rgba(0,0,0,0.3)] sticky top-0 z-50 rounded-b-xl"
       ref={navRef}
     >
       <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center cursor-pointer select-none">
           {/* Mobile Logo */}
-          <span className="flex items-center text-blue-600 lg:hidden tracking-tight">
-            <span className="mr-1 font-bold italic text-3xl bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+          <span className="flex items-center gap-2 lg:hidden">
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-950/60 border border-purple-500/30">
+              <svg
+                className="w-4 h-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
+              </svg>
+            </div>
+            <span className="font-semibold text-xl tracking-tight text-zinc-300">
               WmV
             </span>
-            <svg
-              className="w-8 h-8 text-blue-600"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
-            </svg>
           </span>
 
           {/* Desktop Logo */}
-          <span className="hidden lg:flex items-center space-x-2 font-bold italic text-3xl tracking-tight select-none">
-            <span className="bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+          <span className="hidden lg:flex items-center gap-2">
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-950/60 border border-purple-500/30">
+              <svg
+                className="w-4 h-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
+              </svg>
+            </div>
+            <span className="font-semibold text-xl tracking-tight text-zinc-300">
               WebMusicVault
             </span>
-            <svg
-              className="w-7 h-7 text-purple-600"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
-            </svg>
           </span>
         </Link>
 
         {/* Desktop nav links */}
-        <ul className="hidden lg:flex space-x-4 font-semibold text-lg">
+        <ul className="hidden lg:flex items-center space-x-2">
           {routesMap.map((link) => (
             <li key={link.to}>
               <NavItem
@@ -114,17 +126,13 @@ const Navbar = () => {
                 label={link.name}
                 variant="desktop"
                 onClick={() => setIsOpen(false)}
-              ></NavItem>
+              />
             </li>
           ))}
-          <li>
+          <li className="pl-2 border-l border-white/10">
             <button
-              onClick={async () => {
-                await logout();
-                dispatch(clearAuth());
-                router.replace("/login");
-              }}
-              className="font-semibold text-lg text-red-500 hover:text-red-600 transition-colors"
+              onClick={handleLogout}
+              className="px-3 py-1.5 text-sm font-medium text-red-400 hover:text-red-300 transition-colors"
             >
               Logout
             </button>
@@ -134,30 +142,24 @@ const Navbar = () => {
         {/* Hamburger button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-gray-800 lg:hidden flex flex-col justify-center items-center space-y-1 p-1 rounded hover:bg-gray-50 shadow-sm transition-all"
+          className="lg:hidden flex flex-col justify-center items-center space-y-1 p-1 rounded-lg border border-white/10 hover:border-purple-500/30 hover:bg-purple-950/40 transition-all"
         >
           <span
-            className={`w-8 h-1 bg-purple-600 rounded transform transition-all ${
-              isOpen ? "rotate-45 translate-y-2" : ""
-            }`}
-          ></span>
+            className={`w-8 h-1 bg-purple-400 rounded transform transition-all ${isOpen ? "rotate-45 translate-y-2" : ""}`}
+          />
           <span
-            className={`w-8 h-1 bg-purple-600 rounded transition-all ${
-              isOpen ? "opacity-0" : "opacity-100"
-            }`}
-          ></span>
+            className={`w-8 h-1 bg-purple-400 rounded transition-all ${isOpen ? "opacity-0" : "opacity-100"}`}
+          />
           <span
-            className={`w-8 h-1 bg-purple-600 rounded transform transition-all ${
-              isOpen ? "-rotate-45 -translate-y-2" : ""
-            }`}
-          ></span>
+            className={`w-8 h-1 bg-purple-400 rounded transform transition-all ${isOpen ? "-rotate-45 -translate-y-2" : ""}`}
+          />
         </button>
       </div>
 
       {/* Mobile menu */}
       <div
         ref={menuRef}
-        className="lg:hidden px-6 py-4 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] overflow-hidden rounded-xl mt-2 mb-3 mx-2"
+        className="lg:hidden px-6 py-4 bg-[#1a0635] border-t border-purple-500/10 overflow-hidden rounded-xl mt-2 mb-3 mx-2 shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
       >
         <ul className="space-y-3">
           {routesMap.map((link) => (
@@ -167,17 +169,13 @@ const Navbar = () => {
                 onClick={() => setIsOpen(false)}
                 variant="mobile"
                 label={link.name}
-              ></NavItem>
+              />
             </li>
           ))}
-          <li className="border-t border-gray-100 pt-2">
+          <li className="border-t border-purple-500/10 pt-2">
             <button
-              onClick={async () => {
-                await logout();
-                dispatch(clearAuth());
-                router.replace("/login");
-              }}
-              className="w-full text-left font-semibold text-lg text-red-500 hover:text-red-600 transition-colors"
+              onClick={handleLogout}
+              className="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-950/20 transition-all"
             >
               Logout
             </button>
