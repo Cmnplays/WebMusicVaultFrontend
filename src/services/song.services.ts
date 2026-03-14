@@ -7,6 +7,10 @@ export interface Song {
   duration: number;
   artist: string;
   isLiked: boolean;
+  owner: {
+    _id: string;
+    username: string;
+  };
 }
 
 export interface songsReturnType {
