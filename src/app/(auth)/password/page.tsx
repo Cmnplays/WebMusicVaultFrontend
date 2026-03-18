@@ -24,12 +24,13 @@ const Page = () => {
       confirmPassword: "",
     },
   });
+  const purpose = searchParams.get("purpose") as Purpose;
+
   const onSubmit: SubmitHandler<SetPasswordSchemaType> = async (data) => {
     try {
       dispatch(setLoading(true));
       sessionStorage.setItem("password", data.password);
       const identifier = searchParams.get("identifier");
-      const purpose = searchParams.get("purpose") as Purpose;
       const res = await reqOtp({ identifier: identifier as string, purpose });
       if (res) {
         router.push(
@@ -41,10 +42,11 @@ const Page = () => {
       dispatch(setLoading(false));
     }
   };
+
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <SetPasswordForm form={form} onSubmit={onSubmit}></SetPasswordForm>
+        <SetPasswordForm form={form} onSubmit={onSubmit} purpose={purpose} />
       </div>
     </div>
   );

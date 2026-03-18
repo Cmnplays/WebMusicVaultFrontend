@@ -13,15 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Mail } from "lucide-react";
 import { EmailSchemaType } from "@/lib/schemas/auth.schema";
 
-interface ForgotPasswordFormProps {
+interface EnterEmailFormProps {
   form: UseFormReturn<EmailSchemaType>;
   onSubmit: SubmitHandler<EmailSchemaType>;
 }
 
-export function ForgotPasswordForm({
-  form,
-  onSubmit,
-}: ForgotPasswordFormProps) {
+export function EnterEmailForm({ form, onSubmit }: EnterEmailFormProps) {
   const { handleSubmit, register } = form;
   const { errors, isSubmitting } = useFormState({ control: form.control });
 
@@ -76,7 +73,7 @@ export function ForgotPasswordForm({
             <p className="text-sm text-muted-foreground text-center mt-6">
               Remembered it?{" "}
               <a
-                href="/login"
+                href="/login/email"
                 className="underline underline-offset-4 hover:text-primary"
               >
                 Back to login

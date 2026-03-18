@@ -99,12 +99,14 @@ const Page = () => {
     }
   };
 
+  const editEmailHref = purpose === "set-password" ? "/login" : "/enter-email";
   return (
     <VerifyEmailForm
       onSubmit={onSubmit}
       form={form}
       purpose={purpose}
       resendOtp={resendOtp}
+      editEmailHref={editEmailHref}
     />
   );
 };

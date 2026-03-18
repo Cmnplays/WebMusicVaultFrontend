@@ -13,8 +13,11 @@ import {
   FieldGroup,
   FieldSeparator,
 } from "@/components/ui/field";
+import { toastList } from "@/lib/toastList";
+import { useRouter } from "next/navigation";
 
 export function AllLoginMethodsForm() {
+  const router = useRouter();
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
@@ -30,8 +33,15 @@ export function AllLoginMethodsForm() {
             <FieldGroup>
               <FieldGroup>
                 <Field>
-                  <Button variant="outline" asChild className="w-full">
-                    <Link href="/">Continue as a guest</Link>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      router.replace("/");
+                      toastList.guestMode();
+                    }}
+                  >
+                    Continue as a guest
                   </Button>
                 </Field>
               </FieldGroup>

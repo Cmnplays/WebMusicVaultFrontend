@@ -4,7 +4,7 @@ import { NavItem } from "./NavItem";
 import Link from "next/link.js";
 import gsap from "gsap";
 import { setNavHeight } from "@/reduxSlices/ui/uiSlice";
-import { useAppDispatch } from "@/store/hook";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { logout } from "@/services/auth.services";
 import { clearAuth } from "@/reduxSlices/auth/authSlice";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
-
+  const accessToken = useAppSelector((state) => state.auth.accessToken);
   const routesMap = [
     { name: "Music", to: "/" },
     // { name: "Shuffle", to: "/shuffle" },
@@ -129,14 +129,16 @@ const Navbar = () => {
               />
             </li>
           ))}
-          <li className="pl-2 border-l border-white/10">
-            <button
-              onClick={handleLogout}
-              className="px-3 py-1.5 text-sm font-medium text-red-400 hover:text-red-300 transition-colors"
-            >
-              Logout
-            </button>
-          </li>
+          {accessToken && (
+            <li className="pl-2 border-l border-white/10">
+              <button
+                onClick={handleLogout}
+                className="px-3 py-1.5 text-sm font-medium text-red-400 hover:text-red-300 transition-colors"
+              >
+                Logout
+              </button>
+            </li>
+          )}
         </ul>
 
         {/* Hamburger button */}
@@ -172,14 +174,16 @@ const Navbar = () => {
               />
             </li>
           ))}
-          <li className="border-t border-purple-500/10 pt-2">
-            <button
-              onClick={handleLogout}
-              className="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-950/20 transition-all"
-            >
-              Logout
-            </button>
-          </li>
+          {accessToken && (
+            <li className="border-t border-purple-500/10 pt-2">
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-950/20 transition-all"
+              >
+                Logout
+              </button>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { RotateCw, CircleCheck, CircleX } from "lucide-react";
 import { RegisterSchemaType } from "@/lib/schemas/auth.schema";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 interface EmailSignupFormProps {
   form: UseFormReturn<RegisterSchemaType>;
@@ -42,6 +43,11 @@ export function EmailSignupForm({
   return (
     <Card>
       <CardHeader>
+        <Button variant="ghost" asChild className="w-fit -ml-2 mb-2">
+          <Link href="/login">
+            <ArrowLeft className="w-4 h-4 mr-1" /> Back
+          </Link>
+        </Button>
         <CardTitle>Create an account</CardTitle>
         <CardDescription>
           Enter your information below to create your account

@@ -54,9 +54,7 @@ export default function Page() {
           break;
         case StatusCode.Forbidden:
           if (code === ErrorCode.GOOGLE_ACCOUNT) {
-            router.push(
-              `/password?identifier=${data.identifier}&purpose=set-password`,
-            );
+            router.push(`/enter-email?purpose=set-password`);
             toastList.googleAccount();
           }
           break;

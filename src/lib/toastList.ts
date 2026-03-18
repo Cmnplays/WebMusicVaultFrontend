@@ -79,4 +79,9 @@ export const toastList = {
       message: `Password ${mode === "edit-password" ? "updated" : "created"} successfully. Please log in with your new password.`,
       type: "success",
     }),
+  guestMode: () =>
+    showToast({
+      message: "You're browsing as a guest. Some features may be limited.",
+      type: "info",
+    }),
 };

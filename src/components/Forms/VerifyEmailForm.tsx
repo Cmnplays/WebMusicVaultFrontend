@@ -11,8 +11,10 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { REGEXP_ONLY_DIGITS } from "input-otp"; // 👈 not from @/components/ui/input-otp
+import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -26,6 +28,7 @@ interface VerifyEmailProps {
   onSubmit: SubmitHandler<{ otp: string }>;
   purpose: Purpose;
   resendOtp: () => Promise<void>;
+  editEmailHref: string;
 }
 
 export function VerifyEmailForm({
@@ -33,6 +36,7 @@ export function VerifyEmailForm({
   onSubmit,
   purpose,
   resendOtp,
+  editEmailHref,
 }: VerifyEmailProps) {
   const { handleSubmit, control } = form;
   const { errors, isSubmitting } = useFormState({ control });
@@ -45,6 +49,13 @@ export function VerifyEmailForm({
       <div className="w-full max-w-sm">
         <Card>
           <CardHeader className="text-center">
+            {purpose === "verify-email" && (
+              <Button variant="ghost" asChild className="w-fit -ml-2 mb-2">
+                <Link href="/signup">
+                  <ArrowLeft className="w-4 h-4 mr-1" /> Back
+                </Link>
+              </Button>
+            )}
             <CardTitle className="text-2xl">Verify Your Email</CardTitle>
             <CardDescription className="text-center">
               {purpose === "edit-password" &&
@@ -95,16 +106,29 @@ export function VerifyEmailForm({
               </Button>
             </form>
 
-            <p className="text-sm text-muted-foreground">
-              Didn&apos;t receive a code?{" "}
-              <button
-                type="button"
-                onClick={() => resendOtp()}
-                className="underline underline-offset-4 hover:text-primary"
-              >
-                Resend
-              </button>
-            </p>
+            <div>
+              <p className="text-sm text-muted-foreground">
+                Didn&apos;t receive a code?{" "}
+                <button
+                  type="button"
+                  onClick={() => resendOtp()}
+                  className="underline underline-offset-4 hover:text-primary"
+                >
+                  Resend
+                </button>
+              </p>
+              {purpose !== "verify-email" && (
+                <p className="text-sm text-muted-foreground">
+                  Wrong email?{" "}
+                  <Link
+                    href={editEmailHref}
+                    className="underline underline-offset-4 hover:text-primary"
+                  >
+                    Edit email
+                  </Link>
+                </p>
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>

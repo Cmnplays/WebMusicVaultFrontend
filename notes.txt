@@ -12,3 +12,5 @@ verify-email page done.
 if use created a account but skipped i the part of otp verification, so then what we can do if user tries to log in with that info
 then we can do is that we can just ask him to verify account by entering otp to show that he's the actual user
 backedn suggestion.
+
+for everypage where i use searchParams i gotta have a check if they are expected params or not if not redirect to some default page

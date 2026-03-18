@@ -11,8 +11,9 @@ import {
   FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldSeparator,
 } from "@/components/ui/field";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn, SubmitHandler, useFormState } from "react-hook-form";
 import { LoginSchemaType } from "@/lib/schemas/auth.schema";
@@ -28,6 +29,11 @@ export function EmailLoginForm({ form, onSubmit }: EmailLoginFormProps) {
   return (
     <Card>
       <CardHeader>
+        <Button variant="ghost" asChild className="w-fit -ml-2 mb-2">
+          <Link href="/login">
+            <ArrowLeft className="w-4 h-4 mr-1" /> Back
+          </Link>
+        </Button>
         <CardTitle>Login to your account</CardTitle>
         <CardDescription>
           Enter your email below to login to your account
@@ -56,7 +62,7 @@ export function EmailLoginForm({ form, onSubmit }: EmailLoginFormProps) {
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
                   <a
-                    href="/forgot-password"
+                    href="/enter-email"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
