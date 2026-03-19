@@ -5,7 +5,7 @@ import type { songsReturnType } from "../services/song.services";
 export type repeatType = "repeat" | "noRepeat" | "single";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import axios from "axios";
-import { fadeOutPanel } from "./useAudioPlayer";
+import { fadeOutPanel } from "@/lib/animations";
 import {
   setSongs,
   handleSortByChange,

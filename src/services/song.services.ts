@@ -7,6 +7,7 @@ export interface Song {
   duration: number;
   artist: string;
   isLiked: boolean;
+  coverImageUrl: string;
   owner: {
     _id: string;
     username: string;

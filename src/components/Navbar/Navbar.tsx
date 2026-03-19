@@ -1,27 +1,36 @@
 "use client";
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import { NavItem } from "./NavItem";
 import Link from "next/link.js";
-import gsap from "gsap";
 import { setNavHeight } from "@/reduxSlices/ui/uiSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { logout } from "@/services/auth.services";
 import { clearAuth } from "@/reduxSlices/auth/authSlice";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { Home, Search, ListMusic, MoreHorizontal } from "lucide-react";
+
+const bottomNavItems = [
+  { name: "Music", to: "/", icon: Home },
+  { name: "Search", to: "/search", icon: Search },
+  { name: "Playlist", to: "/playlist", icon: ListMusic },
+];
+
+const moreRoutes = [
+  { name: "About", to: "/about" },
+  { name: "Account", to: "/me" },
+];
 
 const Navbar = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useAppDispatch();
-  const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
   const navRef = useRef<HTMLDivElement | null>(null);
   const accessToken = useAppSelector((state) => state.auth.accessToken);
-  const routesMap = [
+
+  const desktopRoutes = [
     { name: "Music", to: "/" },
-    // { name: "Shuffle", to: "/shuffle" },
     { name: "Playlist", to: "/playlist" },
-    // { name: "Search", to: "/search" },
-    // { name: "Upload", to: "/upload" },
     { name: "About", to: "/about" },
     { name: "Account", to: "/me" },
   ];
@@ -30,6 +39,7 @@ const Navbar = () => {
     await logout();
     dispatch(clearAuth());
     router.replace("/login");
+    setMoreOpen(false);
   };
 
   useLayoutEffect(() => {
@@ -42,151 +52,160 @@ const Navbar = () => {
     return () => window.removeEventListener("resize", updateHeight);
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!menuRef.current || typeof window === "undefined") return;
-    if (isOpen) {
-      gsap.to(menuRef.current, {
-        height: "auto",
-        opacity: 1,
-        duration: 0.4,
-        ease: "power2.out",
-        display: "block",
-      });
-    } else {
-      gsap.to(menuRef.current, {
-        height: 0,
-        opacity: 0,
-        duration: 0.3,
-        ease: "power2.in",
-        onComplete: () => {
-          if (menuRef.current) menuRef.current.style.display = "none";
-        },
-      });
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (menuRef.current) {
-      menuRef.current.style.height = "0";
-      menuRef.current.style.opacity = "0";
-      menuRef.current.style.overflow = "hidden";
-      menuRef.current.style.display = "none";
-    }
-  }, []);
-
   return (
-    <nav
-      className="bg-[#1a0635] border-b border-purple-500/10 shadow-[0_2px_20px_rgba(0,0,0,0.3)] sticky top-0 z-50 rounded-b-xl"
-      ref={navRef}
-    >
-      <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center cursor-pointer select-none">
-          {/* Mobile Logo */}
-          <span className="flex items-center gap-2 lg:hidden">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-950/60 border border-purple-500/30">
-              <svg
-                className="w-4 h-4 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
-              </svg>
-            </div>
-            <span className="font-semibold text-xl tracking-tight text-zinc-300">
-              WmV
-            </span>
-          </span>
-
-          {/* Desktop Logo */}
-          <span className="hidden lg:flex items-center gap-2">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-950/60 border border-purple-500/30">
-              <svg
-                className="w-4 h-4 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
-              </svg>
-            </div>
-            <span className="font-semibold text-xl tracking-tight text-zinc-300">
-              WebMusicVault
-            </span>
-          </span>
-        </Link>
-
-        {/* Desktop nav links */}
-        <ul className="hidden lg:flex items-center space-x-2">
-          {routesMap.map((link) => (
-            <li key={link.to}>
-              <NavItem
-                href={link.to}
-                label={link.name}
-                variant="desktop"
-                onClick={() => setIsOpen(false)}
-              />
-            </li>
-          ))}
-          {accessToken && (
-            <li className="pl-2 border-l border-white/10">
-              <button
-                onClick={handleLogout}
-                className="px-3 py-1.5 text-sm font-medium text-red-400 hover:text-red-300 transition-colors"
-              >
-                Logout
-              </button>
-            </li>
-          )}
-        </ul>
-
-        {/* Hamburger button */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="lg:hidden flex flex-col justify-center items-center space-y-1 p-1 rounded-lg border border-white/10 hover:border-purple-500/30 hover:bg-purple-950/40 transition-all"
-        >
-          <span
-            className={`w-8 h-1 bg-purple-400 rounded transform transition-all ${isOpen ? "rotate-45 translate-y-2" : ""}`}
-          />
-          <span
-            className={`w-8 h-1 bg-purple-400 rounded transition-all ${isOpen ? "opacity-0" : "opacity-100"}`}
-          />
-          <span
-            className={`w-8 h-1 bg-purple-400 rounded transform transition-all ${isOpen ? "-rotate-45 -translate-y-2" : ""}`}
-          />
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      <div
-        ref={menuRef}
-        className="lg:hidden px-6 py-4 bg-[#1a0635] border-t border-purple-500/10 overflow-hidden rounded-xl mt-2 mb-3 mx-2 shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
+    <>
+      {/* ── Desktop top navbar ── */}
+      <nav
+        className="bg-[#1a0635] border-b border-purple-500/10 shadow-[0_2px_20px_rgba(0,0,0,0.3)] sticky top-0 z-50 rounded-b-xl"
+        ref={navRef}
       >
-        <ul className="space-y-3">
-          {routesMap.map((link) => (
-            <li key={link.to}>
-              <NavItem
-                href={link.to}
-                onClick={() => setIsOpen(false)}
-                variant="mobile"
-                label={link.name}
+        <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
+          {/* Logo */}
+          <Link
+            href="/"
+            className="flex items-center cursor-pointer select-none"
+          >
+            {/* Mobile logo — shown on mobile top bar */}
+            <span className="flex items-center gap-2 lg:hidden">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-950/60 border border-purple-500/30">
+                <svg
+                  className="w-4 h-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
+                </svg>
+              </div>
+              <span className="font-semibold text-xl tracking-tight text-zinc-300">
+                WmV
+              </span>
+            </span>
+
+            {/* Desktop logo */}
+            <span className="hidden lg:flex items-center gap-2">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-950/60 border border-purple-500/30">
+                <svg
+                  className="w-4 h-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
+                </svg>
+              </div>
+              <span className="font-semibold text-xl tracking-tight text-zinc-300">
+                WebMusicVault
+              </span>
+            </span>
+          </Link>
+
+          {/* Desktop nav links */}
+          <ul className="hidden lg:flex items-center space-x-2">
+            {desktopRoutes.map((link) => (
+              <li key={link.to}>
+                <NavItem href={link.to} label={link.name} variant="desktop" />
+              </li>
+            ))}
+            {accessToken && (
+              <li className="pl-2 border-l border-white/10">
+                <button
+                  onClick={handleLogout}
+                  className="px-3 py-1.5 text-sm font-medium text-red-400 hover:text-red-300 transition-colors"
+                >
+                  Logout
+                </button>
+              </li>
+            )}
+          </ul>
+        </div>
+      </nav>
+
+      {/* ── Mobile bottom nav ── */}
+      <>
+        {/* More drawer */}
+        {moreOpen && (
+          <div
+            className="fixed inset-0 z-[60]"
+            onClick={() => setMoreOpen(false)}
+          >
+            <div
+              className="absolute bottom-16 left-0 right-0 mx-4 bg-[#1a0635] border border-purple-500/20 rounded-2xl shadow-[0_-4px_30px_rgba(0,0,0,0.5)] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {moreRoutes.map((route) => (
+                <Link
+                  key={route.to}
+                  href={route.to}
+                  onClick={() => setMoreOpen(false)}
+                  className="flex items-center gap-3 px-5 py-4 text-sm text-zinc-300 hover:bg-purple-500/10 border-b border-purple-500/10 transition-colors"
+                >
+                  {route.name}
+                </Link>
+              ))}
+              {accessToken && (
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-5 py-4 text-sm text-red-400 hover:bg-red-950/20 transition-colors"
+                >
+                  Logout
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Bottom bar */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1a0635]/95 backdrop-blur-md border-t border-purple-500/20 shadow-[0_-2px_20px_rgba(0,0,0,0.4)]">
+          <div className="flex items-center justify-around px-2 py-2">
+            {bottomNavItems.map(({ name, to, icon: Icon }) => {
+              const isActive = pathname === to;
+              return (
+                <Link
+                  key={to}
+                  href={to}
+                  className="flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-all"
+                >
+                  <Icon
+                    size={22}
+                    className={`transition-colors ${isActive ? "text-white" : "text-white/40"}`}
+                    strokeWidth={isActive ? 2.5 : 1.8}
+                  />
+                  <span
+                    className={`text-[10px] font-medium transition-colors ${isActive ? "text-white" : "text-white/40"}`}
+                  >
+                    {name}
+                  </span>
+                  {isActive && (
+                    <span className="w-1 h-1 rounded-full bg-orange-400" />
+                  )}
+                </Link>
+              );
+            })}
+
+            {/* More */}
+            <button
+              onClick={() => setMoreOpen(!moreOpen)}
+              className="flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-all"
+            >
+              <MoreHorizontal
+                size={22}
+                className={`transition-colors ${moreOpen ? "text-white" : "text-white/40"}`}
+                strokeWidth={moreOpen ? 2.5 : 1.8}
               />
-            </li>
-          ))}
-          {accessToken && (
-            <li className="border-t border-purple-500/10 pt-2">
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-950/20 transition-all"
+              <span
+                className={`text-[10px] font-medium transition-colors ${moreOpen ? "text-white" : "text-white/40"}`}
               >
-                Logout
-              </button>
-            </li>
-          )}
-        </ul>
-      </div>
-    </nav>
+                More
+              </span>
+              {moreOpen && (
+                <span className="w-1 h-1 rounded-full bg-orange-400" />
+              )}
+            </button>
+          </div>
+        </div>
+      </>
+    </>
   );
 };
 

@@ -1,0 +1,115 @@
+"use client";
+import { useAppSelector } from "@/store/hook";
+import { Play, Pause, ChevronUp } from "lucide-react";
+import AddToFav from "@/components/SongPlayerPanel/PanelButtons/AddToFav";
+import Image from "next/image";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+interface MiniPlayerProps {
+  audioRef: React.RefObject<HTMLAudioElement | null>;
+  handlePlayPause: () => void;
+  onExpand: () => void;
+}
+
+const MiniPlayer = ({
+  audioRef,
+  handlePlayPause,
+  onExpand,
+}: MiniPlayerProps) => {
+  const playingSong = useAppSelector((state) => state.player.playingSong);
+  const playing = useAppSelector((state) => state.player.playing);
+  const currentTime = useAppSelector((state) => state.player.currentTime);
+  const duration = useAppSelector((state) => state.player.duration);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    gsap.fromTo(
+      containerRef.current,
+      { y: "100%", opacity: 0 },
+      { y: "0%", opacity: 1, duration: 0.35, ease: "power3.out" },
+    );
+  }, [playingSong]);
+
+  if (!playingSong) return null;
+
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full bg-[#1a0635]/95 backdrop-blur-md border-t border-purple-500/20 shadow-[0_-4px_20px_rgba(0,0,0,0.4)] cursor-pointer select-none"
+      onClick={onExpand}
+    >
+      {/* Progress bar */}
+      <div className="absolute top-0 left-0 w-full h-0.5 bg-white/10">
+        <div
+          className="h-full bg-gradient-to-r from-orange-400 to-purple-500 transition-all duration-300"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      <div className="flex items-center gap-3 px-4 py-3">
+        {/* Cover art */}
+        <div className="shrink-0 w-11 h-11 rounded-lg bg-gradient-to-tr from-purple-700 to-purple-500 flex items-center justify-center shadow-md overflow-hidden">
+          {playingSong.coverImageUrl ? (
+            <Image
+              src={playingSong.coverImageUrl}
+              alt={playingSong.title}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <svg
+              className="w-5 h-5 text-white/60"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
+            </svg>
+          )}
+        </div>
+
+        {/* Song info */}
+        <div className="flex-1 min-w-0">
+          <p className="text-white text-sm font-semibold truncate leading-tight">
+            {playingSong.title.replace(".mp3", "")}
+          </p>
+          <p className="text-white/50 text-xs truncate mt-0.5">
+            {playingSong.artist}
+          </p>
+        </div>
+
+        {/* Controls */}
+        <div
+          className="flex items-center gap-3 shrink-0"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <AddToFav
+            songId={playingSong._id}
+            isLiked={playingSong.isLiked}
+            audioRef={audioRef}
+          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePlayPause();
+            }}
+            className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-400 to-purple-600 flex items-center justify-center shadow-md active:scale-95 transition-transform"
+          >
+            {playing ? (
+              <Pause size={18} className="text-white" fill="white" />
+            ) : (
+              <Play size={18} className="text-white ml-0.5" fill="white" />
+            )}
+          </button>
+        </div>
+
+        <ChevronUp size={18} className="text-white/30 shrink-0" />
+      </div>
+    </div>
+  );
+};
+
+export default MiniPlayer;

@@ -9,9 +9,9 @@ const Page = () => {
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   useEffect(() => {
+    if (!accessToken) return;
     const init = async () => {
       const playlists = await getPlaylists();
-      console.log(playlists);
       setPlaylists(playlists);
     };
     init();

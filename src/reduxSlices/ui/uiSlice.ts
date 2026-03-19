@@ -1,11 +1,6 @@
 // redux/slices/uiSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface ToastState {
-  type: "success" | "error" | "info";
-  message: string;
-}
-
 interface UIState {
   loading: boolean;
   downloading: boolean;
@@ -16,7 +11,6 @@ interface UIState {
   mountShareModal: boolean;
   mountAuthPromptModal: boolean;
   navHeight: number;
-  toast: ToastState | null;
 }
 
 const initialState: UIState = {
@@ -29,7 +23,6 @@ const initialState: UIState = {
   mountShareModal: false,
   mountAuthPromptModal: false,
   navHeight: 0,
-  toast: null,
 };
 
 const uiSlice = createSlice({
@@ -63,12 +56,6 @@ const uiSlice = createSlice({
     setNavHeight: (state, action: PayloadAction<number>) => {
       state.navHeight = action.payload;
     },
-    showToast: (state, action: PayloadAction<ToastState>) => {
-      state.toast = action.payload;
-    },
-    clearToast: (state) => {
-      state.toast = null;
-    },
   },
 });
 
@@ -82,8 +69,6 @@ export const {
   setMountShareModal,
   setMountAuthPromptModal,
   setNavHeight,
-  showToast,
-  clearToast,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import type { Song } from "../services/song.services";
 export type repeatType = "repeat" | "noRepeat" | "single";
 import { useAppDispatch, useAppSelector } from "../store/hook";
-import gsap from "gsap";
 import useMediaSession from "./useMediaSession";
 
 import {
@@ -16,30 +15,15 @@ import {
   setPanelTrigger,
 } from "../reduxSlices/player/playerSlice";
 
-export const fadeOutPanel = (
-  panelElement: HTMLDivElement,
-  onComplete?: () => void,
-) => {
-  if (typeof window === "undefined") return;
-  gsap.to(panelElement, {
-    y: "100%",
-    opacity: 0,
-    duration: 0.4,
-    ease: "power3.in",
-    onComplete,
-  });
-};
 type customFnType = {
   next: () => void;
   previous: () => void;
 };
 export const useAudioPlayer = ({
-  panelRef,
   audioRef,
   songs,
   customFns,
 }: {
-  panelRef: React.RefObject<HTMLDivElement | null>;
   audioRef: React.RefObject<HTMLAudioElement | null>;
   songs: Song[];
   customFns?: customFnType;
@@ -92,13 +76,10 @@ export const useAudioPlayer = ({
   // Handle play button click
   function handlePlayClick(song: Song) {
     if (playingSong?._id === song._id) {
+      console.log("id matched");
       if (playing) {
-        if (panelRef.current) {
-          fadeOutPanel(panelRef.current, () => {
-            dispatch(setPlayingSong(null));
-            dispatch(setPanelOpen(false));
-          });
-        }
+        dispatch(setPanelOpen(false));
+        console.log("close panel enabled");
       } else {
         dispatch(setPlaying(true));
         audioRef.current?.play();
@@ -120,6 +101,7 @@ export const useAudioPlayer = ({
       dispatch(setPlaying(true));
     }
   }
+
   function getNextShuffleSongIndex(): number {
     return Math.floor(Math.random() * songs.length);
   }
