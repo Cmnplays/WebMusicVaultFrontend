@@ -1,6 +1,7 @@
 // redux/slices/songSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { Song } from "../../services/song.services";
+import { login, signup, clearAuth } from "../auth/authSlice";
 
 interface SongState {
   songs: Song[];
@@ -105,6 +106,23 @@ const songSlice = createSlice({
     setSortChanged: (state, action: PayloadAction<boolean>) => {
       state.sortChanged = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    const clearSongsState = (state: SongState) => {
+      state.songs = [];
+      state.tempSongs = [];
+      state.hasMoreSongs = true;
+      state.tempHasMoreSongs = true;
+      state.nextCursor = undefined;
+      state.tempNextCursor = undefined;
+      state.triggerFetch = !state.triggerFetch;
+      state.tempTriggerFetch = !state.tempTriggerFetch;
+    };
+
+    builder
+      .addCase(login, clearSongsState)
+      .addCase(signup, clearSongsState)
+      .addCase(clearAuth, clearSongsState);
   },
 });
 

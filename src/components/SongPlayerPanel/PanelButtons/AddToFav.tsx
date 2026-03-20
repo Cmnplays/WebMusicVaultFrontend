@@ -5,6 +5,7 @@ import { toggleAddToFav } from "@/services/song.services";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { setSongLikedBy } from "@/reduxSlices/song/songSlice";
 import { setMountAuthPromptModal } from "@/reduxSlices/ui/uiSlice";
+import { setPlayingSong } from "@/reduxSlices/player/playerSlice";
 interface AddToFavProps {
   songId: string;
   isLiked: boolean;
@@ -15,6 +16,8 @@ const AddToFav: React.FC<AddToFavProps> = ({ songId, isLiked, audioRef }) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
   const accessToken = useAppSelector((state) => state.auth.accessToken);
+  const playingSong = useAppSelector((state) => state.player.playingSong);
+
   const handleClick = async () => {
     if (!audioRef.current) return;
     if (!accessToken) {
@@ -26,6 +29,11 @@ const AddToFav: React.FC<AddToFavProps> = ({ songId, isLiked, audioRef }) => {
     try {
       const likeData = await toggleAddToFav(songId);
       dispatch(setSongLikedBy(likeData));
+      
+      // If the currently playing song is the one we liked/unliked, update its state too!
+      if (playingSong && playingSong._id === songId) {
+        dispatch(setPlayingSong({ ...playingSong, isLiked: likeData.isLiked }));
+      }
     } catch (err) {
       console.error(err);
     } finally {

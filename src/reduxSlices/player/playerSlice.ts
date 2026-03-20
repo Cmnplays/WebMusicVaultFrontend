@@ -1,6 +1,6 @@
-// redux/slices/playerSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { Song } from "../../services/song.services";
+import { login, signup, clearAuth } from "../auth/authSlice";
 
 export type repeatType = "repeat" | "noRepeat" | "single";
 
@@ -64,6 +64,21 @@ const playerSlice = createSlice({
     setShuffle: (state) => {
       state.shuffle = !state.shuffle;
     },
+  },
+  extraReducers: (builder) => {
+    const clearPlayerState = (state: PlayerState) => {
+      state.playing = false;
+      state.playingSong = null;
+      state.duration = 0;
+      state.currentTime = 0;
+      state.expandedPanelOpen = false;
+      state.miniPanelOpen = false;
+    };
+
+    builder
+      .addCase(login, clearPlayerState)
+      .addCase(signup, clearPlayerState)
+      .addCase(clearAuth, clearPlayerState);
   },
 });
 
