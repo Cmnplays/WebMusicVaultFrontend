@@ -1,18 +1,23 @@
 import api from "@/lib/api";
-import { Song } from "./song.services";
+
 export interface Playlist {
   name: string;
   owner: {
     username: string;
     _id: string;
   };
-  songs: Song[];
+  songs: number;
   description?: string;
   status: "private" | "public";
   isDefault: boolean;
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface PlaylistsResponse {
+  defaultPlaylists: Playlist[];
+  personalPlaylists: Playlist[];
 }
 
 export interface PlaylistSong {
@@ -49,18 +54,18 @@ const getPlaylistSongs = async (
   const response = await api.get(`/playlist/${playlistId}`);
   if (response.data.status !== 200) {
     throw new Error(
-      response.data.message ||
+      response.data.message ??
         "There was a problem while getting playlist songs",
     );
   }
   return response.data.data;
 };
-const getPlaylists = async (): Promise<Playlist[]> => {
+
+const getPlaylists = async (): Promise<PlaylistsResponse> => {
   const response = await api.get("/playlist");
   if (response.data.status !== 200) {
     throw new Error(
-      response.data.message ||
-        "There was a problem while getting username suggestions",
+      response.data.message ?? "There was a problem while getting playlists",
     );
   }
   return response.data.data;

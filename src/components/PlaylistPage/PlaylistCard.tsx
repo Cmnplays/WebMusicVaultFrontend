@@ -27,7 +27,7 @@ const PlaylistCard: React.FC<{ playlist: Playlist }> = ({ playlist }) => {
           </span>
           <span className="flex items-center gap-1 text-xs text-purple-300">
             <Music2 className="w-3 h-3" />
-            {playlist.songs.length} songs
+            {playlist.songs} songs
           </span>
         </div>
       </div>

@@ -2,19 +2,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { ChevronDown } from "lucide-react";
-import { Vibrant } from "node-vibrant/browser";
+import Vibrant from "node-vibrant";
 import { useHandleSliderChange } from "@/components/useHandleSliderChange";
 import SongTitleMarquee from "@/components/SongPlayerPanel/SongTitleMarquee";
 import ProgressSlider from "@/components/SongPlayerPanel/ProgressSlider";
 import PanelBottomControls from "@/components/SongPlayerPanel/PanelBottomControls";
 import PanelTopControls from "@/components/SongPlayerPanel/PanelTopControls";
 import Image from "next/image";
-import {
-  setPlayingSong,
-  setPlaying,
-  setExpandedPanelOpen,
-  setMiniPanelOpen,
-} from "@/reduxSlices/player/playerSlice";
+import { setExpandedPanelOpen } from "@/reduxSlices/player/playerSlice";
 import { fadeInExpandedPanel, fadeOutExpandedPanel } from "@/lib/animations";
 
 interface ExpandedPlayerProps {
@@ -91,8 +86,6 @@ const ExpandedPlayer = ({
     <div
       ref={panelRef}
       style={{
-        transform: "translateY(100%)",
-        opacity: 0,
         backgroundColor: bgColor,
         transition: "background-color 0.8s ease",
       }}
@@ -131,7 +124,7 @@ const ExpandedPlayer = ({
           </div>
         </div>
         {/* Player controls */}
-        <div className="shrink-0 bg-gradient-to-t from-black/60 to-transparent pt-4 pb-6 px-1">
+        <div className="shrink-0 pt-4 pb-6 px-1">
           <PanelTopControls
             audioRef={audioRef}
             downloading={downloading}

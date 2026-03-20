@@ -19,6 +19,7 @@ const bottomNavItems = [
 const moreRoutes = [
   { name: "About", to: "/about" },
   { name: "Account", to: "/me" },
+  { name: "Upload", to: "/upload" },
 ];
 
 const Navbar = () => {
@@ -34,6 +35,7 @@ const Navbar = () => {
     { name: "Playlist", to: "/playlist" },
     { name: "About", to: "/about" },
     { name: "Account", to: "/me" },
+    { name: "Upload", to: "/upload" },
   ];
 
   const handleLogout = async () => {
