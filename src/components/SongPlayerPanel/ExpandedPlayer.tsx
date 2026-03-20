@@ -3,6 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { ChevronDown } from "lucide-react";
 import Vibrant from "node-vibrant";
+import gsap from "gsap";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { useHandleSliderChange } from "@/components/useHandleSliderChange";
 import SongTitleMarquee from "@/components/SongPlayerPanel/SongTitleMarquee";
 import ProgressSlider from "@/components/SongPlayerPanel/ProgressSlider";
@@ -68,19 +71,32 @@ const ExpandedPlayer = ({
     };
   }, [playingSong?.coverImageUrl]);
 
-  // Fade in when triggered
+  const isMount = useRef(true);
+
   useEffect(() => {
     if (!panelRef.current) return;
-    fadeInExpandedPanel(panelRef.current);
-  }, [expandedPanelTrigger]);
+    if (isMount.current) {
+      isMount.current = false;
+      if (!expandedPanelOpen) {
+        gsap.set(panelRef.current, { y: "100%", opacity: 0 });
+      } else {
+        fadeInExpandedPanel(panelRef.current);
+      }
+      return;
+    }
 
-  // Fade out when closed
-  useEffect(() => {
-    if (expandedPanelOpen || !panelRef.current) return;
-    fadeOutExpandedPanel(panelRef.current);
+    if (expandedPanelOpen) {
+      fadeInExpandedPanel(panelRef.current);
+    } else {
+      fadeOutExpandedPanel(panelRef.current);
+    }
   }, [expandedPanelOpen]);
 
   if (!playingSong) return null;
+
+  function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+  }
 
   return (
     <div
@@ -89,7 +105,12 @@ const ExpandedPlayer = ({
         backgroundColor: bgColor,
         transition: "background-color 0.8s ease",
       }}
-      className="fixed inset-0 z-[100] flex flex-col text-white"
+      className={cn(
+        "fixed inset-0 z-[100] flex flex-col text-white",
+        // Default to hidden and unclickable when NOT open, preventing clicks
+        // GSAP will animate inline styles which override these classes visually.
+        !expandedPanelOpen && "opacity-0 translate-y-full pointer-events-none"
+      )}
     >
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/90 pointer-events-none z-0" />

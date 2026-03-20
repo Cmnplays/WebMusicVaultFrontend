@@ -2,8 +2,11 @@
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { Play, Pause, ChevronUp } from "lucide-react";
 import { useRef, useEffect } from "react";
+import gsap from "gsap";
 import AddToFav from "@/components/SongPlayerPanel/PanelButtons/AddToFav";
 import Image from "next/image";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { fadeInMiniPlayer, fadeOutMiniPlayer } from "@/lib/animations";
 import { setPlaying, setPlayingSong } from "@/reduxSlices/player/playerSlice";
 interface MiniPlayerProps {
@@ -28,27 +31,45 @@ const MiniPlayer = ({
   );
   const miniPanelOpen = useAppSelector((state) => state.player.miniPanelOpen);
 
-  useEffect(() => {
-    if (!panelRef.current) return;
-    fadeInMiniPlayer(panelRef.current);
-  }, [panelRef, miniPanelTrigger]);
+  const isMount = useRef(true);
 
   useEffect(() => {
-    if (miniPanelOpen || !panelRef.current) return;
-    fadeOutMiniPlayer(panelRef.current, () => {
-      dispatch(setPlayingSong(null));
-      dispatch(setPlaying(false));
-    });
-  }, [miniPanelOpen]);
+    if (!panelRef.current) return;
+    if (isMount.current) {
+      isMount.current = false;
+      if (!miniPanelOpen) {
+        gsap.set(panelRef.current, { y: "100%", opacity: 0 });
+      } else {
+        fadeInMiniPlayer(panelRef.current);
+      }
+      return;
+    }
+
+    if (miniPanelOpen) {
+      fadeInMiniPlayer(panelRef.current);
+    } else {
+      fadeOutMiniPlayer(panelRef.current, () => {
+        dispatch(setPlayingSong(null));
+        dispatch(setPlaying(false));
+      });
+    }
+  }, [miniPanelOpen, dispatch]);
 
   if (!playingSong) return null;
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
+  function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+  }
+
   return (
     <div
       ref={panelRef}
-      className="relative w-full bg-[#1a0635]/95 backdrop-blur-md border-t border-purple-500/20 shadow-[0_-4px_20px_rgba(0,0,0,0.4)] cursor-pointer select-none"
+      className={cn(
+        "relative w-full bg-[#1a0635]/95 backdrop-blur-md border-t border-purple-500/20 shadow-[0_-4px_20px_rgba(0,0,0,0.4)] cursor-pointer select-none",
+        !miniPanelOpen && "opacity-0 translate-y-full pointer-events-none"
+      )}
       onClick={onExpand}
     >
       {/* Progress bar */}
