@@ -20,7 +20,7 @@ import {
   setTempNextCursor,
 } from "@/reduxSlices/song/songSlice";
 import {
-  setPanelOpen,
+  setExpandedPanelOpen,
   setPlaying,
   setPlayingSong,
 } from "@/reduxSlices/player/playerSlice";
@@ -149,7 +149,7 @@ const SearchSongs = () => {
       dispatch(replaceTempSongs([]));
       dispatch(setPlaying(false));
       dispatch(setPlayingSong(null));
-      dispatch(setPanelOpen(false));
+      dispatch(setExpandedPanelOpen(false));
       dispatch(setLoading(false));
     };
   }, [dispatch]);

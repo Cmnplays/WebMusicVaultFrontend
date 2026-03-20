@@ -1,10 +1,11 @@
 "use client";
-import { useAppSelector } from "@/store/hook";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { Play, Pause, ChevronUp } from "lucide-react";
+import { useRef, useEffect } from "react";
 import AddToFav from "@/components/SongPlayerPanel/PanelButtons/AddToFav";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
+import { fadeInMiniPlayer, fadeOutMiniPlayer } from "@/lib/animations";
+import { setPlaying, setPlayingSong } from "@/reduxSlices/player/playerSlice";
 interface MiniPlayerProps {
   audioRef: React.RefObject<HTMLAudioElement | null>;
   handlePlayPause: () => void;
@@ -16,20 +17,29 @@ const MiniPlayer = ({
   handlePlayPause,
   onExpand,
 }: MiniPlayerProps) => {
+  const dispatch = useAppDispatch();
+  const panelRef = useRef<HTMLDivElement>(null);
   const playingSong = useAppSelector((state) => state.player.playingSong);
   const playing = useAppSelector((state) => state.player.playing);
   const currentTime = useAppSelector((state) => state.player.currentTime);
   const duration = useAppSelector((state) => state.player.duration);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const miniPanelTrigger = useAppSelector(
+    (state) => state.player.miniPanelTrigger,
+  );
+  const miniPanelOpen = useAppSelector((state) => state.player.miniPanelOpen);
 
   useEffect(() => {
-    if (!containerRef.current) return;
-    gsap.fromTo(
-      containerRef.current,
-      { y: "100%", opacity: 0 },
-      { y: "0%", opacity: 1, duration: 0.35, ease: "power3.out" },
-    );
-  }, [playingSong]);
+    if (!panelRef.current) return;
+    fadeInMiniPlayer(panelRef.current);
+  }, [panelRef, miniPanelTrigger]);
+
+  useEffect(() => {
+    if (miniPanelOpen || !panelRef.current) return;
+    fadeOutMiniPlayer(panelRef.current, () => {
+      dispatch(setPlayingSong(null));
+      dispatch(setPlaying(false));
+    });
+  }, [miniPanelOpen]);
 
   if (!playingSong) return null;
 
@@ -37,7 +47,7 @@ const MiniPlayer = ({
 
   return (
     <div
-      ref={containerRef}
+      ref={panelRef}
       className="relative w-full bg-[#1a0635]/95 backdrop-blur-md border-t border-purple-500/20 shadow-[0_-4px_20px_rgba(0,0,0,0.4)] cursor-pointer select-none"
       onClick={onExpand}
     >

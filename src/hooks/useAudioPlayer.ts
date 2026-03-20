@@ -6,13 +6,13 @@ import { useAppDispatch, useAppSelector } from "../store/hook";
 import useMediaSession from "./useMediaSession";
 
 import {
-  setPanelOpen,
   setPlaying,
   setRepeat,
   setPlayingSong,
   setDuration,
   setCurrentTime,
-  setPanelTrigger,
+  setMiniPanelOpen,
+  setMiniPanelTrigger,
 } from "../reduxSlices/player/playerSlice";
 
 type customFnType = {
@@ -29,7 +29,7 @@ export const useAudioPlayer = ({
   customFns?: customFnType;
 }) => {
   const dispatch = useAppDispatch();
-  const panelOpen = useAppSelector((state) => state.player.panelOpen);
+  const miniPanelOpen = useAppSelector((state) => state.player.miniPanelOpen);
   const playing = useAppSelector((state) => state.player.playing);
   const repeat = useAppSelector((state) => state.player.repeat);
   const shuffle = useAppSelector((state) => state.player.shuffle);
@@ -76,26 +76,19 @@ export const useAudioPlayer = ({
   // Handle play button click
   function handlePlayClick(song: Song) {
     if (playingSong?._id === song._id) {
-      console.log("id matched");
       if (playing) {
-        dispatch(setPanelOpen(false));
-        console.log("close panel enabled");
+        dispatch(setMiniPanelOpen(false));
       } else {
         dispatch(setPlaying(true));
         audioRef.current?.play();
-        if (!panelOpen) {
-          dispatch(setPanelTrigger());
+        if (!miniPanelOpen) {
+          dispatch(setMiniPanelTrigger());
         }
       }
     } else {
-      if (!song.fileUrl) {
-        alert("Audio not available for this song.");
-        setPlaying(false);
-        return;
-      }
-      if (!panelOpen) {
-        dispatch(setPanelTrigger());
-        dispatch(setPanelOpen(true));
+      if (!miniPanelOpen) {
+        dispatch(setMiniPanelOpen(true));
+        dispatch(setMiniPanelTrigger());
       }
       dispatch(setPlayingSong(song));
       dispatch(setPlaying(true));

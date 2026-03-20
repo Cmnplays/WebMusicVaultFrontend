@@ -1,13 +1,14 @@
 "use client";
 import { useState, useRef, useLayoutEffect } from "react";
 import { NavItem } from "./NavItem";
-import Link from "next/link.js";
 import { setNavHeight } from "@/reduxSlices/ui/uiSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { logout } from "@/services/auth.services";
 import { clearAuth } from "@/reduxSlices/auth/authSlice";
 import { useRouter, usePathname } from "next/navigation";
 import { Home, Search, ListMusic, MoreHorizontal } from "lucide-react";
+import AppLogo from "./AppLogo";
+import Link from "next/link";
 
 const bottomNavItems = [
   { name: "Music", to: "/", icon: Home },
@@ -54,51 +55,13 @@ const Navbar = () => {
 
   return (
     <>
-      {/* ── Desktop top navbar ── */}
+      {/* ── Top navbar ── */}
       <nav
         className="bg-[#1a0635] border-b border-purple-500/10 shadow-[0_2px_20px_rgba(0,0,0,0.3)] sticky top-0 z-50 rounded-b-xl"
         ref={navRef}
       >
         <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center cursor-pointer select-none"
-          >
-            {/* Mobile logo — shown on mobile top bar */}
-            <span className="flex items-center gap-2 lg:hidden">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-950/60 border border-purple-500/30">
-                <svg
-                  className="w-4 h-4 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
-                </svg>
-              </div>
-              <span className="font-semibold text-xl tracking-tight text-zinc-300">
-                WmV
-              </span>
-            </span>
-
-            {/* Desktop logo */}
-            <span className="hidden lg:flex items-center gap-2">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-950/60 border border-purple-500/30">
-                <svg
-                  className="w-4 h-4 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
-                </svg>
-              </div>
-              <span className="font-semibold text-xl tracking-tight text-zinc-300">
-                WebMusicVault
-              </span>
-            </span>
-          </Link>
+          <AppLogo />
 
           {/* Desktop nav links */}
           <ul className="hidden lg:flex items-center space-x-2">
@@ -123,7 +86,6 @@ const Navbar = () => {
 
       {/* ── Mobile bottom nav ── */}
       <>
-        {/* More drawer */}
         {moreOpen && (
           <div
             className="fixed inset-0 z-[60]"
@@ -155,7 +117,6 @@ const Navbar = () => {
           </div>
         )}
 
-        {/* Bottom bar */}
         <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1a0635]/95 backdrop-blur-md border-t border-purple-500/20 shadow-[0_-2px_20px_rgba(0,0,0,0.4)]">
           <div className="flex items-center justify-around px-2 py-2">
             {bottomNavItems.map(({ name, to, icon: Icon }) => {
@@ -183,7 +144,6 @@ const Navbar = () => {
               );
             })}
 
-            {/* More */}
             <button
               onClick={() => setMoreOpen(!moreOpen)}
               className="flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-all"

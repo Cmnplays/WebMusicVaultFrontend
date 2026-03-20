@@ -1,11 +1,10 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getSongs } from "../services/song.services";
 import type { songsReturnType } from "../services/song.services";
 export type repeatType = "repeat" | "noRepeat" | "single";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import axios from "axios";
-import { fadeOutPanel } from "@/lib/animations";
 import {
   setSongs,
   handleSortByChange,
@@ -16,9 +15,13 @@ import {
   setSortBy,
 } from "../reduxSlices/song/songSlice";
 import { setStatusText, setLoading } from "@/reduxSlices/ui/uiSlice";
-import { setPanelOpen, setPlayingSong } from "@/reduxSlices/player/playerSlice";
+import {
+  setExpandedPanelOpen,
+  setPlayingSong,
+  setMiniPanelOpen,
+} from "@/reduxSlices/player/playerSlice";
 
-export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
+export const useSongs = () => {
   const dispatch = useAppDispatch();
   const sortChanged = useAppSelector((state) => state.song.sortChanged);
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
@@ -87,35 +90,14 @@ export const useSongs = (panelRef: React.RefObject<HTMLDivElement | null>) => {
     };
     loadSongs();
   }, [triggerFetch, sortOrder, sortChanged, dispatch]);
-
-  // const handleSorting = () => {
-  //   dispatch(setSortChanged(true));
-  //   dispatch(setSongs([]));
-  //   dispatch(setNextCursor(undefined));
-  //   if (sortOrder === "asc") {
-  //     dispatch(setSortOrder("desc"));
-  //   } else {
-  //     dispatch(setSortOrder("asc"));
-  //   }
-  //   dispatch(setHasMoreSongs(true));
-  //   if (panelRef.current) {
-  //     fadeOutPanel(panelRef.current, () => {
-  //       dispatch(setPlayingSong(null));
-  //       dispatch(setPanelOpen(false));
-  //     });
-  //   }
-  // };
   const handleSort = () => {
     dispatch(setSongs([]));
     dispatch(setNextCursor(undefined));
     dispatch(setSortChanged(true));
     dispatch(setHasMoreSongs(true));
-    if (panelRef.current) {
-      fadeOutPanel(panelRef.current, () => {
-        dispatch(setPlayingSong(null));
-        dispatch(setPanelOpen(false));
-      });
-    }
+    dispatch(setPlayingSong(null));
+    dispatch(setExpandedPanelOpen(false)); // triggers desktop panel close animation
+    dispatch(setMiniPanelOpen(false)); // triggers mini player close animation
   };
   const handleSortBy = (sortBy: sortByT) => {
     handleSort();

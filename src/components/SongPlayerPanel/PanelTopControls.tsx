@@ -11,6 +11,7 @@ interface PanelTopControlsProps {
   panelRef: PanelRef;
   songId: string;
   isLiked: boolean;
+  showCloseBtn?: boolean;
 }
 const PanelTopControls: React.FC<PanelTopControlsProps> = ({
   audioRef,
@@ -19,17 +20,20 @@ const PanelTopControls: React.FC<PanelTopControlsProps> = ({
   panelRef,
   songId,
   isLiked,
+  showCloseBtn = true,
 }) => {
   return (
     <div className="flex w-full justify-around mb-2 lg:mb-2">
       <DeleteBtn audioRef={audioRef} />
       <ShareSongBtn />
-      <ClosePanelBtn
-        panelRef={panelRef}
-        audioRef={audioRef}
-        downloading={downloading}
-        fadeOutPanel={fadeOutPanel}
-      />
+      {showCloseBtn && (
+        <ClosePanelBtn
+          panelRef={panelRef}
+          audioRef={audioRef}
+          downloading={downloading}
+          fadeOutPanel={fadeOutPanel}
+        />
+      )}
       <DownloadBtn downloading={downloading} />
       <AddToFav songId={songId} isLiked={isLiked} audioRef={audioRef} />
     </div>

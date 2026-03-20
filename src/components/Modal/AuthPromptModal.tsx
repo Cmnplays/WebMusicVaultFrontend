@@ -41,7 +41,7 @@ const AuthPromptModal: React.FC<AuthPromptModalProps> = ({ onClose }) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-md px-5 text-foreground"
+      className="fixed inset-0 z-110  flex items-center justify-center bg-background/80 backdrop-blur-md px-5 text-foreground"
       style={{ transformOrigin: "center" }}
       onClick={(e) => {
         if (e.target === e.currentTarget) handleClose();

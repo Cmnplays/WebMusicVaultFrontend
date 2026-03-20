@@ -1,7 +1,7 @@
 "use client";
 import { useAppDispatch } from "@/store/hook";
 import {
-  setPanelOpen,
+  setExpandedPanelOpen,
   setRepeat,
   setPlaying,
 } from "@/reduxSlices/player/playerSlice";
@@ -22,7 +22,7 @@ const ClosePanelBtn: React.FC<ClosePanelBtnProps> = ({
   const handlePanelClose = () => {
     if (panelRef.current && audioRef && !downloading) {
       fadeOutPanel(panelRef.current, () => {
-        dispatch(setPanelOpen(false));
+        dispatch(setExpandedPanelOpen(false));
         dispatch(setRepeat("repeat"));
       });
       audioRef.current!.pause();

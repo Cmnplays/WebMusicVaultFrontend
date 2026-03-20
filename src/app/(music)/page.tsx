@@ -5,21 +5,23 @@ import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useSongs } from "@/hooks/useSongs";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
-import { fadeOutPanel } from "@/hooks/useAudioPlayer";
 import MusicHeader from "@/components/MusicPage/MusicPageHeader";
 import SongList from "@/components/SongList/SongList";
 import SongListSkeleton from "@/components/SongList/SongListSkeleton";
 import { setTempSongs } from "@/reduxSlices/song/songSlice";
 import {
   setPlaying,
-  setPanelOpen,
+  setExpandedPanelOpen,
   setPlayingSong,
+  setExpandedPanelTrigger,
+  setMiniPanelOpen,
 } from "@/reduxSlices/player/playerSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
 import ShareSongModal from "@/components/Modal/ShareSongModal";
 import AuthPromptModal from "@/components/Modal/AuthPromptModal";
-import { showToast, showToastProps } from "@/hooks/useToast";
+import MiniPlayer from "@/components/SongPlayerPanel/MiniPlayer";
+import ExpandedPlayer from "@/components/SongPlayerPanel/ExpandedPlayer";
 
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -47,16 +49,15 @@ const MusicPage: React.FC = () => {
   const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
 
   const {
     handlePlayClick,
     handleAudioEnded,
     moveToNextSong,
     moveToPreviousSong,
-  } = useAudioPlayer({ panelRef, audioRef, songs });
+  } = useAudioPlayer({ audioRef, songs });
 
-  const { error, handleSortBy, handleSortOrder } = useSongs(panelRef);
+  const { error, handleSortBy, handleSortOrder } = useSongs();
 
   //for reseting some states when the page changes
   useEffect(() => {
@@ -64,7 +65,8 @@ const MusicPage: React.FC = () => {
       dispatch(setTempSongs([]));
       dispatch(setPlaying(false));
       dispatch(setPlayingSong(null));
-      dispatch(setPanelOpen(false));
+      dispatch(setExpandedPanelOpen(false));
+      dispatch(setMiniPanelOpen(false));
       dispatch(setLoading(false));
     };
   }, [dispatch]);
@@ -103,11 +105,10 @@ const MusicPage: React.FC = () => {
 
       {/* Player Panel */}
 
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-5xl z-50">
+      {/* <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-5xl z-50">
         <SongPlayerPanel
           audioRef={audioRef}
           panelRef={panelRef}
-          fadeOutPanel={fadeOutPanel}
           handlePlayPause={async () => {
             if (!playing) {
               try {
@@ -124,7 +125,50 @@ const MusicPage: React.FC = () => {
           moveToNextSong={moveToNextSong}
           moveToPreviousSong={moveToPreviousSong}
         />
+      </div> */}
+
+      {/* ── Mobile only: MiniPlayer ── */}
+      <div className="lg:hidden fixed bottom-16 left-0 right-0 z-50">
+        <MiniPlayer
+          audioRef={audioRef}
+          handlePlayPause={async () => {
+            if (!playing) {
+              try {
+                await audioRef.current?.play();
+                dispatch(setPlaying(true));
+              } catch (err) {
+                console.warn("Audio play was interrupted", err);
+              }
+              return;
+            }
+            audioRef.current?.pause();
+            dispatch(setPlaying(false));
+          }}
+          onExpand={() => {
+            dispatch(setExpandedPanelTrigger());
+            dispatch(setExpandedPanelOpen(true));
+          }}
+        />
       </div>
+
+      <ExpandedPlayer
+        audioRef={audioRef}
+        handlePlayPause={async () => {
+          if (!playing) {
+            try {
+              await audioRef.current?.play();
+              dispatch(setPlaying(true));
+            } catch (err) {
+              console.warn("Audio play was interrupted", err);
+            }
+            return;
+          }
+          audioRef.current?.pause();
+          dispatch(setPlaying(false));
+        }}
+        moveToNextSong={moveToNextSong}
+        moveToPreviousSong={moveToPreviousSong}
+      />
 
       {/* Delete Confirmation */}
       {mountDeleteConfirmation && (

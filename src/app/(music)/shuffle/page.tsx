@@ -13,7 +13,7 @@ import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import {
   setPlaying,
   setPlayingSong,
-  setPanelOpen,
+  setExpandedPanelOpen,
 } from "@/reduxSlices/player/playerSlice";
 import UnavailableYet from "@/components/UnavailableYet";
 const ShufflePlayer = () => {
@@ -70,7 +70,7 @@ const ShufflePlayer = () => {
     return () => {
       dispatch(setPlaying(false));
       dispatch(setPlayingSong(null));
-      dispatch(setPanelOpen(false));
+      dispatch(setExpandedPanelOpen(false));
       dispatch(setLoading(false));
     };
   }, [dispatch]);

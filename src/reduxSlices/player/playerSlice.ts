@@ -9,8 +9,10 @@ interface PlayerState {
   playingSong: Song | null;
   duration: number;
   currentTime: number;
-  panelOpen: boolean;
-  panelTrigger: number;
+  expandedPanelOpen: boolean;
+  expandedPanelTrigger: number;
+  miniPanelTrigger: number;
+  miniPanelOpen: boolean;
   repeat: repeatType;
   shuffle: boolean;
 }
@@ -20,8 +22,10 @@ const initialState: PlayerState = {
   playingSong: null,
   duration: 0,
   currentTime: 0,
-  panelOpen: false,
-  panelTrigger: 0,
+  expandedPanelOpen: false,
+  expandedPanelTrigger: 0,
+  miniPanelTrigger: 0,
+  miniPanelOpen: false,
   repeat: "repeat",
   shuffle: false,
 };
@@ -42,11 +46,17 @@ const playerSlice = createSlice({
     setCurrentTime: (state, action: PayloadAction<number>) => {
       state.currentTime = action.payload;
     },
-    setPanelOpen: (state, action: PayloadAction<boolean>) => {
-      state.panelOpen = action.payload;
+    setExpandedPanelOpen: (state, action: PayloadAction<boolean>) => {
+      state.expandedPanelOpen = action.payload;
     },
-    setPanelTrigger: (state) => {
-      state.panelTrigger += 1;
+    setExpandedPanelTrigger: (state) => {
+      state.expandedPanelTrigger += 1;
+    },
+    setMiniPanelOpen: (state, action: PayloadAction<boolean>) => {
+      state.miniPanelOpen = action.payload;
+    },
+    setMiniPanelTrigger: (state) => {
+      state.miniPanelTrigger += 1;
     },
     setRepeat: (state, action: PayloadAction<repeatType>) => {
       state.repeat = action.payload;
@@ -62,10 +72,12 @@ export const {
   setPlayingSong,
   setDuration,
   setCurrentTime,
-  setPanelOpen,
-  setPanelTrigger,
+  setExpandedPanelOpen,
+  setExpandedPanelTrigger,
   setRepeat,
   setShuffle,
+  setMiniPanelOpen,
+  setMiniPanelTrigger,
 } = playerSlice.actions;
 
 export default playerSlice.reducer;

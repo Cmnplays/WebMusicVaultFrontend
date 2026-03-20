@@ -1,20 +1,17 @@
 "use client";
 import { useEffect } from "react";
-import gsap from "gsap";
-import { useAppSelector } from "../../store/hook";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { useHandleSliderChange } from "@/components/useHandleSliderChange";
 import PanelTopControls from "./PanelTopControls";
 import SongTitleMarquee from "./SongTitleMarquee";
 import ProgressSlider from "./ProgressSlider";
 import PanelBottomControls from "./PanelBottomControls";
+import { setPlayingSong, setPlaying } from "@/reduxSlices/player/playerSlice";
+import { fadeOutPanel, fadeInPanel } from "@/lib/animations";
 
 interface SongPanelProps {
   audioRef: React.RefObject<HTMLAudioElement | null>;
   panelRef: React.RefObject<HTMLDivElement | null>;
-  fadeOutPanel?: (
-    panelElement: HTMLDivElement,
-    onComplete?: () => void,
-  ) => void;
   handlePlayPause: () => void;
   moveToNextSong: () => void;
   moveToPreviousSong: () => void;
@@ -27,41 +24,37 @@ const SongPlayerPanel = ({
   moveToNextSong,
   moveToPreviousSong,
   panelRef,
-  fadeOutPanel,
   excludeTopControls = false,
 }: SongPanelProps) => {
+  const dispatch = useAppDispatch();
   const playing = useAppSelector((state) => state.player.playing);
   const duration = useAppSelector((state) => state.player.duration);
   const currentTime = useAppSelector((state) => state.player.currentTime);
-  const panelTrigger = useAppSelector((state) => state.player.panelTrigger);
+  const expandedPanelTrigger = useAppSelector(
+    (state) => state.player.expandedPanelTrigger,
+  );
   const playingSong = useAppSelector((state) => state.player.playingSong);
   const downloading = useAppSelector((state) => state.ui.downloading);
   const repeat = useAppSelector((state) => state.player.repeat);
   const shuffle = useAppSelector((state) => state.player.shuffle);
 
   const handleSliderChange = useHandleSliderChange(audioRef);
+  const expandedPanelOpen = useAppSelector(
+    (state) => state.player.expandedPanelOpen,
+  );
 
-  const fadeInPanel = (panelElement: HTMLDivElement) => {
-    gsap.fromTo(
-      panelElement,
-      { y: "100%", opacity: 0 },
-      { y: "0%", opacity: 1, duration: 0.5, ease: "power3.out" },
-    );
-  };
-  // const [triggerLikeStatusCheck, settriggerLikeStatusCheck] = useState(false);
   useEffect(() => {
     if (!panelRef.current) return;
     fadeInPanel(panelRef.current);
-  }, [panelRef, panelTrigger]);
+  }, [panelRef, expandedPanelTrigger]);
 
-  // useEffect(() => {
-  //   if (!playingSong?._id) return;
-  //   const triggerCheck = async () => {
-  //     settriggerLikeStatusCheck(!triggerLikeStatusCheck);
-  //   };
-  //   triggerCheck();
-  // }, [playingSong]);
-
+  useEffect(() => {
+    if (expandedPanelOpen || !panelRef.current) return;
+    fadeOutPanel(panelRef.current, () => {
+      dispatch(setPlayingSong(null));
+      dispatch(setPlaying(false));
+    });
+  }, [expandedPanelOpen]);
   if (!playingSong) return null;
   return (
     <div
