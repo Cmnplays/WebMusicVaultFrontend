@@ -119,17 +119,6 @@ const getAccessToken = async (): Promise<string> => {
   return response.data.data;
 };
 
-const fetchUser = async (): Promise<UserI> => {
-  const response = await api.get<apiResponse<UserI>>("/user/me");
-  if (response.data.status !== 200) {
-    throw new Error(
-      response.data.message ||
-        "There was a problem while getting username suggestions",
-    );
-  }
-  return response.data.data;
-};
-
 interface SetPasswordType {
   identifier: string;
   password: string;
@@ -169,7 +158,6 @@ export {
   requestOtp,
   verifyEmail,
   getAccessToken,
-  fetchUser,
   setPassword,
   logout,
 };

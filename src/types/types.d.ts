@@ -26,6 +26,10 @@ declare global {
     isEmailVerified?: boolean;
     role: "user" | "admin";
   }
+  interface UserProfileI extends UserI {
+    uploadedSongs?: number;
+    favouriteSongs?: number;
+  }
   interface ApiError extends Error {
     response: {
       status: number;
@@ -38,3 +42,5 @@ declare global {
   }
   type Purpose = "verify-email" | "set-password" | "edit-password";
 }
+
+export {};

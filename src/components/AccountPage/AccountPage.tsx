@@ -20,51 +20,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useState, useRef } from "react";
 
-// interface AccountData extends UserI {
-//   uploadedSongs: number;
-//   favouriteSongs: number;
-// }
-
-interface AccountData {
-  avatar: string | null;
-  username: string;
-  email: string;
-  isEmailVerified: boolean;
-  displayName: string;
-  uploadedSongs: number;
-  favouriteSongs: number;
-  role: "user" | "admin";
-}
-
-const MOCK: AccountData = {
-  avatar: null,
-  username: "aaditya_dev",
-  email: "aaditya@example.com",
-  isEmailVerified: true,
-  displayName: "Aaditya Sharma",
-  uploadedSongs: 12,
-  favouriteSongs: 48,
-  role: "user",
-};
-
 interface AccountPageProps {
-  data: AccountData;
+  data: UserProfileI;
 }
 
-export default function AccountCard({ data = MOCK }: AccountPageProps) {
-  console.log({ data });
+export default function AccountCard({ data }: AccountPageProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [previewAvatar, setPreviewAvatar] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
-  const initials = data.displayName.includes(" ")
+  if (!data) return null;
+
+  const initials = data.displayName?.includes(" ")
     ? data.displayName
         .split(" ")
-        .map((n) => n[0])
+        .map((n: string) => n[0])
         .join("")
         .slice(0, 2)
         .toUpperCase()
-    : data.displayName[0];
+    : data.displayName?.[0] || data.username[0].toUpperCase();
 
   const avatarSrc = previewAvatar ?? data.avatar;
 
@@ -250,7 +224,7 @@ export default function AccountCard({ data = MOCK }: AccountPageProps) {
                 <div className="flex flex-col items-center gap-1 p-3 rounded-lg bg-muted/50">
                   <Upload className="w-5 h-5 text-muted-foreground" />
                   <p className="text-2xl font-bold text-foreground">
-                    {data.uploadedSongs}
+                    {data.uploadedSongs ?? 0}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     Uploaded Songs
@@ -259,7 +233,7 @@ export default function AccountCard({ data = MOCK }: AccountPageProps) {
                 <div className="flex flex-col items-center gap-1 p-3 rounded-lg bg-muted/50">
                   <Heart className="w-5 h-5 text-muted-foreground" />
                   <p className="text-2xl font-bold text-foreground">
-                    {data.favouriteSongs}
+                    {data.favouriteSongs ?? 0}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     Favourite Songs

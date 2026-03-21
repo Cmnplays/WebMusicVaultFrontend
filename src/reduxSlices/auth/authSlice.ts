@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 interface initialStateType {
-  user: UserI | null;
+  user: UserProfileI | null;
   accessToken: string | null;
   shouldFetchUser: boolean;
   shouldAccessAuthLayer: boolean;
@@ -21,14 +21,14 @@ const authSlice = createSlice({
   reducers: {
     signup: (
       state,
-      action: PayloadAction<{ user: UserI; accessToken: string }>,
+      action: PayloadAction<{ user: UserProfileI; accessToken: string }>,
     ) => {
       state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
     },
     login: (
       state,
-      action: PayloadAction<{ user: UserI; accessToken: string }>,
+      action: PayloadAction<{ user: UserProfileI; accessToken: string }>,
     ) => {
       state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
@@ -40,7 +40,7 @@ const authSlice = createSlice({
     setAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
     },
-    setUserData: (state, action: PayloadAction<UserI>) => {
+    setUserData: (state, action: PayloadAction<UserProfileI>) => {
       state.user = action.payload;
     },
     toggleShouldFetchUser: (state, action: PayloadAction<boolean>) => {

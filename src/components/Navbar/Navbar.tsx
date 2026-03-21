@@ -33,6 +33,7 @@ const Navbar = () => {
   const desktopRoutes = [
     { name: "Music", to: "/" },
     { name: "Playlist", to: "/playlist" },
+  { name: "Search", to: "/search" },
     { name: "About", to: "/about" },
     { name: "Account", to: "/me" },
     { name: "Upload", to: "/upload" },

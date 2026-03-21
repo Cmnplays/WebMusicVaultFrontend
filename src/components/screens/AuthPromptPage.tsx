@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useAppSelector } from "@/store/hook";
 import AccountSkeleton from "../AccountPage/AccountPageSkeleton";
 import AuthNavbar from "../Navbar/AuthNavbar";
+import { toastList } from "@/lib/toastList";
+import { useRouter } from "next/navigation";
 interface AuthPromptPageProps {
   feature?: string;
   page: "account" | "upload";
@@ -13,6 +15,7 @@ const AuthPromptPage = ({
   feature = "This page",
   page,
 }: AuthPromptPageProps) => {
+  const router  = useRouter()
   const loading = useAppSelector((state) => state.ui.loading);
   if (loading && page === "account") return <AccountSkeleton />;
   return (
@@ -55,6 +58,16 @@ const AuthPromptPage = ({
             <Button asChild variant="secondary" className="w-full">
               <Link href="/login">I have an account</Link>
             </Button>
+                              <Button
+                                variant="outline"
+                                className="w-full"
+                                onClick={() => {
+                                  router.replace("/");
+                                  toastList.guestMode();
+                                }}
+                              >
+                                Continue as a guest
+                              </Button>
           </div>
         </div>
       </div>

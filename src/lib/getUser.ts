@@ -6,7 +6,8 @@ import {
   toggleShouldFetchUser,
 } from "@/reduxSlices/auth/authSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
-import { fetchUser, getAccessToken } from "@/services/auth.services";
+import { getAccessToken } from "@/services/auth.services";
+import { fetchUser } from "@/services/user.services";
 
 interface GetUser {
   dispatch: AppDispatch;

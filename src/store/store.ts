@@ -6,6 +6,7 @@ import playerSlice from "@/reduxSlices/player/playerSlice";
 import uiSlice from "@/reduxSlices/ui/uiSlice";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 
+
 const createNoopStorage = () => {
   return {
     getItem() {
@@ -45,7 +46,7 @@ const store = configureStore({
       serializableCheck: false,
     });
   },
-  devTools: true,
+  devTools: process.env.NODE_ENV !== "production",
 });
 
 export default store;
