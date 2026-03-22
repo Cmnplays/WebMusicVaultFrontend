@@ -136,7 +136,9 @@ export function SetPasswordForm({
                         />
                       </svg>
                     </span>
-                    <a href="http://localhost:3001/api/v1/auth/google">
+                    <a
+                      href={`${process.env.NEXT_PUBLIC_API_URL}api/v1/auth/google`}
+                    >
                       Google
                     </a>
                   </Button>
