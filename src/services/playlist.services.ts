@@ -29,6 +29,7 @@ export interface PlaylistSong {
   createdAt: string;
   updatedAt: string;
   playCount: number;
+  isLiked: boolean;
   owner: {
     _id: string;
     username: string;
@@ -48,10 +49,21 @@ export interface PlaylistWithSongs {
   __v: number;
 }
 
+export interface GetPlaylistSongsOptions {
+  limit?: number;
+  cursor?: string;
+}
+
 const getPlaylistSongs = async (
   playlistId: string,
+  options?: GetPlaylistSongsOptions,
 ): Promise<PlaylistWithSongs> => {
-  const response = await api.get(`/playlist/${playlistId}`);
+  const { limit = 20, cursor } = options || {};
+  let url = `/playlist/${playlistId}?limit=${limit}`;
+  if (cursor) {
+    url += `&cursor=${cursor}`;
+  }
+  const response = await api.get(url);
   if (response.data.status !== 200) {
     throw new Error(
       response.data.message ??
@@ -71,4 +83,23 @@ const getPlaylists = async (): Promise<PlaylistsResponse> => {
   return response.data.data;
 };
 
-export { getPlaylists, getPlaylistSongs };
+const getLikedSongs = async (
+  userId: string,
+  options?: GetPlaylistSongsOptions,
+): Promise<PlaylistWithSongs> => {
+  const { limit = 20, cursor } = options || {};
+  let url = `/like/${userId}?limit=${limit}`;
+  if (cursor) {
+    url += `&cursor=${cursor}`;
+  }
+  const response = await api.get(url);
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message ??
+        "There was a problem while getting liked songs",
+    );
+  }
+  return response.data.data;
+};
+
+export { getPlaylists, getPlaylistSongs, getLikedSongs };
