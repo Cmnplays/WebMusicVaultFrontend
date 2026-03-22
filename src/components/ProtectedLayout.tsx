@@ -7,7 +7,7 @@ import { getUser } from "@/lib/getUser";
 
 interface ProtectedLayoutProps {
   children: React.ReactNode;
-  page: "account" | "upload";
+  page: "account" | "upload" | "playlist" | "playlist/songs";
 }
 
 const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({
