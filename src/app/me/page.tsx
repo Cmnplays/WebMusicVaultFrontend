@@ -8,7 +8,7 @@ export default function AccountPage() {
   const user = useAppSelector((s) => s.auth.user);
   return (
     <>
-      <ProtectedLayout page="account">
+      <ProtectedLayout>
         <Navbar />
         {user && <AccountCard data={user} />}
       </ProtectedLayout>
