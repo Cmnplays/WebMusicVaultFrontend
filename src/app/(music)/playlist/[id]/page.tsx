@@ -42,8 +42,6 @@ const PlaylistPage = () => {
 
   const [playlistInfo, setPlaylistInfo] =
     useState<Partial<PlaylistWithSongs> | null>(null);
-
-  const statusText = useAppSelector((state) => state.ui.statusText);
   const tempSongs = useAppSelector((state) => state.song.tempSongs);
   const loading = useAppSelector((state) => state.ui.loading);
   const playing = useAppSelector((state) => state.player.playing);
@@ -156,7 +154,7 @@ const PlaylistPage = () => {
   }, [tempTriggerFetch]);
 
   return (
-    <ProtectedLayout page="playlist/songs">
+    <ProtectedLayout>
       <main
         className={`max-w-5xl mx-auto p-4 pb-32 min-h-screen text-white ${playing && "mb-[192px]"}`}
       >
