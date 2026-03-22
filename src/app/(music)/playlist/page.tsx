@@ -5,6 +5,7 @@ import { getPlaylists } from "@/services/playlist.services";
 import { useAppSelector } from "@/store/hook";
 import { useEffect, useState } from "react";
 import type { PlaylistsResponse } from "@/services/playlist.services";
+import ProtectedLayout from "@/components/ProtectedLayout";
 
 const Page = () => {
   const accessToken = useAppSelector((state) => state.auth.accessToken);
@@ -30,9 +31,9 @@ const Page = () => {
   }, [accessToken]);
 
   return (
-    <div>
+    <ProtectedLayout>
       {loading ? <PlaylistSkeleton /> : <PlaylistList playlists={playlists} />}
-    </div>
+    </ProtectedLayout>
   );
 };
 
