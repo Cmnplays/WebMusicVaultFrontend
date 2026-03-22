@@ -58,7 +58,7 @@ export function AllSignupMethods() {
                     className="w-full flex items-center justify-center gap-2"
                   >
                     <a
-                      href={`${process.env.NEXT_PUBLIC_API_URL}api/v1/auth/google`}
+                      href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}
                       className="flex items-center gap-2"
                     >
                       <span className="w-5 h-5 flex items-center">
