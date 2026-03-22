@@ -42,9 +42,6 @@ const ExpandedPlayer = ({
   const expandedPanelOpen = useAppSelector(
     (state) => state.player.expandedPanelOpen,
   );
-  const expandedPanelTrigger = useAppSelector(
-    (state) => state.player.expandedPanelTrigger,
-  );
 
   const handleSliderChange = useHandleSliderChange(audioRef);
 
@@ -109,7 +106,7 @@ const ExpandedPlayer = ({
         "fixed inset-0 z-[100] flex flex-col text-white",
         // Default to hidden and unclickable when NOT open, preventing clicks
         // GSAP will animate inline styles which override these classes visually.
-        !expandedPanelOpen && "opacity-0 translate-y-full pointer-events-none"
+        !expandedPanelOpen && "opacity-0 translate-y-full pointer-events-none",
       )}
     >
       {/* Gradient overlay */}

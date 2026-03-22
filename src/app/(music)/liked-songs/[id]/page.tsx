@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
@@ -25,15 +25,11 @@ import ShareSongModal from "@/components/Modal/ShareSongModal";
 import AuthPromptModal from "@/components/Modal/AuthPromptModal";
 import MiniPlayer from "@/components/SongPlayerPanel/MiniPlayer";
 import ExpandedPlayer from "@/components/SongPlayerPanel/ExpandedPlayer";
-import {
-  getPlaylistSongs,
-  PlaylistWithSongs,
-} from "@/services/playlist.services";
+import { getLikedSongs, PlaylistWithSongs } from "@/services/playlist.services";
 import { Song } from "@/services/song.services";
 import { ArrowLeft } from "lucide-react";
-import ProtectedLayout from "@/components/ProtectedLayout";
 
-const PlaylistPage = () => {
+const LikedSongsPage = () => {
   const params = useParams();
   const id = params?.id as string;
   const dispatch = useAppDispatch();
@@ -43,7 +39,6 @@ const PlaylistPage = () => {
   const [playlistInfo, setPlaylistInfo] =
     useState<Partial<PlaylistWithSongs> | null>(null);
 
-  const statusText = useAppSelector((state) => state.ui.statusText);
   const tempSongs = useAppSelector((state) => state.song.tempSongs);
   const loading = useAppSelector((state) => state.ui.loading);
   const playing = useAppSelector((state) => state.player.playing);
@@ -99,7 +94,7 @@ const PlaylistPage = () => {
     const fetchInitialSongs = async () => {
       try {
         dispatch(setLoading(true));
-        const data = await getPlaylistSongs(id, { limit: 20 });
+        const data = await getLikedSongs(id, { limit: 20 });
         if (data.songs && data.songs.length > 0) {
           dispatch(replaceTempSongs(data.songs as unknown as Song[]));
           dispatch(setTempNextCursor(data.songs[data.songs.length - 1]._id));
@@ -110,7 +105,6 @@ const PlaylistPage = () => {
         }
         setPlaylistInfo({
           name: data.name,
-          owner: data.owner,
           description: data.description,
           isDefault: data.isDefault,
         });
@@ -126,13 +120,10 @@ const PlaylistPage = () => {
   // Infinite Scroll fetch
   useEffect(() => {
     if (!id || !tempNextCursor || !tempHasMoreSongs) return;
-
-    // Use a flag or check if we are already loading to prevent race conditions
-    // Actually `useInfiniteScroll` only triggers if `loading` is false
     const fetchMoreSongs = async () => {
       try {
         dispatch(setLoading(true));
-        const data = await getPlaylistSongs(id, {
+        const data = await getLikedSongs(id, {
           limit: 20,
           cursor: tempNextCursor,
         });
@@ -149,84 +140,59 @@ const PlaylistPage = () => {
         dispatch(setLoading(false));
       }
     };
-
-    // Check if we didn't just render logic. Only fire on trigger toggle.
     fetchMoreSongs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tempTriggerFetch]);
 
   return (
-    <ProtectedLayout page="playlist/songs">
-      <main
-        className={`max-w-5xl mx-auto p-4 pb-32 min-h-screen text-white ${playing && "mb-[192px]"}`}
-      >
-        {/* Header */}
-        <div className="mb-6 bg-white/10 p-6 rounded-lg shadow-lg">
-          <button
-            onClick={() => router.push("/playlist")}
-            className="flex items-center gap-2 text-purple-300 hover:text-white transition-colors mb-3"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="text-sm">Back to Playlists</span>
-          </button>
-          {playlistInfo ? (
-            <>
-              <h1 className="text-3xl font-bold">{playlistInfo.name}</h1>
-              {playlistInfo.description && (
-                <p className="text-gray-300 mt-2">{playlistInfo.description}</p>
-              )}
-            </>
-          ) : (
-            <div className="h-12 bg-white/20 rounded animate-pulse w-1/3"></div>
-          )}
-        </div>
-
-        {/* Song List */}
-        {loading && tempSongs.length < 10 ? (
-          <SongListSkeleton rows={10} />
+    <main
+      className={`max-w-5xl mx-auto p-4 pb-32 min-h-screen text-white ${playing && "mb-[192px]"}`}
+    >
+      {/* Header */}
+      <div className="mb-6 bg-white/10 p-6 rounded-lg shadow-lg">
+        <button
+          onClick={() => router.push("/playlist")}
+          className="flex items-center gap-2 text-purple-300 hover:text-white transition-colors mb-3"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="text-sm">Back to Playlists</span>
+        </button>
+        {playlistInfo ? (
+          <>
+            <h1 className="text-3xl font-bold">{playlistInfo.name}</h1>
+            {playlistInfo.description && (
+              <p className="text-gray-300 mt-2">{playlistInfo.description}</p>
+            )}
+          </>
         ) : (
-          <SongList
-            handlePlayClick={handlePlayClick}
-            playing={playing}
-            playingSong={playingSong}
-            songs={tempSongs}
-            isTemp={true}
-          />
+          <div className="h-12 bg-white/20 rounded animate-pulse w-1/3"></div>
         )}
+      </div>
 
-        {/* Audio Element */}
-        <audio
-          ref={audioRef}
-          onEnded={handleAudioEnded}
-          preload="metadata"
-          hidden
+      {/* Song List */}
+      {loading && tempSongs.length < 10 ? (
+        <SongListSkeleton rows={10} />
+      ) : (
+        <SongList
+          handlePlayClick={handlePlayClick}
+          playing={playing}
+          playingSong={playingSong}
+          songs={tempSongs}
+          isTemp={true}
         />
+      )}
 
-        {/* ── Mobile only: MiniPlayer ── */}
-        <div className="lg:hidden fixed bottom-16 left-0 right-0 z-50">
-          <MiniPlayer
-            audioRef={audioRef}
-            handlePlayPause={async () => {
-              if (!playing) {
-                try {
-                  await audioRef.current?.play();
-                  dispatch(setPlaying(true));
-                } catch (err) {
-                  console.warn("Audio play was interrupted", err);
-                }
-                return;
-              }
-              audioRef.current?.pause();
-              dispatch(setPlaying(false));
-            }}
-            onExpand={() => {
-              dispatch(setExpandedPanelTrigger());
-              dispatch(setExpandedPanelOpen(true));
-            }}
-          />
-        </div>
+      {/* Audio Element */}
+      <audio
+        ref={audioRef}
+        onEnded={handleAudioEnded}
+        preload="metadata"
+        hidden
+      />
 
-        <ExpandedPlayer
+      {/* ── Mobile only: MiniPlayer ── */}
+      <div className="lg:hidden fixed bottom-16 left-0 right-0 z-50">
+        <MiniPlayer
           audioRef={audioRef}
           handlePlayPause={async () => {
             if (!playing) {
@@ -241,48 +207,69 @@ const PlaylistPage = () => {
             audioRef.current?.pause();
             dispatch(setPlaying(false));
           }}
-          moveToNextSong={moveToNextSong}
-          moveToPreviousSong={moveToPreviousSong}
+          onExpand={() => {
+            dispatch(setExpandedPanelTrigger());
+            dispatch(setExpandedPanelOpen(true));
+          }}
         />
+      </div>
 
-        {/* Delete Confirmation */}
-        {mountDeleteConfirmation && playingSong && (
-          <DeleteConfirmation
-            title={playingSong.title}
-            songId={playingSong._id}
-            moveToNextSong={moveToNextSong}
-          />
-        )}
+      <ExpandedPlayer
+        audioRef={audioRef}
+        handlePlayPause={async () => {
+          if (!playing) {
+            try {
+              await audioRef.current?.play();
+              dispatch(setPlaying(true));
+            } catch (err) {
+              console.warn("Audio play was interrupted", err);
+            }
+            return;
+          }
+          audioRef.current?.pause();
+          dispatch(setPlaying(false));
+        }}
+        moveToNextSong={moveToNextSong}
+        moveToPreviousSong={moveToPreviousSong}
+      />
 
-        {mountDownloadConfirmation && playingSong && (
-          <DownloadConfirmation title={playingSong.title} />
-        )}
+      {/* Delete Confirmation */}
+      {mountDeleteConfirmation && playingSong && (
+        <DeleteConfirmation
+          title={playingSong.title}
+          songId={playingSong._id}
+          moveToNextSong={moveToNextSong}
+        />
+      )}
 
-        {mountShareModal && playingSong && (
-          <ShareSongModal songId={playingSong._id} title={playingSong.title} />
-        )}
-        {mountAuthPromptModal && playingSong && <AuthPromptModal />}
+      {mountDownloadConfirmation && playingSong && (
+        <DownloadConfirmation title={playingSong.title} />
+      )}
 
-        {loading && tempSongs.length >= 10 && (
-          <p className="text-center mt-4 text-purple-200 whitespace-pre-line">
-            <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin inline-block" />
-          </p>
-        )}
+      {mountShareModal && playingSong && (
+        <ShareSongModal songId={playingSong._id} title={playingSong.title} />
+      )}
+      {mountAuthPromptModal && playingSong && <AuthPromptModal />}
 
-        {!tempHasMoreSongs && tempSongs.length > 0 && (
-          <p className="text-center mt-4 text-purple-200">
-            You have reached the end of the playlist.
-          </p>
-        )}
+      {loading && tempSongs.length >= 10 && (
+        <p className="text-center mt-4 text-purple-200 whitespace-pre-line">
+          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin inline-block" />
+        </p>
+      )}
 
-        {(downloading || deleting) && (
-          <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-            <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
-          </div>
-        )}
-      </main>
-    </ProtectedLayout>
+      {!tempHasMoreSongs && tempSongs.length > 0 && (
+        <p className="text-center mt-4 text-purple-200">
+          You have reached the end of the playlist.
+        </p>
+      )}
+
+      {(downloading || deleting) && (
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
+          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
+        </div>
+      )}
+    </main>
   );
 };
 
-export default PlaylistPage;
+export default LikedSongsPage;

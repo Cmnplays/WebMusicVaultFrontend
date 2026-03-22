@@ -3,9 +3,20 @@ import { useState } from "react";
 import { Heart } from "lucide-react";
 import { toggleAddToFav } from "@/services/song.services";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { setSongLikedBy } from "@/reduxSlices/song/songSlice";
+import {
+  setSongLikedBy,
+  setTempSongLikedBy,
+  deleteTempSong,
+} from "@/reduxSlices/song/songSlice";
 import { setMountAuthPromptModal } from "@/reduxSlices/ui/uiSlice";
-import { setPlayingSong } from "@/reduxSlices/player/playerSlice";
+import {
+  setPlayingSong,
+  setPlaying,
+  setExpandedPanelOpen,
+  setMiniPanelOpen,
+} from "@/reduxSlices/player/playerSlice";
+import { usePathname } from "next/navigation";
+
 interface AddToFavProps {
   songId: string;
   isLiked: boolean;
@@ -17,6 +28,7 @@ const AddToFav: React.FC<AddToFavProps> = ({ songId, isLiked, audioRef }) => {
   const dispatch = useAppDispatch();
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const playingSong = useAppSelector((state) => state.player.playingSong);
+  const pathname = usePathname();
 
   const handleClick = async () => {
     if (!audioRef.current) return;
@@ -29,10 +41,25 @@ const AddToFav: React.FC<AddToFavProps> = ({ songId, isLiked, audioRef }) => {
     try {
       const likeData = await toggleAddToFav(songId);
       dispatch(setSongLikedBy(likeData));
-      
-      // If the currently playing song is the one we liked/unliked, update its state too!
+      dispatch(setTempSongLikedBy(likeData));
+
+      const isUnlikingOnLikedPage =
+        pathname.startsWith("/liked-songs") && !likeData.isLiked;
+      if (isUnlikingOnLikedPage) {
+        dispatch(deleteTempSong(songId));
+      }
+
       if (playingSong && playingSong._id === songId) {
-        dispatch(setPlayingSong({ ...playingSong, isLiked: likeData.isLiked }));
+        if (isUnlikingOnLikedPage) {
+          audioRef.current.pause();
+          dispatch(setPlaying(false));
+          dispatch(setExpandedPanelOpen(false));
+          dispatch(setMiniPanelOpen(false));
+        } else {
+          dispatch(
+            setPlayingSong({ ...playingSong, isLiked: likeData.isLiked }),
+          );
+        }
       }
     } catch (err) {
       console.error(err);

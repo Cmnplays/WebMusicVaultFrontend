@@ -26,9 +26,6 @@ const MiniPlayer = ({
   const playing = useAppSelector((state) => state.player.playing);
   const currentTime = useAppSelector((state) => state.player.currentTime);
   const duration = useAppSelector((state) => state.player.duration);
-  const miniPanelTrigger = useAppSelector(
-    (state) => state.player.miniPanelTrigger,
-  );
   const miniPanelOpen = useAppSelector((state) => state.player.miniPanelOpen);
 
   const isMount = useRef(true);
@@ -68,7 +65,7 @@ const MiniPlayer = ({
       ref={panelRef}
       className={cn(
         "relative w-full bg-[#1a0635]/95 backdrop-blur-md border-t border-purple-500/20 shadow-[0_-4px_20px_rgba(0,0,0,0.4)] cursor-pointer select-none",
-        !miniPanelOpen && "opacity-0 translate-y-full pointer-events-none"
+        !miniPanelOpen && "opacity-0 translate-y-full pointer-events-none",
       )}
       onClick={onExpand}
     >
