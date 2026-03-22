@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/api/v1/:path*", "destination": "https://webmusicvaultbackend.onrender.com/api/v1/:path*" }
+  ]
+}
