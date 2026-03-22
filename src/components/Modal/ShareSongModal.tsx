@@ -17,7 +17,7 @@ const ShareSongModal: React.FC<ShareSongProps> = ({ title, songId }) => {
   const [shareLink, setShareLink] = useState("");
   const dispatch = useAppDispatch();
   useEffect(() => {
-    setShareLink(`https://webmusicvault.vercel.app/play/${songId}`);
+    setShareLink(`${process.env.FRONTEND_URL}/play/${songId}`);
   }, [songId]);
 
   useEffect(() => {

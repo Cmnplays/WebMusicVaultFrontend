@@ -112,8 +112,7 @@ const getAccessToken = async (): Promise<string> => {
   });
   if (response.data.status !== 200) {
     throw new Error(
-      response.data.message ||
-        "There was a problem while getting username suggestions",
+      response.data.message || "There was a problem while getting accessToken",
     );
   }
   return response.data.data;
