@@ -15,7 +15,7 @@ import { ErrorCode } from "@/constants/ErrorCode";
 import { toastList } from "@/lib/toastList";
 import {
   toggleShouldAccessAuthLayer,
-  toggleShouldFetchUser,
+  setShouldFetchUser,
 } from "@/reduxSlices/auth/authSlice";
 import { reqOtp } from "@/lib/reqOtp";
 
@@ -55,7 +55,7 @@ const Page = () => {
           otp: data.otp,
         };
         await setPassword(dataToSend);
-        dispatch(toggleShouldFetchUser(true));
+        dispatch(setShouldFetchUser(true));
         router.replace("/login");
         toastList.passwordSetSuccess(purpose);
         return;

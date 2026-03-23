@@ -101,7 +101,7 @@ const ExpandedPlayer = ({
         transition: "background-color 0.8s ease",
       }}
       className={cn(
-        "fixed inset-0 z-[100] flex flex-col text-white",
+        "fixed inset-0 z-[100] flex flex-col text-white overflow-hidden",
         !expandedPanelOpen && "opacity-0 translate-y-full pointer-events-none",
       )}
     >
@@ -109,7 +109,7 @@ const ExpandedPlayer = ({
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/90 pointer-events-none z-0" />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col h-full">
+      <div className="relative z-10 flex flex-col h-full min-h-0">
         {/* Top bar */}
         <div className="flex items-center justify-between px-5 pt-10 pb-2 shrink-0">
           <button
@@ -125,8 +125,11 @@ const ExpandedPlayer = ({
         </div>
 
         {/* Cover Art */}
-        <div className="flex-1 flex items-center justify-center px-6 min-h-0 max-h-[45vh]">
-          <div className="relative w-full max-w-sm aspect-square rounded-lg overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+        <div className="flex-1 flex items-center justify-center px-6 min-h-0">
+          <div
+            className="relative w-full max-w-sm rounded-lg overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)] aspect-square"
+            style={{ maxHeight: "100%" }}
+          >
             <Image
               src={playingSong.coverImageUrl ?? "/test.jpg"}
               alt={playingSong.title}

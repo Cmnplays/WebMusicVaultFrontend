@@ -3,7 +3,8 @@ import { AppDispatch } from "@/store/store";
 import {
   setAccessToken,
   setUserData,
-  toggleShouldFetchUser,
+  setShouldFetchUser,
+  setIsLoggingIn,
 } from "@/reduxSlices/auth/authSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import { getAccessToken } from "@/services/auth.services";
@@ -25,7 +26,8 @@ export const getUser = async ({ dispatch, username }: GetUser) => {
   } catch (error) {
     console.error("getUser error:", error);
   } finally {
-    dispatch(toggleShouldFetchUser(false));
+    dispatch(setShouldFetchUser(false));
+    dispatch(setIsLoggingIn(false))
     dispatch(setLoading(false));
   }
 };

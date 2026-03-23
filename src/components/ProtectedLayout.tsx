@@ -14,9 +14,12 @@ const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({ children }) => {
   const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
   const user = useAppSelector((state) => state.auth.user);
 
+  const isLoggingIn = useAppSelector((state) => state.auth.isLoggingIn);
+
   useEffect(() => {
+    if (!shouldFetchUser || isLoggingIn) return;
     getUser({ dispatch, username: user?.username });
-  }, [shouldFetchUser, dispatch, user?.username]);
+  }, [shouldFetchUser, isLoggingIn, dispatch, user?.username]);
 
   if (!user) return <AuthPromptPage />;
   return <>{children}</>;

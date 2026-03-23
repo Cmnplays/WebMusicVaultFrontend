@@ -32,12 +32,12 @@ export const useSongs = () => {
   const nextCursor = useAppSelector((state) => state.song.nextCursor);
   const songs = useAppSelector((state) => state.song.songs);
   const didMount = useRef(false);
+  const isLoggingIn = useAppSelector(state=>state.auth.isLoggingIn)
 
   useEffect(() => {
     const loadSongs = async () => {
       // Don't fetch songs until initial auth check has completed
-      if (shouldFetchUser) return;
-      
+      if (shouldFetchUser || isLoggingIn) return;
       if (!didMount.current && songs.length > 0) {
         didMount.current = true;
         return; // skip only first mount
@@ -93,7 +93,7 @@ export const useSongs = () => {
       }
     };
     loadSongs();
-  }, [triggerFetch, sortOrder, sortChanged, dispatch, shouldFetchUser]);
+  }, [triggerFetch, sortOrder, sortChanged, dispatch, shouldFetchUser, isLoggingIn]);
   const handleSort = () => {
     dispatch(setSongs([]));
     dispatch(setNextCursor(undefined));
