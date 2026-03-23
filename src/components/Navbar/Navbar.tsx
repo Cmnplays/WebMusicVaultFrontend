@@ -20,6 +20,7 @@ const moreRoutes = [
   { name: "About", to: "/about" },
   { name: "Account", to: "/me" },
   { name: "Upload", to: "/upload" },
+  {name: "Shuffle", to: "/shuffle"}
 ];
 
 const Navbar = () => {
@@ -37,6 +38,7 @@ const Navbar = () => {
     { name: "About", to: "/about" },
     { name: "Account", to: "/me" },
     { name: "Upload", to: "/upload" },
+      {name: "Shuffle", to: "/shuffle"}
   ];
 
   const handleLogout = async () => {
