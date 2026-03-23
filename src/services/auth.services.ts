@@ -118,6 +118,19 @@ const getAccessToken = async (): Promise<string> => {
   return response.data.data;
 };
 
+const exchangeOauthCode = async (code: string): Promise<void> => {
+  const response = await api.get<apiResponse<null>>(
+    `/auth/exchange-code?code=${code}`,
+    { withCredentials: true },
+  );
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message || "There was a problem while exchanging code",
+    );
+  }
+};
+
+
 interface SetPasswordType {
   identifier: string;
   password: string;
@@ -149,6 +162,8 @@ const logout = async (): Promise<void> => {
   }
 };
 
+
+
 export {
   getUsernameSuggestions,
   verifyUsername,
@@ -159,4 +174,5 @@ export {
   getAccessToken,
   setPassword,
   logout,
+  exchangeOauthCode
 };
