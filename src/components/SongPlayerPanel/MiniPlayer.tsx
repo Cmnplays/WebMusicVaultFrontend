@@ -79,14 +79,17 @@ const MiniPlayer = ({
 
       <div className="flex items-center gap-3 px-4 py-3">
         {/* Cover art */}
-        <div className="shrink-0 w-11 h-11 rounded-lg bg-gradient-to-tr from-purple-700 to-purple-500 flex items-center justify-center shadow-md overflow-hidden">
+        <div className="relative shrink-0 w-11 h-11 rounded-lg bg-gradient-to-tr from-purple-700 to-purple-500 flex items-center justify-center shadow-md overflow-hidden">
           {playingSong.coverImageUrl ? (
-            <Image
-              src={playingSong.coverImageUrl}
-              alt={playingSong.title}
-              fill
-              className="object-cover"
-            />
+            <div className="relative shrink-0 w-11 h-11 rounded-lg bg-gradient-to-tr from-purple-700 to-purple-500 shadow-md overflow-hidden">
+              <Image
+                src={playingSong.coverImageUrl}
+                alt={playingSong.title}
+                width={44}
+                height={44}
+                className="object-cover w-full h-full"
+              />
+            </div>
           ) : (
             <svg
               className="w-5 h-5 text-white/60"

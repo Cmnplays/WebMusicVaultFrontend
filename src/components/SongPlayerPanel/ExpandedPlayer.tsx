@@ -45,10 +45,8 @@ const ExpandedPlayer = ({
 
   const handleSliderChange = useHandleSliderChange(audioRef);
 
-  // Extract dominant color from cover image
   useEffect(() => {
     let mounted = true;
-    // if (!playingSong?.coverImageUrl) return;
 
     Vibrant.from(playingSong?.coverImageUrl ?? "/test.jpg")
       .getPalette()
@@ -104,8 +102,6 @@ const ExpandedPlayer = ({
       }}
       className={cn(
         "fixed inset-0 z-[100] flex flex-col text-white",
-        // Default to hidden and unclickable when NOT open, preventing clicks
-        // GSAP will animate inline styles which override these classes visually.
         !expandedPanelOpen && "opacity-0 translate-y-full pointer-events-none",
       )}
     >
@@ -117,9 +113,7 @@ const ExpandedPlayer = ({
         {/* Top bar */}
         <div className="flex items-center justify-between px-5 pt-10 pb-2 shrink-0">
           <button
-            onClick={() => {
-              dispatch(setExpandedPanelOpen(false));
-            }}
+            onClick={() => dispatch(setExpandedPanelOpen(false))}
             className="text-white/70 hover:text-white transition-colors p-1"
           >
             <ChevronDown size={28} />
@@ -131,16 +125,18 @@ const ExpandedPlayer = ({
         </div>
 
         {/* Cover Art */}
-        <div className="flex-1 flex items-center justify-center px-6 min-h-0">
-          <div className="relative w-full aspect-square rounded-lg overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+        <div className="flex-1 flex items-center justify-center px-6 min-h-0 max-h-[45vh]">
+          <div className="relative w-full max-w-sm aspect-square rounded-lg overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
             <Image
               src={playingSong.coverImageUrl ?? "/test.jpg"}
               alt={playingSong.title}
               fill
+              sizes="(max-width: 768px) 100vw, 384px"
               className="object-cover"
             />
           </div>
         </div>
+
         {/* Player controls */}
         <div className="shrink-0 pt-4 pb-6 px-1">
           <PanelTopControls
