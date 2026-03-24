@@ -9,6 +9,7 @@ import {
   setTempHasMoreSongs,
   setTempNextCursor,
   setTempSongs,
+  setTempSortChanged,
 } from "@/reduxSlices/song/songSlice";
 import {
   setPlaying,
@@ -25,7 +26,10 @@ import AuthPromptModal from "@/components/Modal/AuthPromptModal";
 import MiniPlayer from "@/components/SongPlayerPanel/MiniPlayer";
 import ExpandedPlayer from "@/components/SongPlayerPanel/ExpandedPlayer";
 import { Search, X } from "lucide-react";
-import { searchSong, songsReturnType } from "@/services/song.services";
+import { searchSong } from "@/services/song.services";
+import MusicHeader from "@/components/MusicPage/MusicPageHeader";
+import { handleSortBy, handleSortOrder } from "@/utils/songUtils";
+
 
 
 const SearchPage: React.FC = () => {
@@ -52,7 +56,9 @@ const SearchPage: React.FC = () => {
 
   const { handlePlayClick, handleAudioEnded, moveToNextSong, moveToPreviousSong } =
     useAudioPlayer({ audioRef, songs: tempSongs });
-
+      const tempSortOrder = useAppSelector((state) => state.song.tempSortOrder);
+      const tempSortBy = useAppSelector((state) => state.song.tempSortBy);
+      const tempSortChanged = useAppSelector(state=>state.song.tempSortChanged)
   // Clear state on unmount
   useEffect(() => {
     return () => {
@@ -65,7 +71,7 @@ const SearchPage: React.FC = () => {
       dispatch(setMiniPanelOpen(false));
       dispatch(setLoading(false));
     };
-  }, [dispatch]);
+  }, [dispatch, tempSortChanged]);
 
  useEffect(() => {
   if (!submittedQuery.trim()) {
@@ -76,10 +82,13 @@ const SearchPage: React.FC = () => {
   const fetchSongs = async () => {
     try {
       dispatch(setLoading(true));
-      const data = await searchSong({ query: submittedQuery.trim(), limit: 10 });
+      const data = await searchSong({ query: submittedQuery.trim(), limit: 10, sortBy: tempSortBy, sortOrder: tempSortOrder });
       dispatch(replaceTempSongs(data.songs));
       dispatch(setTempNextCursor(data.nextCursor));
       dispatch(setTempHasMoreSongs(data.hasMoreSongs));
+      if (tempSortChanged) {
+        dispatch(setTempSortChanged(false));
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -87,7 +96,7 @@ const SearchPage: React.FC = () => {
     }
   };
   fetchSongs();
-}, [submittedQuery, dispatch]);
+}, [submittedQuery, dispatch, tempSortChanged, tempSortBy, tempSortOrder]);
 
 useEffect(() => {
   if (!submittedQuery.trim() || !tempNextCursor || !tempHasMoreSongs) return;
@@ -99,9 +108,10 @@ useEffect(() => {
       const data = await searchSong({
         query: submittedQuery.trim(),
         limit: 10,
-        cursor: tempNextCursor
+        cursor: tempNextCursor ,
+        sortBy: tempSortBy, 
+        sortOrder: tempSortOrder
       });
-      console.log("Received data:", data);
       if (data.songs.length > 0) {
         dispatch(setTempSongs(data.songs));
         dispatch(setTempNextCursor(data.nextCursor));
@@ -167,7 +177,13 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
           </button>
         </div>
       </div>
-
+     <MusicHeader
+        isTemp={true}
+        HandleSortBy={(sortBy)=>handleSortBy(sortBy,dispatch,true)}
+        HandleSortOrder={(sortOrder)=>handleSortOrder(sortOrder,dispatch,true)}
+        sortOrder={tempSortOrder}
+        sortBy={tempSortBy}
+      />
       {/* ── Results Header ── */}
       {hasSearched && (
         <div className="mb-4">

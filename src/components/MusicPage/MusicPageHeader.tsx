@@ -12,8 +12,9 @@ import {
 interface MusicPageHeaderProps {
   sortBy: sortByT;
   sortOrder: sortOrderT;
-  HandleSortBy: (value: sortByT) => void;
-  HandleSortOrder: (value: sortOrderT) => void;
+  HandleSortBy: (value: sortByT, isTemp: boolean) => void;
+  HandleSortOrder: (value: sortOrderT, isTemp: boolean) => void;
+  isTemp?: boolean
 }
 
 const MusicHeader: React.FC<MusicPageHeaderProps> = ({
@@ -21,17 +22,18 @@ const MusicHeader: React.FC<MusicPageHeaderProps> = ({
   sortOrder,
   HandleSortBy,
   HandleSortOrder,
+  isTemp=false
 }) => {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-      <h2 className="text-3xl font-extrabold text-white tracking-tight leading-tight">
+    {!isTemp &&   <h2 className="text-3xl font-extrabold text-white tracking-tight leading-tight">
         Music Collection
-      </h2>
+      </h2>}
 
       <div className="flex items-center gap-3 w-full sm:w-auto">
         <Select
           value={sortBy}
-          onValueChange={(val) => HandleSortBy(val as sortByT)}
+          onValueChange={(val) => HandleSortBy(val as sortByT, isTemp)}
         >
           <SelectTrigger className="h-9 flex-1 sm:w-40 text-sm flex items-center gap-2">
             <ArrowUpDown size={16} className="text-zinc-400" />
@@ -50,7 +52,7 @@ const MusicHeader: React.FC<MusicPageHeaderProps> = ({
 
         <Select
           value={sortOrder}
-          onValueChange={(val) => HandleSortOrder(val as sortOrderT)}
+          onValueChange={(val) => HandleSortOrder(val as sortOrderT, isTemp)}
         >
           <SelectTrigger className="h-9 flex-1 sm:w-40 text-sm flex items-center gap-2">
             {sortOrder === "asc" ? (

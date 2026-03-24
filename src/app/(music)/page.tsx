@@ -22,6 +22,7 @@ import ShareSongModal from "@/components/Modal/ShareSongModal";
 import AuthPromptModal from "@/components/Modal/AuthPromptModal";
 import MiniPlayer from "@/components/SongPlayerPanel/MiniPlayer";
 import ExpandedPlayer from "@/components/SongPlayerPanel/ExpandedPlayer";
+import { handleSortBy, handleSortOrder } from "@/utils/songUtils";
 
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -57,7 +58,7 @@ const MusicPage: React.FC = () => {
     moveToPreviousSong,
   } = useAudioPlayer({ audioRef, songs });
 
-  const { error, handleSortBy, handleSortOrder } = useSongs();
+  const { error } = useSongs();
 
   //for reseting some states when the page changes
   useEffect(() => {
@@ -77,8 +78,8 @@ const MusicPage: React.FC = () => {
     >
       {/* Header */}
       <MusicHeader
-        HandleSortBy={handleSortBy}
-        HandleSortOrder={handleSortOrder}
+        HandleSortBy={(sortBy)=>handleSortBy(sortBy,dispatch)}
+        HandleSortOrder={(sortOrder)=>handleSortOrder(sortOrder,dispatch)}
         sortOrder={sortOrder}
         sortBy={sortBy}
       />

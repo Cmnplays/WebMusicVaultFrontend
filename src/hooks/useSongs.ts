@@ -93,23 +93,7 @@ export const useSongs = () => {
       }
     };
     loadSongs();
-  }, [triggerFetch, sortOrder, sortChanged, dispatch, shouldFetchUser, isLoggingIn]);
-  const handleSort = () => {
-    dispatch(setSongs([]));
-    dispatch(setNextCursor(undefined));
-    dispatch(setSortChanged(true));
-    dispatch(setHasMoreSongs(true));
-    dispatch(setPlayingSong(null));
-    dispatch(setExpandedPanelOpen(false)); // triggers desktop panel close animation
-    dispatch(setMiniPanelOpen(false)); // triggers mini player close animation
-  };
-  const handleSortBy = (sortBy: sortByT) => {
-    handleSort();
-    dispatch(setSortBy(sortBy));
-  };
-  const handleSortOrder = (sortOrder: sortOrderT) => {
-    handleSort();
-    dispatch(setSortOrder(sortOrder));
-  };
-  return { handleSortBy, handleSortOrder, error };
+  }, [triggerFetch, sortBy, sortOrder, sortChanged, dispatch, shouldFetchUser, isLoggingIn]);
+  
+  return {  error };
 };

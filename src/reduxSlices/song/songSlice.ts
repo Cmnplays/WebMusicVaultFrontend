@@ -8,13 +8,16 @@ interface SongState {
   tempSongs: Song[];
   hasMoreSongs: boolean;
   tempHasMoreSongs: boolean;
-  nextCursor: cursorT;
-  tempNextCursor: cursorT
+  nextCursor?: cursorT;
+  tempNextCursor?: cursorT
   triggerFetch: boolean;
   tempTriggerFetch: boolean;
   sortBy: sortByT;
   sortOrder: sortOrderT;
   sortChanged: boolean;
+  tempSortBy: sortByT;
+  tempSortOrder: sortOrderT
+  tempSortChanged: boolean
 }
 
 const initialState: SongState = {
@@ -29,6 +32,9 @@ const initialState: SongState = {
   sortBy: "createdAt",
   sortOrder: "asc",
   sortChanged: false,
+  tempSortBy: "createdAt",
+  tempSortOrder: "asc",
+  tempSortChanged: false,
 };
 
 type setSongLikedByT = {
@@ -106,6 +112,15 @@ const songSlice = createSlice({
     setSortChanged: (state, action: PayloadAction<boolean>) => {
       state.sortChanged = action.payload;
     },
+     setTempSortBy: (state, action: PayloadAction<sortByT>) => {
+      state.tempSortBy = action.payload;
+    },
+    setTempSortOrder: (state, action: PayloadAction<sortOrderT>) => {
+      state.tempSortOrder = action.payload;
+    },
+    setTempSortChanged: (state, action: PayloadAction<boolean>) => {
+      state.tempSortChanged = action.payload;
+    },
   },
   extraReducers: (builder) => {
     const clearSongsState = (state: SongState) => {
@@ -144,6 +159,9 @@ export const {
   setSortBy,
   setSortOrder,
   setSortChanged,
+  setTempSortBy,
+  setTempSortChanged,
+  setTempSortOrder
 } = songSlice.actions;
 
 export default songSlice.reducer;

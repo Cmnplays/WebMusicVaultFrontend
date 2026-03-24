@@ -28,8 +28,10 @@ interface getSongsParams {
 }
 interface searchParams {
   limit?: number;
-  cursor?: cursorT;  // was string | undefined
+  cursor?: cursorT;  
   query: string;
+  sortBy?: sortByT;
+  sortOrder?: sortOrderT;
 }
 const getSongs = async ({
   limit = 10,
@@ -121,12 +123,16 @@ const searchSong = async ({
   limit = 10,
   cursor,
   query,
+  sortOrder = "asc",
+  sortBy = "createdAt",
 }: searchParams): Promise<songsReturnType> => {
   const response = await api.get<apiResponse<songsReturnType>>(`/song`, {
     params: {
       query,
       limit,
       cursor: JSON.stringify(cursor),
+      sortBy, 
+      sortOrder
     },
     timeout: 1000 * 100,
   });
