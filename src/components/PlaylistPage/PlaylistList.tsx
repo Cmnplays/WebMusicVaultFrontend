@@ -22,6 +22,9 @@ const PlaylistList: React.FC<PlaylistListProps> = ({ playlists }) => {
       </div>
 
       {/* Default playlists */}
+      <p className="text-xs text-purple-300/60 uppercase tracking-widest mb-3">
+            Default playlists
+          </p>
       <div className="flex flex-col gap-3 mb-6">
         {playlists.defaultPlaylists.map((playlist) => (
           <PlaylistCard key={playlist._id} playlist={playlist} />

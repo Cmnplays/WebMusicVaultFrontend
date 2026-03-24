@@ -29,7 +29,6 @@ const AuthCallbackHandler = () => {
     if (code) {
       handleGoogleLogin(code)
     }
-    if (auth === "success") toastList.loginSuccess();
     if (auth === "error") toastList.genericError();
     // if (auth) setTimeout(() => router.replace(pathname));
     router.replace(pathname);

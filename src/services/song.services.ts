@@ -28,9 +28,8 @@ interface getSongsParams {
 }
 interface searchParams {
   limit?: number;
-  cursor?: string | undefined;
+  cursor?: cursorT;  // was string | undefined
   query: string;
-  signal: AbortSignal;
 }
 const getSongs = async ({
   limit = 10,
@@ -61,26 +60,26 @@ const deleteSong = async (id: string): Promise<number> => {
   return response.data.data;
 };
 
-const searchSong = async ({
-  limit = 10,
-  query,
-  cursor,
-  signal,
-}: searchParams): Promise<songsReturnType> => {
-  const response = await api.get<apiResponse<songsReturnType>>(`/song/search`, {
-    params: {
-      searchQuery: query,
-      cursor,
-      limit,
-    },
-    signal,
-    timeout: 1000 * 100, //120seconds
-  });
-  if (response.data.status !== 200) {
-    throw new Error(response.data.message || "Failed to fetch songs");
-  }
-  return response.data.data;
-};
+// const searchSong = async ({
+//   limit = 10,
+//   query,
+//   cursor,
+//   signal,
+// }: searchParams): Promise<songsReturnType> => {
+//   const response = await api.get<apiResponse<songsReturnType>>(`/song/search`, {
+//     params: {
+//       searchQuery: query,
+//       cursor,
+//       limit,
+//     },
+//     signal,
+//     timeout: 1000 * 100, //120seconds
+//   });
+//   if (response.data.status !== 200) {
+//     throw new Error(response.data.message || "Failed to fetch songs");
+//   }
+//   return response.data.data;
+// };
 
 const getSongsLength = async (): Promise<number> => {
   const response = await api.get(`/public/about`);
@@ -116,6 +115,25 @@ const toggleAddToFav = async (
     );
   }
   return { songId: id, isLiked: response.data.data };
+};
+//without debounce
+const searchSong = async ({
+  limit = 10,
+  cursor,
+  query,
+}: searchParams): Promise<songsReturnType> => {
+  const response = await api.get<apiResponse<songsReturnType>>(`/song`, {
+    params: {
+      query,
+      limit,
+      cursor: JSON.stringify(cursor),
+    },
+    timeout: 1000 * 100,
+  });
+  if (response.data.status !== 200) {
+    throw new Error(response.data.message || "Failed to fetch songs");
+  }
+  return response.data.data;
 };
 
 export {

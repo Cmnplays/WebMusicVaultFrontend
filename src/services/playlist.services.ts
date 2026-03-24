@@ -58,7 +58,7 @@ const getPlaylistSongs = async (
   playlistId: string,
   options?: GetPlaylistSongsOptions,
 ): Promise<PlaylistWithSongs> => {
-  const { limit = 20, cursor } = options || {};
+  const { limit = 10, cursor } = options || {};
   let url = `/playlist/${playlistId}?limit=${limit}`;
   if (cursor) {
     url += `&cursor=${cursor}`;
@@ -87,7 +87,8 @@ const getLikedSongs = async (
   userId: string,
   options?: GetPlaylistSongsOptions,
 ): Promise<PlaylistWithSongs> => {
-  const { limit = 20, cursor } = options || {};
+  const { limit = 10, cursor } = options || {};
+  console.log(limit)
   let url = `/like/${userId}?limit=${limit}`;
   if (cursor) {
     url += `&cursor=${cursor}`;

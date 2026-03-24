@@ -94,11 +94,11 @@ const LikedSongsPage = () => {
     const fetchInitialSongs = async () => {
       try {
         dispatch(setLoading(true));
-        const data = await getLikedSongs(id, { limit: 20 });
+        const data = await getLikedSongs(id, { limit: 10 });
         if (data.songs && data.songs.length > 0) {
           dispatch(replaceTempSongs(data.songs as unknown as Song[]));
           dispatch(setTempNextCursor(data.songs[data.songs.length - 1]._id));
-          dispatch(setTempHasMoreSongs(data.songs.length === 20));
+          dispatch(setTempHasMoreSongs(data.songs.length === 10));
         } else {
           dispatch(replaceTempSongs([]));
           dispatch(setTempHasMoreSongs(false));
@@ -124,7 +124,7 @@ const LikedSongsPage = () => {
       try {
         dispatch(setLoading(true));
         const data = await getLikedSongs(id, {
-          limit: 20,
+          limit: 10,
           cursor: tempNextCursor,
         });
         if (data.songs && data.songs.length > 0) {
