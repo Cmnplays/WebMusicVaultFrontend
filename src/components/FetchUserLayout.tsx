@@ -16,11 +16,10 @@ const FetchUserLayout: React.FC<FetchUserLayoutProps> = ({ children }) => {
   const searchParams = useSearchParams();
   const hasCode = !!searchParams.get("code");
 
-  useEffect(() => {
-    if (!shouldFetchUser || isLoggingIn || hasCode) return;
-    getUser({ dispatch, username: user?.username });
-  }, [shouldFetchUser, isLoggingIn, hasCode]);
-
+ useEffect(() => {
+  if (!shouldFetchUser || isLoggingIn) return;
+  getUser({ dispatch, username: user?.username });
+}, [shouldFetchUser, isLoggingIn, hasCode]);
   return <>{children}</>;
 };
 
