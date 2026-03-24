@@ -8,8 +8,8 @@ interface SongState {
   tempSongs: Song[];
   hasMoreSongs: boolean;
   tempHasMoreSongs: boolean;
-  nextCursor?: cursorT;
-  tempNextCursor?: cursorT
+  nextCursor: cursorT | undefined
+  tempNextCursor: cursorT | string | undefined
   triggerFetch: boolean;
   tempTriggerFetch: boolean;
   sortBy: sortByT;
@@ -94,7 +94,7 @@ const songSlice = createSlice({
     setNextCursor: (state, action: PayloadAction<cursorT>) => {
       state.nextCursor = action.payload;
     },
-    setTempNextCursor: (state, action: PayloadAction<cursorT>) => {
+    setTempNextCursor: (state, action: PayloadAction<cursorT | string>) => {
       state.tempNextCursor = action.payload;
     },
     setTriggerFetch: (state) => {

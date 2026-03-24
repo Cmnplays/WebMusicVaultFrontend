@@ -28,7 +28,7 @@ interface getSongsParams {
 }
 interface searchParams {
   limit?: number;
-  cursor?: cursorT;  
+  cursor?: cursorT | string;  
   query: string;
   sortBy?: sortByT;
   sortOrder?: sortOrderT;

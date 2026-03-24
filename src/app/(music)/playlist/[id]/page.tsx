@@ -132,7 +132,7 @@ const PlaylistPage = () => {
         dispatch(setLoading(true));
         const data = await getPlaylistSongs(id, {
           limit: 10,
-          cursor: tempNextCursor,
+          cursor: tempNextCursor as string,
         });
         if (data.songs && data.songs.length > 0) {
           dispatch(setTempSongs(data.songs as unknown as Song[]));

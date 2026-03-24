@@ -125,7 +125,7 @@ const LikedSongsPage = () => {
         dispatch(setLoading(true));
         const data = await getLikedSongs(id, {
           limit: 10,
-          cursor: tempNextCursor,
+          cursor: tempNextCursor as string,
         });
         if (data.songs && data.songs.length > 0) {
           dispatch(setTempSongs(data.songs as unknown as Song[]));
