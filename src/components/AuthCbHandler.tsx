@@ -10,30 +10,32 @@ const AuthCallbackHandler = () => {
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch()
-  useEffect(() => {
-    const auth = searchParams.get("auth");
-    const code = searchParams.get("code")
-     async function handleGoogleLogin(code: string) {
-        try {
-          dispatch(setIsLoggingIn(true))
-          dispatch(setShouldFetchUser(true))
-          await exchangeOauthCode(code)
-          toastList.loginSuccess()          
-      } catch (error) {
-        console.log("Error while logging in with google::", error)
-        toastList.genericError()
-      } finally {
-        dispatch(setIsLoggingIn(false))
-      }
-    }
-    if (code) {
-      handleGoogleLogin(code)
-    }
-    if (auth === "error") toastList.genericError();
-    // if (auth) setTimeout(() => router.replace(pathname));
-    router.replace(pathname);
-  }, []);
+useEffect(() => {
+  const auth = searchParams.get("auth");
+  const code = searchParams.get("code");
 
+  async function handleGoogleLogin(code: string) {
+    try {
+      dispatch(setIsLoggingIn(true));
+      dispatch(setShouldFetchUser(true));
+      await exchangeOauthCode(code);
+      toastList.loginSuccess();
+    } catch (error) {
+      console.log("Error while logging in with google::", error);
+      toastList.genericError();
+    } finally {
+      dispatch(setIsLoggingIn(false));
+      router.replace(pathname); }
+  }
+
+  if (code) {
+    handleGoogleLogin(code); 
+    return; 
+  }
+
+  if (auth === "error") toastList.genericError();
+  router.replace(pathname); 
+}, []);
   return null;
 };
 
