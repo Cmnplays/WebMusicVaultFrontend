@@ -39,7 +39,8 @@ const AuthCallbackHandler = () => {
         toastList.genericError();
       } finally {
         dispatch(setShouldFetchUser(false));
-        router.replace(pathname);
+        window.history.replaceState({}, "", pathname);
+        // router.replace(pathname);
       }
     }
 
