@@ -1,4 +1,3 @@
-// getUser.ts
 import { AppDispatch } from "@/store/store";
 import {
   setAccessToken,
@@ -8,6 +7,7 @@ import {
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import { getAccessToken } from "@/services/auth.services";
 import { fetchUser } from "@/services/user.services";
+import axios from "axios";
 
 interface GetUser {
   dispatch: AppDispatch;
@@ -23,7 +23,11 @@ export const getUser = async ({ dispatch, username }: GetUser) => {
     const user = await fetchUser();
     dispatch(setUserData(user));
   } catch (error) {
-    console.error("getUser error:", error);
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return;
+    } else {
+      console.error("getUser error:", error);
+    }
   } finally {
     dispatch(setShouldFetchUser(false));
     dispatch(setLoading(false));
