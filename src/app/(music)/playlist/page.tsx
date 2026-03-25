@@ -31,8 +31,8 @@ const Page = () => {
   }, [accessToken]);
 
   return (
-    <ProtectedLayout>
-      {loading ? <PlaylistSkeleton /> : <PlaylistList playlists={playlists} />}
+    <ProtectedLayout skeleton={<PlaylistSkeleton />}>
+      <PlaylistList playlists={playlists} />
     </ProtectedLayout>
   );
 };

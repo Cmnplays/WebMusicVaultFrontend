@@ -9,17 +9,10 @@ import {
   setSongs,
   handleSortByChange,
   setSortChanged,
-  setSortOrder,
   setHasMoreSongs,
   setNextCursor,
-  setSortBy,
 } from "../reduxSlices/song/songSlice";
 import { setStatusText, setLoading } from "@/reduxSlices/ui/uiSlice";
-import {
-  setExpandedPanelOpen,
-  setPlayingSong,
-  setMiniPanelOpen,
-} from "@/reduxSlices/player/playerSlice";
 
 export const useSongs = () => {
   const dispatch = useAppDispatch();
@@ -32,12 +25,15 @@ export const useSongs = () => {
   const nextCursor = useAppSelector((state) => state.song.nextCursor);
   const songs = useAppSelector((state) => state.song.songs);
   const didMount = useRef(false);
-  const isLoggingIn = useAppSelector(state=>state.auth.isLoggingIn)
 
   useEffect(() => {
     const loadSongs = async () => {
       // Don't fetch songs until initial auth check has completed
-      if (shouldFetchUser || isLoggingIn) return;
+      if (shouldFetchUser) {
+        console.log("should fetch user is", shouldFetchUser);
+        return;
+      }
+      console.log("should fetch user is", shouldFetchUser);
       if (!didMount.current && songs.length > 0) {
         didMount.current = true;
         return; // skip only first mount
@@ -93,7 +89,7 @@ export const useSongs = () => {
       }
     };
     loadSongs();
-  }, [triggerFetch, sortBy, sortOrder, sortChanged, dispatch, shouldFetchUser, isLoggingIn]);
-  
-  return {  error };
+  }, [triggerFetch, sortBy, sortOrder, sortChanged, dispatch, shouldFetchUser]);
+
+  return { error };
 };
