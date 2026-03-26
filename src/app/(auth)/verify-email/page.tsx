@@ -12,12 +12,12 @@ import type { OtpSchemaType } from "@/lib/schemas/auth.schema";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import { StatusCode } from "@/constants/StatusCode";
 import { ErrorCode } from "@/constants/ErrorCode";
-import { toastList } from "@/lib/toastList";
+import { toastList } from "@/utils/toastList";
 import {
   toggleShouldAccessAuthLayer,
   setShouldFetchUser,
 } from "@/reduxSlices/auth/authSlice";
-import { reqOtp } from "@/lib/reqOtp";
+import { reqOtp } from "@/utils/reqOtp";
 
 const Page = () => {
   const router = useRouter();

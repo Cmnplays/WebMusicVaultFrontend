@@ -13,7 +13,7 @@ import {
   FieldGroup,
   FieldSeparator,
 } from "@/components/ui/field";
-import { toastList } from "@/lib/toastList";
+import { toastList } from "@/utils/toastList";
 import { useRouter } from "next/navigation";
 
 export function AllLoginMethodsForm() {

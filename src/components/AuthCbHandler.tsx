@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import { toastList } from "@/lib/toastList";
+import { toastList } from "@/utils/toastList";
 import { exchangeOauthCode } from "@/services/auth.services";
 import { useAppDispatch } from "@/store/hook";
 import { setShouldFetchUser } from "@/reduxSlices/auth/authSlice";

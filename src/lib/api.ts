@@ -2,7 +2,7 @@ import axios from "axios";
 import store from "@/store/store";
 const apiBase = process.env.NEXT_PUBLIC_API_URL;
 const api = axios.create({
-  baseURL: process.env.NODE_ENV === "production" ? "/api/v1" : process.env.NEXT_PUBLIC_API_URL,
+  baseURL: process.env.NODE_ENV === "production" ? "/api/v1" : apiBase,
 });
 api.interceptors.request.use((config) => {
   const accessToken = store.getState().auth.accessToken;

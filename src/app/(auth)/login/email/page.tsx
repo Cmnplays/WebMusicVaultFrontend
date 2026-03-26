@@ -12,7 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 import { EmailLoginForm } from "@/components/Forms/EmailLoginForm";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
-import { toastList } from "@/lib/toastList";
+import { toastList } from "@/utils/toastList";
 import { ErrorCode } from "@/constants/ErrorCode";
 import { StatusCode } from "@/constants/StatusCode";
 

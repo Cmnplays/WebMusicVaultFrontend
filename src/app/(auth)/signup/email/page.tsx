@@ -13,11 +13,11 @@ import { RegisterSchemaType } from "@/lib/schemas/auth.schema";
 import { signup } from "@/reduxSlices/auth/authSlice";
 import { useAppDispatch } from "@/store/hook";
 import { useRouter } from "next/navigation";
-import { reqOtp } from "@/lib/reqOtp";
+import { reqOtp } from "@/utils/reqOtp";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import { StatusCode } from "@/constants/StatusCode";
 import { ErrorCode } from "@/constants/ErrorCode";
-import { toastList } from "@/lib/toastList";
+import { toastList } from "@/utils/toastList";
 export default function Page() {
   const router = useRouter();
   const dispatch = useAppDispatch();

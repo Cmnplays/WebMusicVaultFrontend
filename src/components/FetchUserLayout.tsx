@@ -1,7 +1,7 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import React, { useEffect } from "react";
-import { getUser } from "@/lib/getUser";
+import { getUser } from "@/utils/getUser";
 import { useSearchParams } from "next/navigation";
 
 interface FetchUserLayoutProps {

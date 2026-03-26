@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { LockKeyhole } from "lucide-react";
 import Link from "next/link";
 import AuthNavbar from "../Navbar/AuthNavbar";
-import { toastList } from "@/lib/toastList";
+import { toastList } from "@/utils/toastList";
 import { useRouter } from "next/navigation";
 interface AuthPromptPageProps {
   feature?: string;

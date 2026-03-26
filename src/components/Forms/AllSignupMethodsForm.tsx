@@ -13,7 +13,7 @@ import {
   FieldGroup,
   FieldSeparator,
 } from "@/components/ui/field";
-import { toastList } from "@/lib/toastList";
+import { toastList } from "@/utils/toastList";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
