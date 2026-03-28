@@ -2,22 +2,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { Song } from "../../services/song.services";
 import { login, signup, clearAuth } from "../auth/authSlice";
+import { PlaylistsResponse } from "@/services/playlist.services";
 
 interface SongState {
   songs: Song[];
   tempSongs: Song[];
   hasMoreSongs: boolean;
   tempHasMoreSongs: boolean;
-  nextCursor: cursorT | undefined
-  tempNextCursor: cursorT | string | undefined
+  nextCursor: cursorT | undefined;
+  tempNextCursor: cursorT | string | undefined;
   triggerFetch: boolean;
   tempTriggerFetch: boolean;
   sortBy: sortByT;
   sortOrder: sortOrderT;
   sortChanged: boolean;
   tempSortBy: sortByT;
-  tempSortOrder: sortOrderT
-  tempSortChanged: boolean
+  tempSortOrder: sortOrderT;
+  tempSortChanged: boolean;
+  playlists: PlaylistsResponse;
 }
 
 const initialState: SongState = {
@@ -35,6 +37,10 @@ const initialState: SongState = {
   tempSortBy: "createdAt",
   tempSortOrder: "asc",
   tempSortChanged: false,
+  playlists: {
+    defaultPlaylists: [],
+    personalPlaylists: [],
+  },
 };
 
 type setSongLikedByT = {
@@ -112,7 +118,7 @@ const songSlice = createSlice({
     setSortChanged: (state, action: PayloadAction<boolean>) => {
       state.sortChanged = action.payload;
     },
-     setTempSortBy: (state, action: PayloadAction<sortByT>) => {
+    setTempSortBy: (state, action: PayloadAction<sortByT>) => {
       state.tempSortBy = action.payload;
     },
     setTempSortOrder: (state, action: PayloadAction<sortOrderT>) => {
@@ -120,6 +126,9 @@ const songSlice = createSlice({
     },
     setTempSortChanged: (state, action: PayloadAction<boolean>) => {
       state.tempSortChanged = action.payload;
+    },
+    setPlaylists: (state, action: PayloadAction<PlaylistsResponse>) => {
+      state.playlists = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -161,7 +170,8 @@ export const {
   setSortChanged,
   setTempSortBy,
   setTempSortChanged,
-  setTempSortOrder
+  setTempSortOrder,
+  setPlaylists,
 } = songSlice.actions;
 
 export default songSlice.reducer;
