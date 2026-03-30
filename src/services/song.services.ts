@@ -28,7 +28,7 @@ interface getSongsParams {
 }
 interface searchParams {
   limit?: number;
-  cursor?: cursorT | string;  
+  cursor?: cursorT | string;
   query: string;
   sortBy?: sortByT;
   sortOrder?: sortOrderT;
@@ -131,8 +131,8 @@ const searchSong = async ({
       query,
       limit,
       cursor: JSON.stringify(cursor),
-      sortBy, 
-      sortOrder
+      sortBy,
+      sortOrder,
     },
     timeout: 1000 * 100,
   });
@@ -140,6 +140,31 @@ const searchSong = async ({
     throw new Error(response.data.message || "Failed to fetch songs");
   }
   return response.data.data;
+};
+
+const uploadSong = async (
+  entry: {
+    file: File;
+    title: string;
+    artist: string;
+    coverImage?: File;
+  },
+  signal?: AbortSignal,
+): Promise<void> => {
+  const formData = new FormData();
+  formData.append("song", entry.file);
+  if (entry.title.trim()) formData.append("title", entry.title.trim());
+  if (entry.artist.trim()) formData.append("artist", entry.artist.trim());
+  if (entry.coverImage) formData.append("coverImage", entry.coverImage);
+
+  const response = await api.post("/song", formData, {
+    timeout: 1000 * 300,
+    signal,
+  });
+
+  if (response.data.status !== 201) {
+    throw new Error(response.data.message || "Upload failed");
+  }
 };
 
 export {
@@ -150,4 +175,5 @@ export {
   getRandomSong,
   toggleAddToFav,
   getSongWithId,
+  uploadSong,
 };
