@@ -23,10 +23,10 @@ const Page = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
-  const purpose = searchParams.get("purpose") as Purpose;
+  const purpose = searchParams?.get("purpose") as Purpose;
   const identifier = useAppSelector(
     (state) =>
-      state.auth.user?.email ?? (searchParams.get("identifier") as string),
+      state.auth.user?.email ?? (searchParams?.get("identifier") as string),
   );
   const form = useForm<OtpSchemaType>({
     resolver: zodResolver(otpSchema),

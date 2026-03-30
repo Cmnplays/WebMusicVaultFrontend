@@ -30,8 +30,6 @@ import { searchSong } from "@/services/song.services";
 import MusicHeader from "@/components/MusicPage/MusicPageHeader";
 import { handleSortBy, handleSortOrder } from "@/utils/songUtils";
 
-
-
 const SearchPage: React.FC = () => {
   const dispatch = useAppDispatch();
 
@@ -44,21 +42,35 @@ const SearchPage: React.FC = () => {
   const playingSong = useAppSelector((state) => state.player.playingSong);
   const downloading = useAppSelector((state) => state.ui.downloading);
   const deleting = useAppSelector((state) => state.ui.deleting);
-  const mountDeleteConfirmation = useAppSelector((state) => state.ui.mountDeleteConfirmation);
-  const mountDownloadConfirmation = useAppSelector((state) => state.ui.mountDownloadConfirmation);
+  const mountDeleteConfirmation = useAppSelector(
+    (state) => state.ui.mountDeleteConfirmation,
+  );
+  const mountDownloadConfirmation = useAppSelector(
+    (state) => state.ui.mountDownloadConfirmation,
+  );
   const mountShareModal = useAppSelector((state) => state.ui.mountShareModal);
-  const mountAuthPromptModal = useAppSelector((state) => state.ui.mountAuthPromptModal);
-  const tempHasMoreSongs = useAppSelector((state) => state.song.tempHasMoreSongs);
+  const mountAuthPromptModal = useAppSelector(
+    (state) => state.ui.mountAuthPromptModal,
+  );
+  const tempHasMoreSongs = useAppSelector(
+    (state) => state.song.tempHasMoreSongs,
+  );
   const tempNextCursor = useAppSelector((state) => state.song.tempNextCursor);
-  const tempTriggerFetch = useAppSelector((state) => state.song.tempTriggerFetch);
+  const tempTriggerFetch = useAppSelector(
+    (state) => state.song.tempTriggerFetch,
+  );
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const { handlePlayClick, handleAudioEnded, moveToNextSong, moveToPreviousSong } =
-    useAudioPlayer({ audioRef, songs: tempSongs });
-      const tempSortOrder = useAppSelector((state) => state.song.tempSortOrder);
-      const tempSortBy = useAppSelector((state) => state.song.tempSortBy);
-      const tempSortChanged = useAppSelector(state=>state.song.tempSortChanged)
+  const {
+    handlePlayClick,
+    handleAudioEnded,
+    moveToNextSong,
+    moveToPreviousSong,
+  } = useAudioPlayer({ audioRef, songs: tempSongs });
+  const tempSortOrder = useAppSelector((state) => state.song.tempSortOrder);
+  const tempSortBy = useAppSelector((state) => state.song.tempSortBy);
+  const tempSortChanged = useAppSelector((state) => state.song.tempSortChanged);
   // Clear state on unmount
   useEffect(() => {
     return () => {
@@ -73,83 +85,94 @@ const SearchPage: React.FC = () => {
     };
   }, [dispatch, tempSortChanged]);
 
- useEffect(() => {
-  if (!submittedQuery.trim()) {
-    dispatch(replaceTempSongs([]));
-    dispatch(setTempHasMoreSongs(false));
-    return;
-  }
-  const fetchSongs = async () => {
-    try {
-      dispatch(setLoading(true));
-      const data = await searchSong({ query: submittedQuery.trim(), limit: 10, sortBy: tempSortBy, sortOrder: tempSortOrder });
-      dispatch(replaceTempSongs(data.songs));
-      dispatch(setTempNextCursor(data.nextCursor));
-      dispatch(setTempHasMoreSongs(data.hasMoreSongs));
-      if (tempSortChanged) {
-        dispatch(setTempSortChanged(false));
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      dispatch(setLoading(false));
+  useEffect(() => {
+    if (!submittedQuery.trim()) {
+      dispatch(replaceTempSongs([]));
+      dispatch(setTempHasMoreSongs(false));
+      return;
     }
-  };
-  fetchSongs();
-}, [submittedQuery, dispatch, tempSortChanged, tempSortBy, tempSortOrder]);
-
-useEffect(() => {
-  if (!submittedQuery.trim() || !tempNextCursor || !tempHasMoreSongs) return;
-
-  const fetchMoreSongs = async () => {
-    try {
-      dispatch(setLoading(true));
-      console.log("Fetching more songs for:", submittedQuery, "with cursor:", tempNextCursor);
-      const data = await searchSong({
-        query: submittedQuery.trim(),
-        limit: 10,
-        cursor: tempNextCursor ,
-        sortBy: tempSortBy, 
-        sortOrder: tempSortOrder
-      });
-      if (data.songs.length > 0) {
-        dispatch(setTempSongs(data.songs));
+    const fetchSongs = async () => {
+      try {
+        dispatch(setLoading(true));
+        const data = await searchSong({
+          query: submittedQuery.trim(),
+          limit: 10,
+          sortBy: tempSortBy,
+          sortOrder: tempSortOrder,
+        });
+        dispatch(replaceTempSongs(data.songs));
         dispatch(setTempNextCursor(data.nextCursor));
         dispatch(setTempHasMoreSongs(data.hasMoreSongs));
-      } else {
-        dispatch(setTempHasMoreSongs(false));
+        if (tempSortChanged) {
+          dispatch(setTempSortChanged(false));
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        dispatch(setLoading(false));
       }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      dispatch(setLoading(false));
-    }
+    };
+    fetchSongs();
+  }, [submittedQuery, dispatch, tempSortChanged, tempSortBy, tempSortOrder]);
+
+  useEffect(() => {
+    if (!submittedQuery.trim() || !tempNextCursor || !tempHasMoreSongs) return;
+
+    const fetchMoreSongs = async () => {
+      try {
+        dispatch(setLoading(true));
+        console.log(
+          "Fetching more songs for:",
+          submittedQuery,
+          "with cursor:",
+          tempNextCursor,
+        );
+        const data = await searchSong({
+          query: submittedQuery.trim(),
+          limit: 10,
+          cursor: tempNextCursor,
+          sortBy: tempSortBy,
+          sortOrder: tempSortOrder,
+        });
+        if (data.songs.length > 0) {
+          dispatch(setTempSongs(data.songs));
+          dispatch(setTempNextCursor(data.nextCursor));
+          dispatch(setTempHasMoreSongs(data.hasMoreSongs));
+        } else {
+          dispatch(setTempHasMoreSongs(false));
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
+
+    fetchMoreSongs();
+  }, [tempTriggerFetch]);
+
+  const handleClear = () => {
+    setInputValue("");
+    setSubmittedQuery("");
+    dispatch(replaceTempSongs([]));
+    dispatch(setTempHasMoreSongs(false));
   };
 
-  fetchMoreSongs();
-}, [tempTriggerFetch]);
+  const handleSearch = () => {
+    if (!inputValue.trim()) return;
+    setSubmittedQuery(inputValue.trim());
+  };
 
- const handleClear = () => {
-  setInputValue("");
-  setSubmittedQuery("");
-  dispatch(replaceTempSongs([]));
-  dispatch(setTempHasMoreSongs(false));
-};
-
-const handleSearch = () => {
-  if (!inputValue.trim()) return;
-  setSubmittedQuery(inputValue.trim());
-};
-
-const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  if (e.key === "Enter") handleSearch();
-};
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") handleSearch();
+  };
   const hasSearched = submittedQuery.trim().length > 0;
   const noResults = hasSearched && tempSongs.length === 0 && !loading;
 
   return (
-    <main className={`max-w-5xl mx-auto p-4 min-h-screen text-white ${playing && "mb-[192px]"}`}>
-
+    <main
+      className={`max-w-5xl mx-auto p-4 min-h-screen text-white ${playing && "mb-[192px]"}`}
+    >
       {/* ── Search Header ── */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white mb-4">Search</h1>
@@ -164,7 +187,10 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
             className="flex-1 bg-transparent text-white placeholder-white/40 outline-none text-sm"
           />
           {inputValue && (
-            <button onClick={handleClear} className="text-white/40 hover:text-white transition-colors">
+            <button
+              onClick={handleClear}
+              className="text-white/40 hover:text-white transition-colors"
+            >
               <X className="w-4 h-4" />
             </button>
           )}
@@ -177,10 +203,12 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
           </button>
         </div>
       </div>
-     <MusicHeader
+      <MusicHeader
         isTemp={true}
-        HandleSortBy={(sortBy)=>handleSortBy(sortBy,dispatch,true)}
-        HandleSortOrder={(sortOrder)=>handleSortOrder(sortOrder,dispatch,true)}
+        HandleSortBy={(sortBy) => handleSortBy(sortBy, dispatch, true)}
+        HandleSortOrder={(sortOrder) =>
+          handleSortOrder(sortOrder, dispatch, true)
+        }
         sortOrder={tempSortOrder}
         sortBy={tempSortBy}
       />
@@ -207,13 +235,15 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       {noResults && (
         <div className="flex flex-col items-center justify-center mt-24 gap-3 text-white/30">
           <Search className="w-12 h-12" />
-          <p className="text-sm">No songs found for "{submittedQuery}"</p>
+          <p className="text-sm">
+            No songs found for &quot;{submittedQuery}&quot;
+          </p>
         </div>
       )}
 
       {/* ── Song List ── */}
-      {hasSearched && (
-        loading && tempSongs.length < 10 ? (
+      {hasSearched &&
+        (loading && tempSongs.length < 10 ? (
           <SongListSkeleton rows={10} />
         ) : (
           <SongList
@@ -223,11 +253,15 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
             songs={tempSongs}
             isTemp={true}
           />
-        )
-      )}
+        ))}
 
       {/* Audio Element */}
-      <audio ref={audioRef} onEnded={handleAudioEnded} preload="metadata" hidden />
+      <audio
+        ref={audioRef}
+        onEnded={handleAudioEnded}
+        preload="metadata"
+        hidden
+      />
 
       {/* ── Mobile MiniPlayer ── */}
       <div className="lg:hidden fixed bottom-16 left-0 right-0 z-50">

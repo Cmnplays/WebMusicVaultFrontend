@@ -13,7 +13,7 @@ const FetchUserLayout: React.FC<FetchUserLayoutProps> = ({ children }) => {
   const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
   const user = useAppSelector((state) => state.auth.user);
   const searchParams = useSearchParams();
-  const hasOAuthCode = !!searchParams.get("code");
+  const hasOAuthCode = !!searchParams?.get("code");
   useEffect(() => {
     if (!shouldFetchUser || hasOAuthCode) return;
     getUser({ dispatch, username: user?.username });

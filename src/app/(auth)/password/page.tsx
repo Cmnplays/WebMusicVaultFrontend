@@ -24,13 +24,13 @@ const Page = () => {
       confirmPassword: "",
     },
   });
-  const purpose = searchParams.get("purpose") as Purpose;
+  const purpose = searchParams?.get("purpose") as Purpose;
 
   const onSubmit: SubmitHandler<SetPasswordSchemaType> = async (data) => {
     try {
       dispatch(setLoading(true));
       sessionStorage.setItem("password", data.password);
-      const identifier = searchParams.get("identifier");
+      const identifier = searchParams?.get("identifier");
       const res = await reqOtp({ identifier: identifier as string, purpose });
       if (res) {
         router.push(

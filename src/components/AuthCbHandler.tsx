@@ -20,8 +20,8 @@ const AuthCallbackHandler = () => {
   const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
 
   useEffect(() => {
-    const auth = searchParams.get("auth");
-    const code = searchParams.get("code");
+    const auth = searchParams?.get("auth") as string;
+    const code = searchParams?.get("code") as string;
 
     async function handleGoogleLogin(code: string) {
       try {
@@ -51,7 +51,7 @@ const AuthCallbackHandler = () => {
     }
 
     if (auth === "error") toastList.genericError();
-    router.replace(pathname);
+    router.replace(pathname as string);
   }, []);
   return null;
 };

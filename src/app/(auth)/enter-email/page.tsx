@@ -8,7 +8,7 @@ import { EmailSchemaType, emailSchema } from "@/lib/schemas/auth.schema";
 const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const purpose = searchParams.get("purpose") as Purpose;
+  const purpose = searchParams?.get("purpose") as Purpose;
   const form = useForm<EmailSchemaType>({
     resolver: zodResolver(emailSchema),
     mode: "onSubmit",
