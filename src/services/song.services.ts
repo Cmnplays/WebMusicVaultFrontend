@@ -36,7 +36,7 @@ interface searchParams {
 const getSongs = async ({
   limit = 10,
   cursor,
-  sortOrder = "asc",
+  sortOrder = "desc",
   sortBy = "createdAt",
 }: getSongsParams): Promise<songsReturnType> => {
   const response = await api.get<apiResponse<songsReturnType>>(`/song`, {

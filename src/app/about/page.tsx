@@ -26,9 +26,11 @@ const About = () => {
           </h1>
 
           <p className="text-purple-200 mt-3 text-base sm:text-lg">
-            WebMusicVault (WMV) is your personal music hub to upload, search,
-            play, and download songs easily. Enjoy your music with different
-            playback modes.
+            WebMusicVault (WMV) is mine and my loved ones personal music hub to
+            upload, search, play, and download songs easily. Enjoy my music
+            taste with different playback modes. This is version 3 of this site
+            not fully optimized and not even complete. But works for now
+            that&apos;s it.
           </p>
 
           <p className="mt-4 inline-block bg-white/10 backdrop-blur-md text-purple-100 px-3 py-1 rounded-full font-semibold text-sm border border-white/10 shadow">
@@ -95,7 +97,7 @@ const About = () => {
             </h2>
             <ul className="text-purple-200 space-y-2 text-sm sm:text-base">
               <li>
-                <strong className="text-white">Frontend:</strong> React,
+                <strong className="text-white">Frontend:</strong> NextJs,
                 Tailwind CSS, Redux, GSAP
               </li>
               <li>
