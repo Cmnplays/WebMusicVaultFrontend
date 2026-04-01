@@ -1,26 +1,30 @@
 "use client";
 import { useState, useRef, useLayoutEffect } from "react";
-import { NavItem } from "./NavItem";
 import { setNavHeight } from "@/reduxSlices/ui/uiSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { logout } from "@/services/auth.services";
 import { clearAuth } from "@/reduxSlices/auth/authSlice";
 import { useRouter, usePathname } from "next/navigation";
-import { Home, Search, ListMusic, MoreHorizontal } from "lucide-react";
-import AppLogo from "./AppLogo";
 import Link from "next/link";
 
-const bottomNavItems = [
-  { name: "Music", to: "/", icon: Home },
-  { name: "Search", to: "/search", icon: Search },
-  { name: "Playlist", to: "/playlist", icon: ListMusic },
-];
-
-const moreRoutes = [
+const desktopRoutes = [
+  { name: "Music", to: "/" },
+  { name: "Playlist", to: "/playlist" },
+  { name: "Search", to: "/search" },
+  { name: "Shuffle", to: "/shuffle" },
+  { name: "Upload", to: "/upload" },
   { name: "About", to: "/about" },
   { name: "Account", to: "/me" },
+];
+
+const mobileRoutes = [
+  { name: "Music", to: "/" },
+  { name: "Playlist", to: "/playlist" },
+  { name: "Search", to: "/search" },
+  { name: "Shuffle", to: "/shuffle" },
   { name: "Upload", to: "/upload" },
-  {name: "Shuffle", to: "/shuffle"}
+  { name: "About", to: "/about" },
+  { name: "Account", to: "/me" },
 ];
 
 const Navbar = () => {
@@ -30,16 +34,6 @@ const Navbar = () => {
   const [moreOpen, setMoreOpen] = useState(false);
   const navRef = useRef<HTMLDivElement | null>(null);
   const accessToken = useAppSelector((state) => state.auth.accessToken);
-
-  const desktopRoutes = [
-    { name: "Music", to: "/" },
-    { name: "Playlist", to: "/playlist" },
-  { name: "Search", to: "/search" },
-    { name: "About", to: "/about" },
-    { name: "Account", to: "/me" },
-    { name: "Upload", to: "/upload" },
-      {name: "Shuffle", to: "/shuffle"}
-  ];
 
   const handleLogout = async () => {
     await logout();
@@ -60,116 +54,161 @@ const Navbar = () => {
 
   return (
     <>
-      {/* ── Top navbar ── */}
-      <nav
-        className="bg-[#1a0635] border-b border-purple-500/10 shadow-[0_2px_20px_rgba(0,0,0,0.3)] sticky top-0 z-50 rounded-b-xl"
-        ref={navRef}
-      >
-        <div className="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
-          <AppLogo />
-
-          {/* Desktop nav links */}
-          <ul className="hidden lg:flex items-center space-x-2">
-            {desktopRoutes.map((link) => (
-              <li key={link.to}>
-                <NavItem href={link.to} label={link.name} variant="desktop" />
-              </li>
-            ))}
-            {accessToken && (
-              <li className="pl-2 border-l border-white/10">
-                <button
-                  onClick={handleLogout}
-                  className="px-3 py-1.5 text-sm font-medium text-red-400 hover:text-red-300 transition-colors"
-                >
-                  Logout
-                </button>
-              </li>
-            )}
-          </ul>
+      {/* ── Win2K Window Title Bar + Menu Bar ── */}
+      <div ref={navRef} className="sticky top-0 z-50">
+        {/* Title bar */}
+        <div className="win-titlebar select-none">
+          {/* Win2K app icon (music note) */}
+          <svg className="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 2v8.27A3 3 0 1 0 8 13V5h3V2H6z"/>
+          </svg>
+          <span className="text-white font-bold text-xs tracking-wide">WebMusicVault</span>
+          {/* Spacer */}
+          <div className="flex-1" />
+          {/* Window chrome buttons */}
+          <div className="flex items-center gap-0.5">
+            <button className="win-raised w-[18px] h-[16px] text-[10px] font-bold text-black bg-[#d4d0c8] flex items-center justify-center leading-none" title="Minimize">_</button>
+            <button className="win-raised w-[18px] h-[16px] text-[10px] font-bold text-black bg-[#d4d0c8] flex items-center justify-center leading-none" title="Maximize">□</button>
+            <button className="win-raised w-[18px] h-[16px] text-[10px] font-bold text-black bg-[#d4d0c8] flex items-center justify-center leading-none" title="Close">✕</button>
+          </div>
         </div>
-      </nav>
 
-      {/* ── Mobile bottom nav ── */}
-      <>
-        {moreOpen && (
-          <div
-            className="fixed inset-0 z-[60]"
-            onClick={() => setMoreOpen(false)}
-          >
-            <div
-              className="absolute bottom-16 left-0 right-0 mx-4 bg-[#1a0635] border border-purple-500/20 rounded-2xl shadow-[0_-4px_30px_rgba(0,0,0,0.5)] overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+        {/* Menu bar */}
+        <div className="bg-[#d4d0c8] border-b border-[#808080] flex flex-wrap items-center gap-0 px-1 py-0.5"
+             style={{ borderTop: '1px solid #ffffff' }}>
+          {desktopRoutes.map((route) => {
+            const isActive = pathname === route.to;
+            return (
+              <Link
+                key={route.to}
+                href={route.to}
+                className={`px-3 py-0.5 text-[11px] text-black cursor-default select-none transition-none
+                  ${isActive
+                    ? "win-pressed bg-[#d4d0c8]"
+                    : "hover:bg-[#0a246a] hover:text-white"
+                  }`}
+              >
+                {route.name}
+              </Link>
+            );
+          })}
+          <div className="flex-1" />
+          {accessToken && (
+            <button
+              onClick={handleLogout}
+              className="px-3 py-0.5 text-[11px] text-[#cc0000] cursor-default hover:bg-[#0a246a] hover:text-white"
             >
-              {moreRoutes.map((route) => (
-                <Link
-                  key={route.to}
-                  href={route.to}
-                  onClick={() => setMoreOpen(false)}
-                  className="flex items-center gap-3 px-5 py-4 text-sm text-zinc-300 hover:bg-purple-500/10 border-b border-purple-500/10 transition-colors"
-                >
-                  {route.name}
-                </Link>
-              ))}
-              {accessToken && (
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-5 py-4 text-sm text-red-400 hover:bg-red-950/20 transition-colors"
-                >
-                  Logout
-                </button>
-              )}
+              Log Off
+            </button>
+          )}
+        </div>
+
+        {/* Toolbar strip */}
+        <div className="bg-[#d4d0c8] flex items-center gap-1 px-2 py-1"
+             style={{ borderBottom: '2px solid #808080', borderTop: '1px solid #ffffff' }}>
+          {/* Back / Forward toolbar buttons */}
+          <button
+            onClick={() => router.back()}
+            className="win-raised bg-[#d4d0c8] px-2 py-0.5 text-[11px] text-black flex items-center gap-1 cursor-default active:win-pressed"
+            title="Back"
+          >
+            <span className="text-[10px]">◀</span>
+            <span className="hidden sm:inline">Back</span>
+          </button>
+          <button
+            onClick={() => router.forward()}
+            className="win-raised bg-[#d4d0c8] px-2 py-0.5 text-[11px] text-black flex items-center gap-1 cursor-default active:win-pressed"
+            title="Forward"
+          >
+            <span className="hidden sm:inline">Forward</span>
+            <span className="text-[10px]">▶</span>
+          </button>
+
+          {/* Separator */}
+          <div className="w-px h-5 bg-[#808080] mx-1" />
+
+          {/* Address bar */}
+          <div className="flex items-center gap-1 flex-1">
+            <span className="text-[11px] text-black hidden sm:inline">Address</span>
+            <div
+              className="win-sunken bg-white flex-1 px-2 py-0.5 text-[11px] text-black truncate"
+              style={{ minWidth: 80 }}
+            >
+              C:\WebMusicVault{pathname === "/" ? "" : pathname}
             </div>
           </div>
-        )}
+        </div>
+      </div>
 
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1a0635]/95 backdrop-blur-md border-t border-purple-500/20 shadow-[0_-2px_20px_rgba(0,0,0,0.4)]">
-          <div className="flex items-center justify-around px-2 py-2">
-            {bottomNavItems.map(({ name, to, icon: Icon }) => {
-              const isActive = pathname === to;
-              return (
-                <Link
-                  key={to}
-                  href={to}
-                  className="flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-all"
-                >
-                  <Icon
-                    size={22}
-                    className={`transition-colors ${isActive ? "text-white" : "text-white/40"}`}
-                    strokeWidth={isActive ? 2.5 : 1.8}
-                  />
-                  <span
-                    className={`text-[10px] font-medium transition-colors ${isActive ? "text-white" : "text-white/40"}`}
-                  >
-                    {name}
-                  </span>
-                  {isActive && (
-                    <span className="w-1 h-1 rounded-full bg-orange-400" />
-                  )}
-                </Link>
-              );
-            })}
-
-            <button
-              onClick={() => setMoreOpen(!moreOpen)}
-              className="flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-all"
-            >
-              <MoreHorizontal
-                size={22}
-                className={`transition-colors ${moreOpen ? "text-white" : "text-white/40"}`}
-                strokeWidth={moreOpen ? 2.5 : 1.8}
-              />
-              <span
-                className={`text-[10px] font-medium transition-colors ${moreOpen ? "text-white" : "text-white/40"}`}
+      {/* ── Mobile bottom nav (Win2K taskbar style) ── */}
+      {moreOpen && (
+        <div
+          className="fixed inset-0 z-[60]"
+          onClick={() => setMoreOpen(false)}
+        >
+          <div
+            className="win-window absolute bottom-[42px] left-0 right-0 mx-2 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="win-titlebar text-xs py-1 px-2">Start Menu</div>
+            {mobileRoutes.map((route) => (
+              <Link
+                key={route.to}
+                href={route.to}
+                onClick={() => setMoreOpen(false)}
+                className="win-listitem flex items-center gap-2 px-3 py-1.5 text-[12px] text-black border-b border-[#d4d0c8]"
               >
-                More
-              </span>
-              {moreOpen && (
-                <span className="w-1 h-1 rounded-full bg-orange-400" />
-              )}
-            </button>
+                <span className="text-[10px]">📁</span>
+                {route.name}
+              </Link>
+            ))}
+            {accessToken && (
+              <button
+                onClick={handleLogout}
+                className="w-full text-left win-listitem flex items-center gap-2 px-3 py-1.5 text-[12px] text-[#cc0000]"
+              >
+                <span className="text-[10px]">🔌</span>
+                Log Off
+              </button>
+            )}
           </div>
         </div>
-      </>
+      )}
+
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#d4d0c8] flex items-center gap-1 px-2 py-1"
+           style={{ borderTop: '2px solid #ffffff', boxShadow: 'inset 0 1px 0 #ffffff' }}>
+        {/* Start button */}
+        <button
+          onClick={() => setMoreOpen(!moreOpen)}
+          className={`win-raised bg-[#d4d0c8] flex items-center gap-1 px-3 py-1 text-[12px] font-bold text-black cursor-default ${moreOpen ? "win-pressed" : ""}`}
+        >
+          <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="6" height="6" fill="#FF0000"/>
+            <rect x="9" y="1" width="6" height="6" fill="#00CC00"/>
+            <rect x="1" y="9" width="6" height="6" fill="#0000FF"/>
+            <rect x="9" y="9" width="6" height="6" fill="#FFFF00"/>
+          </svg>
+          Start
+        </button>
+
+        {/* Quick-launch nav items */}
+        <div className="w-px h-6 bg-[#808080] mx-1" />
+        {[{ name: "Music", to: "/" }, { name: "Search", to: "/search" }, { name: "Playlist", to: "/playlist" }].map(({ name, to }) => (
+          <Link
+            key={to}
+            href={to}
+            className={`win-raised px-2 py-1 text-[11px] text-black cursor-default ${pathname === to ? "win-pressed" : ""}`}
+          >
+            {name}
+          </Link>
+        ))}
+
+        <div className="flex-1" />
+        {/* System clock */}
+        <div className="win-sunken px-2 py-0.5 text-[11px] text-black tabular-nums">
+          {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+        </div>
+      </div>
     </>
   );
 };

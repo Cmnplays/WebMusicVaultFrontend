@@ -1,32 +1,47 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
-
 interface SongListSkeletonProps {
-  rows?: number; // number of placeholder song rows
+  rows?: number;
 }
 
 const SongListSkeleton: React.FC<SongListSkeletonProps> = ({ rows = 5 }) => {
   return (
-    <div className="space-y-4 p-2 md:p-4">
-      {Array.from({ length: rows }).map((_, idx) => (
-        <div
-          key={idx}
-          className="flex items-center gap-4 p-3 rounded-xl animate-pulse bg-white/5 backdrop-blur-md md:p-4"
-        >
-          {/* Play / Pause Circle */}
-          <Skeleton className="w-12 h-12 rounded-full shrink-0 md:w-14 md:h-14" />
+    <div className="win-window overflow-hidden">
+      {/* Column header row */}
+      <div className="flex items-stretch bg-[#d4d0c8]" style={{ borderBottom: '2px solid #808080' }}>
+        <div className="w-8 flex-shrink-0 win-raised bg-[#d4d0c8] px-1 py-0.5 text-[11px] text-black font-bold border-r border-[#808080]" />
+        <div className="flex-1 win-raised bg-[#d4d0c8] px-2 py-0.5 text-[11px] text-black font-bold border-r border-[#808080]">Title</div>
+        <div className="w-32 hidden sm:block win-raised bg-[#d4d0c8] px-2 py-0.5 text-[11px] text-black font-bold border-r border-[#808080]">Artist</div>
+        <div className="w-14 flex-shrink-0 win-raised bg-[#d4d0c8] px-2 py-0.5 text-[11px] text-black font-bold text-right">Time</div>
+      </div>
 
-          {/* Title */}
-          <div className="flex-1 space-y-2">
-            <Skeleton className="h-4 w-3/4 rounded-md md:h-5" />
-            <Skeleton className="h-3 w-1/2 rounded-md md:h-4" />
+      {/* Skeleton rows */}
+      <div className="win-sunken bg-white">
+        {Array.from({ length: rows }).map((_, idx) => (
+          <div
+            key={idx}
+            className="flex items-center gap-0 border-b border-[#d4d0c8] last:border-b-0"
+          >
+            <div className="w-8 flex-shrink-0 py-1 px-1 border-r border-[#d4d0c8] flex items-center justify-center">
+              <div className="w-4 h-4 bg-[#d4d0c8] animate-pulse" />
+            </div>
+            <div className="flex-1 py-1 px-2 border-r border-[#d4d0c8]">
+              <div className="h-3 bg-[#e0e0e0] animate-pulse rounded" style={{ width: `${55 + (idx % 4) * 10}%` }} />
+            </div>
+            <div className="w-32 hidden sm:block py-1 px-2 border-r border-[#d4d0c8]">
+              <div className="h-3 bg-[#e0e0e0] animate-pulse rounded w-20" />
+            </div>
+            <div className="w-14 flex-shrink-0 py-1 px-2 flex justify-end">
+              <div className="h-3 bg-[#e0e0e0] animate-pulse rounded w-8" />
+            </div>
           </div>
+        ))}
+      </div>
 
-          {/* Duration Badge */}
-          <Skeleton className="h-5 w-10 rounded-full shrink-0 md:h-6 md:w-12" />
-        </div>
-      ))}
+      {/* Status bar */}
+      <div className="win-statusbar text-[11px] text-black px-2 py-0.5" style={{ borderTop: '1px solid #808080' }}>
+        <div className="win-sunken px-2 py-0.5 flex-1">Loading...</div>
+      </div>
     </div>
   );
 };

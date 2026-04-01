@@ -74,7 +74,8 @@ const MusicPage: React.FC = () => {
 
   return (
     <main
-      className={`max-w-5xl mx-auto p-4 min-h-screen text-white ${playing && "mb-[192px]"}`}
+      className={`max-w-5xl mx-auto p-3 min-h-screen ${playing && "mb-[200px]"}`}
+      style={{ fontFamily: "'Tahoma', 'MS Sans Serif', Arial, sans-serif" }}
     >
       {/* Header */}
       <MusicHeader
@@ -104,32 +105,8 @@ const MusicPage: React.FC = () => {
         hidden
       />
 
-      {/* Player Panel */}
-
-      {/* <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-5xl z-50">
-        <SongPlayerPanel
-          audioRef={audioRef}
-          panelRef={panelRef}
-          handlePlayPause={async () => {
-            if (!playing) {
-              try {
-                await audioRef.current?.play();
-                dispatch(setPlaying(true));
-              } catch (err) {
-                console.warn("Audio play was interrupted", err);
-              }
-              return;
-            }
-            audioRef.current?.pause();
-            dispatch(setPlaying(false));
-          }}
-          moveToNextSong={moveToNextSong}
-          moveToPreviousSong={moveToPreviousSong}
-        />
-      </div> */}
-
       {/* ── MiniPlayer ── */}
-      <div className="fixed bottom-16 lg:bottom-6 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:w-[500px] z-[60] lg:rounded-2xl lg:overflow-hidden lg:shadow-[0_-4px_30px_rgba(0,0,0,0.5)] lg:border lg:border-purple-500/20">
+      <div className="fixed bottom-16 lg:bottom-6 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:w-[540px] z-[60]">
         <MiniPlayer
           audioRef={audioRef}
           handlePlayPause={async () => {
@@ -190,27 +167,54 @@ const MusicPage: React.FC = () => {
       {mountAuthPromptModal && playingSong && <AuthPromptModal />}
 
       {error && (
-        <p className="text-center mt-4 text-purple-200 whitespace-pre-line">
-          {statusText}
-        </p>
+        <div className="win-window mt-4 p-4 max-w-md mx-auto">
+          <div className="win-titlebar">
+            <span className="text-[11px] font-bold">Error</span>
+          </div>
+          <div className="bg-[#d4d0c8] p-3 flex items-start gap-3">
+            <span className="text-2xl">⚠️</span>
+            <p className="text-[11px] text-black leading-relaxed">
+              {statusText}
+            </p>
+          </div>
+          <div className="bg-[#d4d0c8] border-t border-[#808080] p-2 flex justify-center">
+            <button className="win-raised bg-[#d4d0c8] px-6 py-1 text-[11px] text-black cursor-default active:win-pressed">
+              OK
+            </button>
+          </div>
+        </div>
       )}
 
       {loading && (
-        <p className="text-center mt-4 text-purple-200 whitespace-pre-line">
-          {/* Inline loader */}
-          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin inline-block" />
-        </p>
+        <div className="flex justify-center mt-4">
+          <div className="win-window p-4">
+            <div className="bg-[#d4d0c8] flex items-center gap-3">
+              <div className="w-6 h-6 border-4 border-[#0a246a] border-t-transparent rounded-full animate-spin" />
+              <span className="text-[11px] text-black">Loading songs...</span>
+            </div>
+          </div>
+        </div>
       )}
 
-      {!hasMoreSongs && (
-        <p className="text-center mt-4 text-purple-200">
-          You have reached the end of the list.
-        </p>
+      {!hasMoreSongs && songs.length > 0 && (
+        <div className="win-panel p-2 mt-4 max-w-md mx-auto text-center">
+          <p className="text-[11px] text-black">
+            End of list.
+          </p>
+        </div>
       )}
 
       {(downloading || deleting) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
+          <div className="win-window p-4">
+            <div className="bg-[#d4d0c8] flex items-center gap-3">
+              <div className="w-8 h-8 border-4 border-[#0a246a] border-t-transparent rounded-full animate-spin" />
+              <span className="text-[11px] text-black">
+                {downloading && "Downloading..."}
+                {deleting && "Deleting..."}
+              </span>
+            </div>
+          </div>
         </div>
       )}
     </main>

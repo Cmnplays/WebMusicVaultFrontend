@@ -1,9 +1,11 @@
 import Navbar from "@/components/Navbar/Navbar";
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-[#5520A5]">
+    <div className="min-h-screen bg-background flex flex-col" style={{ fontFamily: "'Tahoma', 'MS Sans Serif', Arial, sans-serif" }}>
       <Navbar />
-      {children}
+      <div className="flex-1">
+        {children}
+      </div>
     </div>
   );
 }

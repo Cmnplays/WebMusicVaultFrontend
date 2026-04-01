@@ -26,66 +26,53 @@ const SongCard: React.FC<SongCardProps> = ({
       aria-label={isCurrentSongPlaying ? "Pause" : "Play"}
       title={isCurrentSongPlaying ? "Pause" : "Play"}
       className={`
-        flex items-center gap-3 p-3 rounded-xl
-        cursor-pointer select-none
-        border transition-colors duration-200
-        focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500
-        ${
-          isCurrentSongPlaying
-            ? "bg-purple-700/60 border-purple-400/30 shadow-[inset_0_0_14px_rgba(255,255,255,0.1)]"
-            : "bg-white/10 border-white/10 hover:bg-white/15 active:bg-white/20"
+        flex items-center gap-0 cursor-default select-none
+        focus:outline-none border-b border-[#d4d0c8] last:border-b-0
+        ${isCurrentSongPlaying
+          ? "bg-[#0a246a] text-white"
+          : "bg-white text-black hover:bg-[#c7d4ea] hover:text-black"
         }
       `}
+      style={{ fontFamily: "'Tahoma', 'MS Sans Serif', Arial, sans-serif" }}
     >
-      {/* Play / Pause Icon */}
-      <div
-        className={`
-          shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white shadow-md
-          ${
-            isCurrentSongPlaying
-              ? "bg-gradient-to-tr from-orange-400 to-purple-600"
-              : "bg-gradient-to-tr from-purple-500 to-purple-700"
-          }
-        `}
-      >
+      {/* Row number / icon cell */}
+      <div className={`w-8 flex items-center justify-center py-1 flex-shrink-0 border-r ${isCurrentSongPlaying ? "border-[#3a5aa0]" : "border-[#d4d0c8]"}`}>
         {isCurrentSongPlaying ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <rect x="6" y="5" width="4" height="14" />
-            <rect x="14" y="5" width="4" height="14" />
+          /* Playing equalizer bars */
+          <svg className="w-4 h-4" viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="6" width="3" height="10" fill="currentColor"/>
+            <rect x="6" y="2" width="3" height="14" fill="currentColor"/>
+            <rect x="11" y="4" width="3" height="12" fill="currentColor"/>
           </svg>
         ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
+          <svg className="w-3 h-3 text-[#808080]" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 2v8.27A3 3 0 1 0 8 13V5h3V2H6z"/>
           </svg>
         )}
       </div>
 
-      {/* Title */}
-      <div className="grow overflow-hidden">
-        <h3
-          className="text-sm font-semibold text-white truncate leading-tight"
+      {/* Title cell */}
+      <div className={`flex-1 min-w-0 py-1 px-2 border-r ${isCurrentSongPlaying ? "border-[#3a5aa0]" : "border-[#d4d0c8]"}`}>
+        <span
+          className={`text-[12px] truncate block leading-tight font-sans ${isCurrentSongPlaying ? "font-bold" : ""}`}
           title={song.title}
         >
           {song.title.split(".")[0]}
-        </h3>
-        <p className="text-xs truncate mt-0.5 text-white/40 font-light tracking-wide">
-          {song.artist}
-        </p>
+        </span>
       </div>
 
-      {/* Duration */}
-      <div className="shrink-0 text-purple-200/70 text-xs font-mono font-medium select-none">
-        {formatDuration(song.duration)}
+      {/* Artist cell */}
+      <div className={`w-32 hidden sm:block py-1 px-2 border-r ${isCurrentSongPlaying ? "border-[#3a5aa0]" : "border-[#d4d0c8]"}`}>
+        <span className="text-[11px] truncate block">
+          {song.artist || "Unknown"}
+        </span>
+      </div>
+
+      {/* Duration cell */}
+      <div className="w-14 text-right py-1 px-2 flex-shrink-0">
+        <span className="text-[11px] font-mono tabular-nums">
+          {formatDuration(song.duration)}
+        </span>
       </div>
     </li>
   );
