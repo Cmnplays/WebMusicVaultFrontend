@@ -128,8 +128,8 @@ const MusicPage: React.FC = () => {
         />
       </div> */}
 
-      {/* ── Mobile only: MiniPlayer ── */}
-      <div className="lg:hidden fixed bottom-16 left-0 right-0 z-50">
+      {/* ── MiniPlayer ── */}
+      <div className="fixed bottom-16 lg:bottom-6 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:w-[500px] z-[60] lg:rounded-2xl lg:overflow-hidden lg:shadow-[0_-4px_30px_rgba(0,0,0,0.5)] lg:border lg:border-purple-500/20">
         <MiniPlayer
           audioRef={audioRef}
           handlePlayPause={async () => {
