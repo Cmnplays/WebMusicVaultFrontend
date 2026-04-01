@@ -32,10 +32,10 @@ const initialState: SongState = {
   triggerFetch: false,
   tempTriggerFetch: false,
   sortBy: "createdAt",
-  sortOrder: "asc",
+  sortOrder: "desc",
   sortChanged: false,
   tempSortBy: "createdAt",
-  tempSortOrder: "asc",
+  tempSortOrder: "desc",
   tempSortChanged: false,
   playlists: {
     defaultPlaylists: [],
