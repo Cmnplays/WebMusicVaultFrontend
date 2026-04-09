@@ -20,7 +20,7 @@ const moreRoutes = [
   { name: "About", to: "/about" },
   { name: "Account", to: "/me" },
   { name: "Upload", to: "/upload" },
-  {name: "Shuffle", to: "/shuffle"}
+  { name: "Shuffle", to: "/shuffle" },
 ];
 
 const Navbar = () => {
@@ -34,11 +34,11 @@ const Navbar = () => {
   const desktopRoutes = [
     { name: "Music", to: "/" },
     { name: "Playlist", to: "/playlist" },
-  { name: "Search", to: "/search" },
+    { name: "Search", to: "/search" },
     { name: "About", to: "/about" },
     { name: "Account", to: "/me" },
     { name: "Upload", to: "/upload" },
-      {name: "Shuffle", to: "/shuffle"}
+    { name: "Shuffle", to: "/shuffle" },
   ];
 
   const handleLogout = async () => {
@@ -93,7 +93,7 @@ const Navbar = () => {
       <>
         {moreOpen && (
           <div
-            className="fixed inset-0 z-[60]"
+            className="fixed inset-0 z-110"
             onClick={() => setMoreOpen(false)}
           >
             <div

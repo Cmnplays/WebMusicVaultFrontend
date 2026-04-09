@@ -88,7 +88,6 @@ const getLikedSongs = async (
   options?: GetPlaylistSongsOptions,
 ): Promise<PlaylistWithSongs> => {
   const { limit = 10, cursor } = options || {};
-  console.log(limit)
   let url = `/like/${userId}?limit=${limit}`;
   if (cursor) {
     url += `&cursor=${cursor}`;
@@ -96,8 +95,7 @@ const getLikedSongs = async (
   const response = await api.get(url);
   if (response.data.status !== 200) {
     throw new Error(
-      response.data.message ??
-        "There was a problem while getting liked songs",
+      response.data.message ?? "There was a problem while getting liked songs",
     );
   }
   return response.data.data;

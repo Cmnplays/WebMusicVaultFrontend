@@ -81,15 +81,15 @@ const MiniPlayer = ({
         {/* Cover art */}
         <div className="relative shrink-0 w-11 h-11 rounded-lg bg-gradient-to-tr from-purple-700 to-purple-500 flex items-center justify-center shadow-md overflow-hidden">
           {playingSong.coverImageUrl ? (
-            <div className="relative shrink-0 w-11 h-11 rounded-lg bg-gradient-to-tr from-purple-700 to-purple-500 shadow-md overflow-hidden">
-              <Image
-                src={playingSong.coverImageUrl}
-                alt={playingSong.title}
-                width={44}
-                height={44}
-                className="object-cover w-full h-full"
-              />
-            </div>
+            <Image
+              src={playingSong.coverImageUrl}
+              alt={playingSong.title}
+              fill
+              sizes="44px"
+              quality={50}
+              priority
+              className="object-cover"
+            />
           ) : (
             <svg
               className="w-5 h-5 text-white/60"

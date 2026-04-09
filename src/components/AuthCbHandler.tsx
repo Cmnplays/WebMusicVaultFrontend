@@ -27,7 +27,6 @@ const AuthCallbackHandler = () => {
       try {
         dispatch(setLoading(true));
         dispatch(setShouldFetchUser(true));
-        console.log("setted should  fetch user to true", shouldFetchUser);
         await exchangeOauthCode(code);
         const newAccessToken = await getAccessToken();
         dispatch(setAccessToken(newAccessToken));
@@ -45,7 +44,6 @@ const AuthCallbackHandler = () => {
     }
 
     if (code) {
-      console.log("Yes there is code");
       handleGoogleLogin(code);
       return;
     }

@@ -30,10 +30,8 @@ export const useSongs = () => {
     const loadSongs = async () => {
       // Don't fetch songs until initial auth check has completed
       if (shouldFetchUser) {
-        console.log("should fetch user is", shouldFetchUser);
         return;
       }
-      console.log("should fetch user is", shouldFetchUser);
       if (!didMount.current && songs.length > 0) {
         didMount.current = true;
         return; // skip only first mount

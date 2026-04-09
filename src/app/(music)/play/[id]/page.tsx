@@ -14,7 +14,6 @@ const DemoSongPage = () => {
     const getSong = async () => {
       const song = await getSongWithId(id as string);
       dispatch(setPlayingSong(song));
-      console.log(song);
     };
     getSong();
   }, []);

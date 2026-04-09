@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   devIndicators: false,
   images: {
+    qualities: [50, 75, 100],
     remotePatterns: [
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
       { protocol: "https", hostname: "res.cloudinary.com" },

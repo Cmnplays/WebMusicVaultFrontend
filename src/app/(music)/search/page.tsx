@@ -121,12 +121,6 @@ const SearchPage: React.FC = () => {
     const fetchMoreSongs = async () => {
       try {
         dispatch(setLoading(true));
-        console.log(
-          "Fetching more songs for:",
-          submittedQuery,
-          "with cursor:",
-          tempNextCursor,
-        );
         const data = await searchSong({
           query: submittedQuery.trim(),
           limit: 10,
