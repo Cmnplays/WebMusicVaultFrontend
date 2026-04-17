@@ -46,6 +46,9 @@ const ShufflePlayer: React.FC = () => {
   const [initLoading, setInitLoading] = useState(true);
   const [fetchingNext, setFetchingNext] = useState(false);
 
+  // Tracks the highest song index the user has reached — only grows, never shrinks
+  const [maxVisibleIndex, setMaxVisibleIndex] = useState(0);
+
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Use the existing hook as-is — all repeat/shuffle logic handled internally
@@ -56,21 +59,22 @@ const ShufflePlayer: React.FC = () => {
     moveToPreviousSong,
   } = useAudioPlayer({ audioRef, songs });
 
-  // ── Init: fetch first song and auto‑play ──
+  // ── Init: fetch first batch and auto‑play ──
   useEffect(() => {
     let mounted = true;
     const init = async () => {
       try {
         setInitLoading(true);
-        const firstSong = await getRandomSong();
+        const randomSongs = await getRandomSong();
         if (!mounted) return;
-        dispatch(replaceTempSongs([firstSong]));
-        dispatch(setPlayingSong(firstSong));
+        dispatch(replaceTempSongs(randomSongs));
+        dispatch(setPlayingSong(randomSongs[0]));
+        setMaxVisibleIndex(0); // start by showing only the first song
         dispatch(setPlaying(true));
         dispatch(setMiniPanelOpen(true));
         dispatch(setMiniPanelTrigger());
       } catch (err) {
-        console.error("Failed to load initial random song", err);
+        console.error("Failed to load initial random songs", err);
       } finally {
         if (mounted) setInitLoading(false);
       }
@@ -88,15 +92,21 @@ const ShufflePlayer: React.FC = () => {
     };
   }, [dispatch]);
 
-  // ── Pre-fetch: keep 1 song ahead so the hook's moveToNextSong always has a next song ──
-  // Only pre-fetch when repeat is "repeat" (user wants continuous play).
-  // When repeat is "noRepeat" or "single", don't fetch — the hook handles stopping/looping.
+  // ── Grow visible window whenever the playing song advances ──
   useEffect(() => {
     if (!playingSong || songs.length === 0) return;
-    if (repeat !== "repeat") return; // don't pre-fetch if user wants to stop or loop single
+    const currentIdx = songs.findIndex((s) => s._id === playingSong._id);
+    if (currentIdx === -1) return;
+    // Only grow — going back to a previous song won't shrink the visible list
+    setMaxVisibleIndex((prev) => Math.max(prev, currentIdx));
+  }, [playingSong?._id, songs]);
+
+  // ── Pre-fetch more random songs when nearing the end of the buffer ──
+  useEffect(() => {
+    if (!playingSong || songs.length === 0) return;
+    if (repeat !== "repeat") return;
 
     const currentIdx = songs.findIndex((s) => s._id === playingSong._id);
-    // Only fetch if we're at or near the last song
     if (currentIdx < songs.length - 1) return;
 
     let mounted = true;
@@ -104,12 +114,17 @@ const ShufflePlayer: React.FC = () => {
       if (fetchingNext) return;
       setFetchingNext(true);
       try {
-        const nextSong = await getRandomSong();
+        const nextSongs = await getRandomSong();
         if (mounted) {
-          dispatch(setTempSongs([nextSong])); // appends via dedup merge
+          // Filter out any songs that already exist in the buffer
+          const existingIds = new Set(songs.map((s) => s._id));
+          const uniqueNewSongs = nextSongs.filter((s) => !existingIds.has(s._id));
+          if (uniqueNewSongs.length > 0) {
+            dispatch(setTempSongs(uniqueNewSongs));
+          }
         }
       } catch (e) {
-        console.error("Failed to pre-fetch next song", e);
+        console.error("Failed to pre-fetch next songs", e);
       } finally {
         if (mounted) setFetchingNext(false);
       }
@@ -121,13 +136,9 @@ const ShufflePlayer: React.FC = () => {
     };
   }, [playingSong?._id, songs.length, repeat, dispatch]);
 
-  // Only show songs up to the currently playing one — hide the pre-fetched buffer
-  const currentIdx = songs.findIndex((s) => s._id === playingSong?._id);
-  const visibleSongs = currentIdx !== -1 ? songs.slice(0, currentIdx + 1) : songs;
-
   return (
     <main
-      className={`max-w-5xl mx-auto p-4 min-h-screen text-white ${playing ? "mb-[192px]" : ""}`}
+      className={`max-w-5xl mx-auto p-4 min-h-screen text-white ${playing && "mb-[192px]"}`}
     >
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
@@ -136,22 +147,16 @@ const ShufflePlayer: React.FC = () => {
         </h2>
       </div>
 
-      {/* Song List (acts as play history) */}
+      {/* Song List */}
       {initLoading ? (
-        <SongListSkeleton rows={5} />
+        <SongListSkeleton rows={10} />
       ) : (
         <SongList
           handlePlayClick={handlePlayClick}
           playing={playing}
           playingSong={playingSong}
-          songs={visibleSongs}
+          songs={songs.slice(0, maxVisibleIndex + 1)}
         />
-      )}
-
-      {fetchingNext && (
-        <p className="text-center mt-4 text-purple-200">
-          <i className="ri-loader-2-line text-purple-300 text-3xl animate-spin inline-block" />
-        </p>
       )}
 
       {/* Audio Element */}
@@ -186,7 +191,6 @@ const ShufflePlayer: React.FC = () => {
         />
       </div>
 
-      {/* ── ExpandedPlayer ── */}
       <ExpandedPlayer
         audioRef={audioRef}
         handlePlayPause={async () => {
@@ -206,28 +210,33 @@ const ShufflePlayer: React.FC = () => {
         moveToPreviousSong={moveToPreviousSong}
       />
 
-      {/* Modals */}
-      {mountDeleteConfirmation && playingSong && (
+      {/* Delete Confirmation */}
+      {mountDeleteConfirmation && (
         <DeleteConfirmation
-          title={playingSong.title}
-          songId={playingSong._id}
+          title={playingSong!.title}
+          songId={playingSong!._id}
           moveToNextSong={moveToNextSong}
         />
       )}
 
-      {mountDownloadConfirmation && playingSong && (
-        <DownloadConfirmation title={playingSong.title} />
+      {mountDownloadConfirmation && (
+        <DownloadConfirmation title={playingSong!.title} />
       )}
 
       {mountShareModal && playingSong && (
         <ShareSongModal songId={playingSong._id} title={playingSong.title} />
       )}
-
       {mountAuthPromptModal && playingSong && <AuthPromptModal />}
 
       {loading && (
         <p className="text-center mt-4 text-purple-200 whitespace-pre-line">
           <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin inline-block" />
+        </p>
+      )}
+
+      {fetchingNext && (
+        <p className="text-center mt-4 text-purple-200">
+          <i className="ri-loader-2-line text-purple-300 text-3xl animate-spin inline-block" />
         </p>
       )}
 

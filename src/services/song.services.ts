@@ -91,8 +91,8 @@ const getSongsLength = async (): Promise<number> => {
   return response.data.totalNumOfSongs;
 };
 
-const getRandomSong = async (): Promise<Song> => {
-  const response = await api.get(`/song/random`);
+const getRandomSong = async (count: number=10): Promise<Song[]> => {
+  const response = await api.get(`/song/random/${count}`);
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to get random song");
   }
