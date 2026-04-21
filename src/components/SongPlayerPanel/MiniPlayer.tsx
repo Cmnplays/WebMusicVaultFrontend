@@ -77,14 +77,14 @@ const MiniPlayer = ({
         />
       </div>
 
-      <div className="flex items-center gap-3 px-4 py-3">
+      <div className="flex items-center gap-3 px-3 py-2">
         <SongCover
           id={playingSong._id}
           title={playingSong.title}
           artist={playingSong.artist}
           src={playingSong.coverImageUrl}
           size="sm"
-          className="shrink-0 w-11 h-11 rounded-lg shadow-md"
+          className="shrink-0 w-14 h-14 rounded-lg shadow-md"
         />
 
         {/* Song info */}

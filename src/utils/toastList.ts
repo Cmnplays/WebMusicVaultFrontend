@@ -84,4 +84,16 @@ export const toastList = {
       message: "You're browsing as a guest. Some features may be limited.",
       type: "info",
     }),
+  sessionExpired: () =>
+    showToast({ message: "Session expired, please login again", type: "error" }),
+  sessionRevoked: () =>
+    showToast({
+      message: "Your account was logged in on another device. Please login again.",
+      type: "error",
+    }),
+  networkError: () =>
+    showToast({
+      message: "Network error. Please check your internet connection.",
+      type: "error",
+    }),
 };

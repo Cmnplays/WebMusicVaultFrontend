@@ -29,7 +29,7 @@ const SongCard: React.FC<SongCardProps> = ({
       aria-label={isPlaying ? "Pause" : "Play"}
       title={isPlaying ? "Pause" : "Play"}
       className={`
-        flex items-center gap-3 p-3 rounded-xl
+        flex items-center gap-3 p-2 rounded-xl
         cursor-pointer select-none
         border transition-colors duration-200
         focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500
@@ -41,7 +41,7 @@ const SongCard: React.FC<SongCardProps> = ({
       `}
     >
       {/* Song Cover / Icon */}
-      <div className="relative shrink-0 w-12 h-12">
+      <div className="relative shrink-0 w-14 h-14">
         <SongCover
           id={song._id}
           title={song.title}

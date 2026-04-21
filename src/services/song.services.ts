@@ -150,14 +150,14 @@ const uploadSong = async (
     coverImage?: File;
   },
   signal?: AbortSignal,
-): Promise<void> => {
+): Promise<Song> => {
   const formData = new FormData();
   formData.append("song", entry.file);
   if (entry.title.trim()) formData.append("title", entry.title.trim());
   if (entry.artist.trim()) formData.append("artist", entry.artist.trim());
   if (entry.coverImage) formData.append("coverImage", entry.coverImage);
 
-  const response = await api.post("/song", formData, {
+  const response = await api.post<apiResponse<Song>>("/song", formData, {
     timeout: 1000 * 300,
     signal,
   });
@@ -165,6 +165,7 @@ const uploadSong = async (
   if (response.data.status !== 201) {
     throw new Error(response.data.message || "Upload failed");
   }
+  return response.data.data;
 };
 
 export {

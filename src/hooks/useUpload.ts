@@ -1,6 +1,8 @@
 "use client";
 import { useState, useCallback, useRef } from "react";
 import { uploadSong } from "@/services/song.services";
+import { useAppDispatch } from "@/store/hook";
+import { addSong } from "@/reduxSlices/song/songSlice";
 
 export type UploadStatus =
   | "idle"
@@ -21,6 +23,7 @@ export interface SongEntry {
 }
 
 export function useUpload() {
+  const dispatch = useAppDispatch();
   const [songs, setSongs] = useState<SongEntry[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -78,7 +81,8 @@ export function useUpload() {
 
       setStatus(entry.id, "uploading");
       try {
-        await uploadSong(entry, controller.signal);
+        const newSong = await uploadSong(entry, controller.signal);
+        dispatch(addSong(newSong));
         setStatus(entry.id, "done");
       } catch (err: unknown) {
         if (controller.signal.aborted) {
