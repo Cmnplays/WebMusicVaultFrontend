@@ -35,54 +35,79 @@ export const useAudioPlayer = ({
   const repeat = useAppSelector((state) => state.player.repeat);
   const shuffle = useAppSelector((state) => state.player.shuffle);
   const playingSong = useAppSelector((state) => state.player.playingSong);
+  const currentTime = useAppSelector((state) => state.player.currentTime);
   const pathname = usePathname();
 
   //    Play or pause audio based on playingSong and playing state
+  const isInitialMount = React.useRef(true);
+
   useEffect(() => {
     const audioEl = audioRef.current;
-    if (!audioEl) return;
-
-    if (playingSong?.fileUrl) {
-      // If the source changed, update it and reset time
-      if (audioEl.src !== playingSong.fileUrl) {
-        audioEl.src = playingSong.fileUrl;
-        audioEl.currentTime = 0;
-      }
-
-      // Sync play/pause state
-      if (playing) {
-        audioEl.play().catch((err) => {
-          if (err.name !== "AbortError") {
-            console.error("Audio play error", err);
-          }
-        });
-      } else {
+    if (!audioEl || !playingSong?.fileUrl) {
+      if (audioEl) {
         audioEl.pause();
+        audioEl.src = "";
       }
-    } else {
-      audioEl.pause();
-      audioEl.src = "";
-    }
-  }, [playingSong?.fileUrl, playing, audioRef]);
-
-  //song time related data updatation
-  useEffect(() => {
-    const song = audioRef.current;
-    if (!song) {
       return;
     }
+
+    const isNewSource = audioEl.src !== playingSong.fileUrl;
+
+    if (isNewSource) {
+      audioEl.src = playingSong.fileUrl;
+      
+      // Restore saved time on first load after refresh
+      if (isInitialMount.current && currentTime > 0) {
+        audioEl.currentTime = currentTime;
+      } else {
+        audioEl.currentTime = 0;
+      }
+    }
+
+    if (playing) {
+      const cleanTitle = playingSong.title.replace(/\.(mp3|wav|m4a|flac|ogg)$/i, "");
+      document.title = ` 🎧 ${cleanTitle} | WebMusicVault`;
+
+      audioEl.play().catch((err) => {
+        if (err.name !== "AbortError") {
+          console.error("Audio play error", err);
+          dispatch(setPlaying(false));
+        }
+      });
+    } else {
+      document.title = "WebMusicVault";
+      audioEl.pause();
+    }
+
+    isInitialMount.current = false;
+  }, [playingSong?.fileUrl, playing, audioRef, playingSong?.title]);
+
+  //song time related data updatation & Hardware Button Sync
+  useEffect(() => {
+    const song = audioRef.current;
+    if (!song) return;
+
     const onLoadMetadata = () => {
       dispatch(setDuration(song.duration ?? 0));
     };
     const onTimeUpdate = () => {
       dispatch(setCurrentTime(song.currentTime ?? 0));
     };
+
+    // SYNC: Update UI if paused via hardware/lock-screen buttons
+    const handleOnPlay = () => dispatch(setPlaying(true));
+    const handleOnPause = () => dispatch(setPlaying(false));
+
     song.addEventListener("loadedmetadata", onLoadMetadata);
     song.addEventListener("timeupdate", onTimeUpdate);
+    song.addEventListener("play", handleOnPlay);
+    song.addEventListener("pause", handleOnPause);
 
     return () => {
       song.removeEventListener("loadedmetadata", onLoadMetadata);
       song.removeEventListener("timeupdate", onTimeUpdate);
+      song.removeEventListener("play", handleOnPlay);
+      song.removeEventListener("pause", handleOnPause);
     };
   }, [dispatch, audioRef]);
 

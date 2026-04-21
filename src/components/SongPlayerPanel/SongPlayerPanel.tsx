@@ -51,8 +51,7 @@ const SongPlayerPanel = ({
   useEffect(() => {
     if (expandedPanelOpen || !panelRef.current) return;
     fadeOutPanel(panelRef.current, () => {
-      dispatch(setPlayingSong(null));
-      dispatch(setPlaying(false));
+      // Just fade out, don't clear the song!
     });
   }, [expandedPanelOpen]);
   if (!playingSong) return null;

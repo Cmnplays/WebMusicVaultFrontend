@@ -33,9 +33,9 @@ const rootReducer = combineReducers({
   ui: uiSlice,
 });
 const persistConfig = {
-  key: "auth",
+  key: "root",
   storage,
-  whitelist: ["user"],
+  whitelist: ["auth", "player"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

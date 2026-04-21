@@ -23,7 +23,7 @@ const SongTitleMarquee: React.FC<SongTitleMarqueeProps> = ({ playingSong }) => {
       >
         <span className="mx-5">
           <span className="text-xl mr-2 text-purple-200">⬤</span>
-          {playingSong.title.replace(".mp3", "")}
+          {playingSong.title.replace(/\.(mp3|wav|m4a|flac|ogg)$/i, "")}
         </span>
       </Marquee>
       <p className="text-[11px] text-white/70 tracking-[0.1em] leading-none mt-1 font-medium">
