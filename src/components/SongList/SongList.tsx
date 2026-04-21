@@ -24,14 +24,15 @@ const SongList = ({
     <div>
       <ul className="space-y-4">
         {songs.map((song) => {
-          const isCurrentSongPlaying = playingSong?._id === song._id && playing;
+          const isActive = playingSong?._id === song._id;
 
           return (
             <SongCard
               key={song._id}
               handlePlayClick={handlePlayClick}
               song={song}
-              isCurrentSongPlaying={isCurrentSongPlaying}
+              isActive={isActive}
+              isPlaying={isActive && playing}
             />
           );
         })}

@@ -4,7 +4,7 @@ import { Play, Pause, ChevronUp } from "lucide-react";
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import AddToFav from "@/components/SongPlayerPanel/PanelButtons/AddToFav";
-import Image from "next/image";
+import SongCover from "@/components/ui/SongCover";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { fadeInMiniPlayer, fadeOutMiniPlayer } from "@/lib/animations";
@@ -78,29 +78,14 @@ const MiniPlayer = ({
       </div>
 
       <div className="flex items-center gap-3 px-4 py-3">
-        {/* Cover art */}
-        <div className="relative shrink-0 w-11 h-11 rounded-lg bg-gradient-to-tr from-purple-700 to-purple-500 flex items-center justify-center shadow-md overflow-hidden">
-          {playingSong.coverImageUrl ? (
-            <Image
-              src={playingSong.coverImageUrl}
-              alt={playingSong.title}
-              fill
-              sizes="100px"
-              quality={100}
-              priority
-              className="object-cover"
-            />
-          ) : (
-            <svg
-              className="w-5 h-5 text-white/60"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
-            </svg>
-          )}
-        </div>
+        <SongCover
+          id={playingSong._id}
+          title={playingSong.title}
+          artist={playingSong.artist}
+          src={playingSong.coverImageUrl}
+          size="sm"
+          className="shrink-0 w-11 h-11 rounded-lg shadow-md"
+        />
 
         {/* Song info */}
         <div className="flex-1 min-w-0">

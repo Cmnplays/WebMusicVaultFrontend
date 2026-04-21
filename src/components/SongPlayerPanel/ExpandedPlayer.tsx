@@ -11,9 +11,12 @@ import SongTitleMarquee from "@/components/SongPlayerPanel/SongTitleMarquee";
 import ProgressSlider from "@/components/SongPlayerPanel/ProgressSlider";
 import PanelBottomControls from "@/components/SongPlayerPanel/PanelBottomControls";
 import PanelTopControls from "@/components/SongPlayerPanel/PanelTopControls";
-import Image from "next/image";
 import { setExpandedPanelOpen } from "@/reduxSlices/player/playerSlice";
 import { fadeInExpandedPanel, fadeOutExpandedPanel } from "@/lib/animations";
+import SongCover, {
+  getSongGradientIndex,
+  gradientColors,
+} from "@/components/ui/SongCover";
 
 interface ExpandedPlayerProps {
   audioRef: React.RefObject<HTMLAudioElement | null>;
@@ -48,7 +51,13 @@ const ExpandedPlayer = ({
   useEffect(() => {
     let mounted = true;
 
-    Vibrant.from(playingSong?.coverImageUrl ?? "/test.jpg")
+    if (!playingSong?.coverImageUrl) {
+      const index = getSongGradientIndex(playingSong?._id || "", playingSong?.title || "");
+      setBgColor(gradientColors[index]);
+      return;
+    }
+
+    Vibrant.from(playingSong.coverImageUrl)
       .getPalette()
       .then((palette) => {
         if (!mounted) return;
@@ -64,7 +73,7 @@ const ExpandedPlayer = ({
     return () => {
       mounted = false;
     };
-  }, [playingSong?.coverImageUrl]);
+  }, [playingSong?.coverImageUrl, playingSong?._id, playingSong?.title]);
 
   const isMount = useRef(true);
 
@@ -130,12 +139,13 @@ const ExpandedPlayer = ({
             className="relative w-full max-w-sm rounded-lg overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)] aspect-square"
             style={{ maxHeight: "100%" }}
           >
-            <Image
-              src={playingSong.coverImageUrl ?? "/test.jpg"}
-              alt={playingSong.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 384px"
-              className="object-cover"
+            <SongCover
+              id={playingSong._id}
+              title={playingSong.title}
+              artist={playingSong.artist}
+              src={playingSong.coverImageUrl}
+              size="lg"
+              className="w-full h-full"
             />
           </div>
         </div>
@@ -174,4 +184,4 @@ const ExpandedPlayer = ({
   );
 };
 
-export default ExpandedPlayer;
+export default ExpandedPlayer;
