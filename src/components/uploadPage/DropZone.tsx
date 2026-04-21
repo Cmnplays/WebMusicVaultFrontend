@@ -30,7 +30,16 @@ export function DropZone({ onFiles, disabled, currentCount }: DropZoneProps) {
 
   return (
     <div
+      role="button"
+      tabIndex={disabled || remaining <= 0 ? -1 : 0}
+      aria-label={remaining > 0 ? `Drop audio files here, or press Enter to browse. ${remaining} slot${remaining !== 1 ? "s" : ""} remaining.` : "Maximum 5 songs reached"}
       onClick={() => !disabled && remaining > 0 && inputRef.current?.click()}
+      onKeyDown={(e) => {
+        if ((e.key === "Enter" || e.key === " ") && !disabled && remaining > 0) {
+          e.preventDefault();
+          inputRef.current?.click();
+        }
+      }}
       onDragOver={(e) => e.preventDefault()}
       onDrop={handleDrop}
       className={`
@@ -38,12 +47,12 @@ export function DropZone({ onFiles, disabled, currentCount }: DropZoneProps) {
         ${
           disabled || remaining <= 0
             ? "border-white/10 cursor-not-allowed opacity-50"
-            : "border-purple-400/30 cursor-pointer hover:border-purple-400/70 hover:bg-purple-500/5"
+            : "border-purple-400/30 cursor-pointer hover:border-purple-400/70 hover:bg-purple-500/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
         }
       `}
     >
       <div className="flex flex-col items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-purple-500/20 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-2xl bg-purple-500/20 flex items-center justify-center" aria-hidden="true">
           <Upload size={22} className="text-purple-300" />
         </div>
         {remaining > 0 ? (
@@ -64,6 +73,7 @@ export function DropZone({ onFiles, disabled, currentCount }: DropZoneProps) {
         accept="audio/*"
         multiple
         className="hidden"
+        aria-hidden="true"
         onChange={handleChange}
       />
     </div>

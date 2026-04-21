@@ -18,6 +18,8 @@ const useInfiniteScroll = ({
   const tempHasMoreSongs = useAppSelector(
     (state) => state.song.tempHasMoreSongs,
   );
+  const songs = useAppSelector((state) => state.song.songs);
+  const tempSongs = useAppSelector((state) => state.song.tempSongs);
   const dispatch = useAppDispatch();
   const firstIntersectionDone = useRef(false);
   useEffect(() => {
@@ -33,11 +35,11 @@ const useInfiniteScroll = ({
           return;
         }
         if (isTemp) {
-          if (!tempHasMoreSongs) return;
+          if (!tempHasMoreSongs || tempSongs.length === 0) return;
           dispatch(setTempTriggerFetch());
           return;
         }
-        if (!hasMoreSongs) return;
+        if (!hasMoreSongs || songs.length === 0) return;
         dispatch(setTriggerFetch());
       }
     });
@@ -51,7 +53,16 @@ const useInfiniteScroll = ({
       }
       observer.disconnect();
     };
-  }, []);
+  }, [
+    loading,
+    isTemp,
+    hasMoreSongs,
+    tempHasMoreSongs,
+    songs.length,
+    tempSongs.length,
+    dispatch,
+    sentinelRef,
+  ]);
 };
 
 export default useInfiniteScroll;

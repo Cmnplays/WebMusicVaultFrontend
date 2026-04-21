@@ -4,14 +4,14 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useSongs } from "@/hooks/useSongs";
 import { usePlaySong } from "@/hooks/usePlaySong";
 import { setSongsType, setTempSongs } from "@/reduxSlices/song/songSlice";
-import {
-  setExpandedPanelOpen,
-} from "@/reduxSlices/player/playerSlice";
+import { setExpandedPanelOpen, setPlayingSong, setPlaying, setMiniPanelOpen } from "@/reduxSlices/player/playerSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import MusicHeader from "@/components/MusicPage/MusicPageHeader";
 import SongList from "@/components/SongList/SongList";
 import SongListSkeleton from "@/components/SongList/SongListSkeleton";
 import { handleSortBy, handleSortOrder } from "@/utils/songUtils";
+import { useSearchParams, useRouter } from "next/navigation";
+import { getSongWithId } from "@/services/song.services";
 
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -27,12 +27,16 @@ const MusicPage: React.FC = () => {
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
   const sortBy = useAppSelector((state) => state.song.sortBy);
   const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
+  const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
 
   const { handlePlayClick } = usePlaySong();
   const { error } = useSongs();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   // Reset/Set states when the page changes
   useEffect(() => {
+    document.title = "Music Collection | WebMusicVault";
     dispatch(setSongsType("songs"));
     return () => {
       dispatch(setTempSongs([]));
@@ -40,6 +44,27 @@ const MusicPage: React.FC = () => {
       dispatch(setLoading(false));
     };
   }, [dispatch]);
+
+  // Deep-link: if ?song=ID is in the URL, fetch and auto-play that song
+  useEffect(() => {
+    const songId = searchParams?.get("song");
+    if (!songId || shouldFetchUser) return;
+
+    const fetchAndPlay = async () => {
+      try {
+        const song = await getSongWithId(songId);
+        dispatch(setPlayingSong(song));
+        dispatch(setPlaying(true));
+        dispatch(setMiniPanelOpen(true));
+      } catch (err) {
+        console.error("Deep-link: failed to fetch song", err);
+      } finally {
+        router.replace("/", { scroll: false });
+      }
+    };
+
+    fetchAndPlay();
+  }, [shouldFetchUser, searchParams, dispatch, router]);
 
   return (
     <>

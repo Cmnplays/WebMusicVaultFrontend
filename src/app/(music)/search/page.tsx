@@ -51,6 +51,7 @@ const SearchPage: React.FC = () => {
 
   // Clear state on unmount
   useEffect(() => {
+    document.title = "Search Songs | WebMusicVault";
     dispatch(setSongsType("tempSongs"));
     return () => {
       dispatch(replaceTempSongs([]));
@@ -146,11 +147,13 @@ const SearchPage: React.FC = () => {
         <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-xl px-4 py-3 focus-within:border-purple-400 transition-colors">
           <Search className="w-5 h-5 text-purple-300 shrink-0" />
           <input
-            type="text"
+            type="search"
+            id="search-songs"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search songs, artists..."
+            aria-label="Search songs and artists"
             className="flex-1 bg-transparent text-white placeholder-white/40 outline-none text-sm"
           />
           {inputValue && (

@@ -102,15 +102,17 @@ export default function AccountCard({ data }: AccountPageProps) {
                     <button
                       type="button"
                       onClick={() => avatarInputRef.current?.click()}
+                      aria-label="Change profile picture"
                       className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
                     >
-                      <Camera className="w-6 h-6 text-white" />
+                      <Camera className="w-6 h-6 text-white" aria-hidden="true" />
                     </button>
                     <input
                       ref={avatarInputRef}
                       type="file"
                       accept="image/*"
                       className="hidden"
+                      aria-label="Upload profile picture"
                       onChange={handleAvatarChange}
                     />
                   </>

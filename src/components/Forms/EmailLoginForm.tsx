@@ -12,11 +12,12 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn, SubmitHandler, useFormState } from "react-hook-form";
 import { LoginSchemaType } from "@/lib/schemas/auth.schema";
+import { useState } from "react";
 
 interface EmailLoginFormProps {
   form: UseFormReturn<LoginSchemaType>;
@@ -26,6 +27,8 @@ interface EmailLoginFormProps {
 export function EmailLoginForm({ form, onSubmit }: EmailLoginFormProps) {
   const { handleSubmit, register } = form;
   const { errors } = useFormState({ control: form.control });
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <Card>
       <CardHeader>
@@ -68,12 +71,26 @@ export function EmailLoginForm({ form, onSubmit }: EmailLoginFormProps) {
                     Forgot your password?
                   </a>
                 </div>
-                <Input
-                  {...register("password")}
-                  id="password"
-                  type="password"
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    {...register("password")}
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    className="pr-10"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-white transition-colors"
+                  >
+                    {showPassword ? (
+                      <Eye className="w-5 h-5" />
+                    ) : (
+                      <EyeOff className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
                 {errors.password && (
                   <p className="text-sm text-red-500 mt-1">
                     {errors.password.message}

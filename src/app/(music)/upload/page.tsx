@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { Music2, Trash2, Upload, XCircle } from "lucide-react";
 import { useUpload } from "@/hooks/useUpload";
 import { DropZone } from "@/components/uploadPage/DropZone";
@@ -19,6 +20,10 @@ export default function UploadPage() {
     reset,
   } = useUpload();
 
+  useEffect(() => {
+    document.title = "Upload Songs | WebMusicVault";
+  }, []);
+
   const idleCount = songs.filter((s) => s.status === "idle").length;
   const hasCompleted = songs.some(
     (s) => s.status === "done" || s.status === "exists",
@@ -29,10 +34,13 @@ export default function UploadPage() {
 
   return (
     <ProtectedLayout>
-      <div className="min-h-screen bg-transparent flex justify-center items-start p-4 pb-12">
+      <div className="min-h-screen bg-transparent flex justify-center items-start pb-12">
         <div className="w-full max-w-2xl mt-8 flex flex-col gap-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-purple-500/20 flex items-center justify-center">
+            <div
+              className="w-10 h-10 rounded-2xl bg-purple-500/20 flex items-center justify-center"
+              aria-hidden="true"
+            >
               <Music2 size={20} className="text-purple-300" />
             </div>
             <div>
@@ -67,17 +75,19 @@ export default function UploadPage() {
                 {isRunning ? (
                   <button
                     onClick={cancelUpload}
+                    aria-label="Cancel current upload"
                     className="flex-1 flex items-center justify-center gap-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400 font-semibold py-3 rounded-2xl transition-all"
                   >
-                    <XCircle size={16} /> Cancel Upload
+                    <XCircle size={16} aria-hidden="true" /> Cancel Upload
                   </button>
                 ) : (
                   <button
                     onClick={startUpload}
                     disabled={!idleCount}
+                    aria-label={`Upload ${idleCount} song${idleCount !== 1 ? "s" : ""}`}
                     className="flex-1 flex items-center justify-center gap-2 bg-purple-600/70 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98]"
                   >
-                    <Upload size={16} />
+                    <Upload size={16} aria-hidden="true" />
                     {`Upload ${idleCount} Song${idleCount !== 1 ? "s" : ""}`}
                   </button>
                 )}
@@ -85,15 +95,17 @@ export default function UploadPage() {
                 {hasCompleted && !isRunning && (
                   <button
                     onClick={clearCompleted}
+                    aria-label="Clear completed uploads"
                     className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border border-white/10 text-white/50 hover:text-white hover:border-white/20 transition-all text-sm"
                   >
-                    <Trash2 size={14} /> Clear done
+                    <Trash2 size={14} aria-hidden="true" /> Clear done
                   </button>
                 )}
 
                 {allDone && (
                   <button
                     onClick={reset}
+                    aria-label="Reset and start a new upload"
                     className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border border-purple-500/30 text-purple-300 hover:bg-purple-500/10 transition-all text-sm"
                   >
                     Start over

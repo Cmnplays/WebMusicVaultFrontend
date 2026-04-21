@@ -37,6 +37,7 @@ const ShufflePlayer: React.FC = () => {
 
   // ── Init: fetch first batch and auto‑play ──
   useEffect(() => {
+    document.title = "Shuffle Mode | WebMusicVault";
     if (shouldFetchUser) return;
     dispatch(setSongsType("tempSongs"));
     let mounted = true;

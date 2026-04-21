@@ -16,11 +16,14 @@ const DeleteBtn: React.FC<DeleteBtnProps> = ({ audioRef }) => {
     dispatch(setMountDeleteConfirmation(true));
   };
   return (
-    <button onClick={handleDelete}>
+    <button
+      onClick={handleDelete}
+      aria-label="Delete song"
+      title="Delete song"
+    >
       <Trash
         size={30}
-        className="hover:text-orange-400 
-                    transition-colors duration-300"
+        className="hover:text-orange-400 transition-colors duration-300"
       />
     </button>
   );

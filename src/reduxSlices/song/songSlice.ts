@@ -135,6 +135,21 @@ const songSlice = createSlice({
     setSongsType: (state, action: PayloadAction<"songs" | "tempSongs">) => {
       state.songsType = action.payload;
     },
+    updatePlaylistSongCount: (
+      state,
+      action: PayloadAction<{ isLiked: boolean }>,
+    ) => {
+      const { isLiked } = action.payload;
+      // Find the default "Favourite Songs" playlist
+      const likedSongsPlaylist = state.playlists.defaultPlaylists.find(
+        (p) => p.isDefault,
+      );
+      if (likedSongsPlaylist) {
+        likedSongsPlaylist.songs += isLiked ? 1 : -1;
+        // Ensure count doesn't go below 0
+        if (likedSongsPlaylist.songs < 0) likedSongsPlaylist.songs = 0;
+      }
+    },
   },
   extraReducers: (builder) => {
     const clearSongsState = (state: SongState) => {
@@ -177,7 +192,8 @@ export const {
   setTempSortChanged,
   setTempSortOrder,
   setPlaylists, 
-  setSongsType
+  setSongsType,
+  updatePlaylistSongCount
 } = songSlice.actions;
 
 export default songSlice.reducer;

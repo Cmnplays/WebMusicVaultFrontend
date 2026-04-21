@@ -3,8 +3,13 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 
 export const metadata: Metadata = {
-  title: "WebMusicVault",
-  description: "Developer - Aaditya",
+  title: {
+    default: "WebMusicVault | Your Personal Music Collection",
+    template: "%s | WebMusicVault",
+  },
+  description: "WebMusicVault - Stream, organize, and discover your favorite music. Create personal playlists and enjoy high-quality audio playback anywhere.",
+  keywords: ["music", "player", "streaming", "playlist", "WebMusicVault", "audio"],
+  authors: [{ name: "Aaditya" }],
   icons: {
     icon: "/favicon.ico",
   },

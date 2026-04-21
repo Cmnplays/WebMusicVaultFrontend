@@ -12,7 +12,15 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const playlists = useAppSelector((state) => state.song.playlists);
   useEffect(() => {
+    document.title = "Your Playlists | WebMusicVault";
     if (shouldFetchUser) return;
+    
+    // Don't refresh if we already have playlists in Redux
+    if (playlists.defaultPlaylists.length > 0 || playlists.personalPlaylists.length > 0) {
+      setLoading(false);
+      return;
+    }
+
     const init = async () => {
       try {
         const data = await getPlaylists();
@@ -24,7 +32,7 @@ const Page = () => {
       }
     };
     init();
-  }, [shouldFetchUser]);
+  }, [shouldFetchUser, playlists.defaultPlaylists.length, playlists.personalPlaylists.length, dispatch]);
 
   return (
     <>

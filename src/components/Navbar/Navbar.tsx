@@ -89,6 +89,7 @@ const Navbar = () => {
               <li className="pl-2 border-l border-white/10">
                 <button
                   onClick={handleLogout}
+                  aria-label="Log out of your account"
                   className="px-3 py-1.5 text-sm font-medium text-red-400 hover:text-red-300 transition-colors"
                 >
                   Logout
@@ -163,6 +164,8 @@ const Navbar = () => {
 
             <button
               onClick={() => setMoreOpen(!moreOpen)}
+              aria-label={moreOpen ? "Close menu" : "Open more options"}
+              aria-expanded={moreOpen}
               className="flex flex-col items-center gap-1 px-4 py-1 rounded-xl transition-all"
             >
               <MoreHorizontal

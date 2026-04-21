@@ -79,6 +79,7 @@ const LikedSongsPage = () => {
           description: data.description,
           isDefault: data.isDefault,
         });
+        document.title = `${data.name} | WebMusicVault`;
       } catch (error) {
         console.error("Error fetching liked songs:", error);
       } finally {
@@ -90,7 +91,7 @@ const LikedSongsPage = () => {
 
   // Infinite Scroll fetch
   useEffect(() => {
-    if (!userId || !tempHasMoreSongs) {
+    if (!userId || !tempNextCursor || !tempHasMoreSongs || loading) {
       return;
     }
     const fetchMoreSongs = async () => {
@@ -113,7 +114,7 @@ const LikedSongsPage = () => {
       }
     };
     fetchMoreSongs();
-  }, [tempTriggerFetch]);
+  }, [tempTriggerFetch, userId, tempNextCursor, tempHasMoreSongs, loading]);
 
   return (
     <>
@@ -121,9 +122,10 @@ const LikedSongsPage = () => {
       <div className="mb-6 bg-white/10 p-6 rounded-lg shadow-lg">
         <button
           onClick={() => router.push("/playlist")}
+          aria-label="Back to Playlists"
           className="flex items-center gap-2 text-purple-300 hover:text-white transition-colors mb-3"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5" aria-hidden="true" />
           <span className="text-sm">Back to Playlists</span>
         </button>
         {playlistInfo ? (

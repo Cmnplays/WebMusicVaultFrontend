@@ -11,11 +11,14 @@ const ShareSongBtn: React.FC = () => {
     dispatch(setMountShareModal(true));
   };
   return (
-    <button onClick={handleDelete}>
+    <button
+      onClick={handleDelete}
+      aria-label="Share song"
+      title="Share song"
+    >
       <Share2
         size={30}
-        className="hover:text-orange-400 
-                    transition-colors duration-300"
+        className="hover:text-orange-400 transition-colors duration-300"
       />
     </button>
   );

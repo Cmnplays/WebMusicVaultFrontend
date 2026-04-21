@@ -8,6 +8,7 @@ const About = () => {
   const [songsLength, setSongsLength] = useState<number | null>(null);
 
   useEffect(() => {
+    document.title = "About | WebMusicVault";
     const fetchSongsLength = async () => {
       const length = await getSongsLength();
       setSongsLength(length);

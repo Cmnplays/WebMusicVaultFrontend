@@ -15,10 +15,10 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { KeyRound } from "lucide-react";
+import { KeyRound, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { SetPasswordSchemaType } from "@/lib/schemas/auth.schema";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
 interface SetPasswordFormProps {
   form: UseFormReturn<SetPasswordSchemaType>;
   onSubmit: SubmitHandler<SetPasswordSchemaType>;
@@ -32,6 +32,9 @@ export function SetPasswordForm({
 }: SetPasswordFormProps) {
   const { handleSubmit, register } = form;
   const { errors } = useFormState({ control: form.control });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const backHref = `/enter-email?purpose=${purpose}`;
   return (
     <Card>
@@ -63,11 +66,25 @@ export function SetPasswordForm({
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="password">New Password</FieldLabel>
-                <Input
-                  {...register("password")}
-                  id="password"
-                  type="password"
-                />
+                <div className="relative">
+                  <Input
+                    {...register("password")}
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-white transition-colors"
+                  >
+                    {showPassword ? (
+                      <Eye className="w-5 h-5" />
+                    ) : (
+                      <EyeOff className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
                 <FieldDescription>
                   Must be at least 6 characters long.
                 </FieldDescription>
@@ -81,11 +98,25 @@ export function SetPasswordForm({
                 <FieldLabel htmlFor="confirmPassword">
                   Confirm Password
                 </FieldLabel>
-                <Input
-                  {...register("confirmPassword")}
-                  id="confirmPassword"
-                  type="password"
-                />
+                <div className="relative">
+                  <Input
+                    {...register("confirmPassword")}
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-white transition-colors"
+                  >
+                    {showConfirmPassword ? (
+                      <Eye className="w-5 h-5" />
+                    ) : (
+                      <EyeOff className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
                 <FieldDescription>
                   Please confirm your password.
                 </FieldDescription>
