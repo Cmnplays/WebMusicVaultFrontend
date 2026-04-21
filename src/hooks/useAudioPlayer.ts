@@ -65,7 +65,7 @@ export const useAudioPlayer = ({
     }
 
     if (playing) {
-      const cleanTitle = playingSong.title.replace(/\.(mp3|wav|m4a|flac|ogg)$/i, "");
+      const cleanTitle = playingSong.title.replace(/\.mp3$/i, "");
       document.title = ` 🎧 ${cleanTitle} | WebMusicVault`;
 
       audioEl.play().catch((err) => {

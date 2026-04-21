@@ -118,7 +118,9 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
           {message || (
             <>
               Enter password to delete{" "}
-              <span className="font-bold">{title}</span>
+              <p className="text-white text-lg font-bold truncate px-4">
+                {title.replace(/\.mp3$/i, "")}
+              </p>
             </>
           )}
         </h3>

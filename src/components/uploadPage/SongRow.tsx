@@ -133,7 +133,7 @@ export function SongRow({
           </div>
         </div>
 
-        <p className="text-white/50 text-xs truncate px-1">{entry.file.name.replace(/\.[^/.]+$/, "")}</p>
+        <p className="text-white/50 text-xs truncate px-1">{entry.file.name.replace(/\.mp3$/i, "")}</p>
 
         <div className="flex flex-col gap-2">
           <input
@@ -209,7 +209,7 @@ export function SongRow({
             <Music size={12} className="text-purple-300" />
           </div>
           <span className="text-white/50 text-xs truncate">
-            {entry.file.name.replace(/\.[^/.]+$/, "")}
+            {entry.file.name.replace(/\.mp3$/i, "")}
           </span>
         </div>
 

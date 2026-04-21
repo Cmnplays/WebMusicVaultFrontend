@@ -76,7 +76,7 @@ const SongCard: React.FC<SongCardProps> = ({
           className="text-sm font-semibold text-white truncate leading-tight"
           title={song.title}
         >
-          {song.title.split(".")[0]}
+          {song.title.replace(/\.mp3$/i, "")}
         </h3>
         <p className="text-xs truncate mt-0.5 text-white/40 font-light tracking-wide">
           {song.artist}

@@ -105,7 +105,7 @@ const MiniPlayer = ({
         {/* Song info */}
         <div className="flex-1 min-w-0">
           <p className="text-white text-sm font-semibold truncate leading-tight">
-            {playingSong.title.replace(/\.(mp3|wav|m4a|flac|ogg)$/i, "")}
+            {playingSong.title.replace(/\.mp3$/i, "")}
           </p>
           <p className="text-white/50 text-xs truncate mt-0.5">
             {playingSong.artist}
