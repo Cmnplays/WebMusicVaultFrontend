@@ -26,6 +26,7 @@ export interface PlaylistSong {
   duration: number;
   artist: string;
   fileUrl: string;
+  coverImageUrl?: string;
   createdAt: string;
   updatedAt: string;
   playCount: number;

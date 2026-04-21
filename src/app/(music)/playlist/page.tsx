@@ -8,10 +8,11 @@ import { setPlaylists } from "@/reduxSlices/song/songSlice";
 
 const Page = () => {
   const dispatch = useAppDispatch();
-  const accessToken = useAppSelector((state) => state.auth.accessToken);
+  const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
   const [loading, setLoading] = useState(true);
   const playlists = useAppSelector((state) => state.song.playlists);
   useEffect(() => {
+    if (shouldFetchUser) return;
     const init = async () => {
       try {
         const data = await getPlaylists();
@@ -23,7 +24,7 @@ const Page = () => {
       }
     };
     init();
-  }, [accessToken]);
+  }, [shouldFetchUser]);
 
   return (
     <>

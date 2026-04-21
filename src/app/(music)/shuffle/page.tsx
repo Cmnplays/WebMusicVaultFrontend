@@ -26,6 +26,7 @@ const ShufflePlayer: React.FC = () => {
   const deleting = useAppSelector((state) => state.ui.deleting);
 
   const songs = useAppSelector((state) => state.song.tempSongs);
+  const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
   const [initLoading, setInitLoading] = useState(true);
   const [fetchingNext, setFetchingNext] = useState(false);
 
@@ -36,6 +37,7 @@ const ShufflePlayer: React.FC = () => {
 
   // ── Init: fetch first batch and auto‑play ──
   useEffect(() => {
+    if (shouldFetchUser) return;
     dispatch(setSongsType("tempSongs"));
     let mounted = true;
     const init = async () => {
@@ -62,7 +64,7 @@ const ShufflePlayer: React.FC = () => {
       dispatch(setExpandedPanelOpen(false));
       dispatch(setLoading(false));
     };
-  }, [dispatch]);
+  }, [dispatch, shouldFetchUser]);
 
   // ── Grow visible window whenever the playing song advances ──
   useEffect(() => {

@@ -47,7 +47,7 @@ const PlaylistPage = () => {
   const tempTriggerFetch = useAppSelector(
     (state) => state.song.tempTriggerFetch,
   );
-
+  const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
   const { handlePlayClick } = usePlaySong();
 
   // Clear state on unmount or id change
@@ -64,7 +64,7 @@ const PlaylistPage = () => {
 
   // Initial fetch
   useEffect(() => {
-    if (!id) return;
+    if (!id || shouldFetchUser) return;
     const fetchInitialSongs = async () => {
       try {
         dispatch(setLoading(true));
@@ -90,7 +90,7 @@ const PlaylistPage = () => {
       }
     };
     fetchInitialSongs();
-  }, [dispatch, id]);
+  }, [dispatch, id, shouldFetchUser]);
 
   // Infinite Scroll fetch
   useEffect(() => {
