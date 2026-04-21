@@ -29,7 +29,7 @@ import { ArrowLeft } from "lucide-react";
 
 const LikedSongsPage = () => {
   const params = useParams();
-  const id = params?.id as string;
+  const userId = params?.id as string;
   const dispatch = useAppDispatch();
   const router = useRouter();
   const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
@@ -72,7 +72,7 @@ const LikedSongsPage = () => {
     moveToPreviousSong,
   } = useAudioPlayer({ audioRef, songs: tempSongs });
 
-  // Clear state on unmount or id change
+  // Clear state on unmount or userId change
   useEffect(() => {
     return () => {
       dispatch(replaceTempSongs([]));
@@ -81,19 +81,19 @@ const LikedSongsPage = () => {
       dispatch(setExpandedPanelOpen(false));
       dispatch(setLoading(false));
     };
-  }, [dispatch, id]);
+  }, [dispatch, userId]);
 
   // Initial fetch
   useEffect(() => {
-    if (!id || shouldFetchUser) return;
+    if (!userId) return;
     const fetchInitialSongs = async () => {
       try {
         dispatch(setLoading(true));
-        const data = await getLikedSongs(id, { limit: 10 });
+        const data = await getLikedSongs(userId);
         if (data.songs && data.songs.length > 0) {
           dispatch(replaceTempSongs(data.songs as unknown as Song[]));
-          dispatch(setTempNextCursor(data.songs[data.songs.length - 1]._id));
-          dispatch(setTempHasMoreSongs(data.songs.length === 10));
+          dispatch(setTempNextCursor(data.nextCursor));
+          dispatch(setTempHasMoreSongs(data.hasMoreSongs));
         } else {
           dispatch(replaceTempSongs([]));
           dispatch(setTempHasMoreSongs(false));
@@ -104,33 +104,34 @@ const LikedSongsPage = () => {
           isDefault: data.isDefault,
         });
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching liked songs:", error);
       } finally {
         dispatch(setLoading(false));
       }
     };
     fetchInitialSongs();
-  }, [dispatch, id, shouldFetchUser]);
+  }, [dispatch, userId]);
 
   // Infinite Scroll fetch
   useEffect(() => {
-    if (!id || !tempNextCursor || !tempHasMoreSongs) return;
+    if (!userId || !tempHasMoreSongs) {
+      return;
+    }
     const fetchMoreSongs = async () => {
       try {
         dispatch(setLoading(true));
-        const data = await getLikedSongs(id, {
-          limit: 10,
+        const data = await getLikedSongs(userId, {
           cursor: tempNextCursor as string,
         });
         if (data.songs && data.songs.length > 0) {
           dispatch(setTempSongs(data.songs as unknown as Song[]));
-          dispatch(setTempNextCursor(data.songs[data.songs.length - 1]._id));
-          dispatch(setTempHasMoreSongs(data.songs.length === 20));
+          dispatch(setTempNextCursor(data.nextCursor));
+          dispatch(setTempHasMoreSongs(data.hasMoreSongs));
         } else {
           dispatch(setTempHasMoreSongs(false));
         }
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching more songs:", error);
       } finally {
         dispatch(setLoading(false));
       }

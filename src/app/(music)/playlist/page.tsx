@@ -4,7 +4,6 @@ import PlaylistSkeleton from "@/components/PlaylistPage/PlaylistPageSkeleton";
 import { getPlaylists } from "@/services/playlist.services";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useEffect, useState } from "react";
-import ProtectedLayout from "@/components/ProtectedLayout";
 import { setPlaylists } from "@/reduxSlices/song/songSlice";
 
 const Page = () => {
@@ -13,7 +12,6 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const playlists = useAppSelector((state) => state.song.playlists);
   useEffect(() => {
-    if (!accessToken) return;
     const init = async () => {
       try {
         const data = await getPlaylists();
@@ -28,9 +26,9 @@ const Page = () => {
   }, [accessToken]);
 
   return (
-    <ProtectedLayout skeleton={<PlaylistSkeleton />}>
-      <PlaylistList playlists={playlists} />
-    </ProtectedLayout>
+    <main>
+      {loading ? <PlaylistSkeleton /> : <PlaylistList playlists={playlists} />}
+    </main>
   );
 };
 

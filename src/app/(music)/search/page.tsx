@@ -118,7 +118,6 @@ const SearchPage: React.FC = () => {
         dispatch(setLoading(true));
         const data = await searchSong({
           query: submittedQuery.trim(),
-          limit: 10,
           cursor: tempNextCursor,
           sortBy: tempSortBy,
           sortOrder: tempSortOrder,
