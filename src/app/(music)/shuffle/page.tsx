@@ -2,13 +2,16 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { usePlaySong } from "@/hooks/usePlaySong";
-import { setTempSongs, replaceTempSongs ,setSongsType} from "@/reduxSlices/song/songSlice";
+import {
+  setTempSongs,
+  replaceTempSongs,
+  setSongsType,
+} from "@/reduxSlices/song/songSlice";
 import {
   setPlaying,
   setExpandedPanelOpen,
   setPlayingSong,
   setMiniPanelOpen,
-  
 } from "@/reduxSlices/player/playerSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import SongList from "@/components/SongList/SongList";
@@ -37,7 +40,7 @@ const ShufflePlayer: React.FC = () => {
 
   // ── Init: fetch first batch and auto‑play ──
   useEffect(() => {
-    document.title = "Shuffle Mode | WebMusicVault";
+    document.title = "Shuffle Mode | WmV";
     if (shouldFetchUser) return;
     dispatch(setSongsType("tempSongs"));
     let mounted = true;

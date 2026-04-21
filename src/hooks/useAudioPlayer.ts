@@ -13,7 +13,6 @@ import {
   setPlayingSong,
   setDuration,
   setCurrentTime,
-  setMiniPanelOpen,
 } from "../reduxSlices/player/playerSlice";
 
 type customFnType = {
@@ -55,7 +54,7 @@ export const useAudioPlayer = ({
 
     if (isNewSource) {
       audioEl.src = playingSong.fileUrl;
-      
+
       // Restore saved time on first load after refresh
       if (isInitialMount.current && currentTime > 0) {
         audioEl.currentTime = currentTime;
@@ -66,7 +65,7 @@ export const useAudioPlayer = ({
 
     if (playing) {
       const cleanTitle = playingSong.title.replace(/\.mp3$/i, "");
-      document.title = ` 🎧 ${cleanTitle} | WebMusicVault`;
+      document.title = ` 🎧 ${cleanTitle} | WmV`;
 
       audioEl.play().catch((err) => {
         if (err.name !== "AbortError") {

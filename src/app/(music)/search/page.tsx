@@ -8,12 +8,9 @@ import {
   setTempNextCursor,
   setTempSongs,
   setTempSortChanged,
-  setSongsType
+  setSongsType,
 } from "@/reduxSlices/song/songSlice";
-import {
-  setExpandedPanelOpen,
-
-} from "@/reduxSlices/player/playerSlice";
+import { setExpandedPanelOpen } from "@/reduxSlices/player/playerSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import SongList from "@/components/SongList/SongList";
 import SongListSkeleton from "@/components/SongList/SongListSkeleton";
@@ -51,7 +48,7 @@ const SearchPage: React.FC = () => {
 
   // Clear state on unmount
   useEffect(() => {
-    document.title = "Search Songs | WebMusicVault";
+    document.title = "Search Songs | WmV";
     dispatch(setSongsType("tempSongs"));
     return () => {
       dispatch(replaceTempSongs([]));

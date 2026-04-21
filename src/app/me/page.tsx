@@ -10,7 +10,7 @@ export default function AccountPage() {
   const user = useAppSelector((s) => s.auth.user);
 
   useEffect(() => {
-    document.title = "My Account | WebMusicVault";
+    document.title = "My Account | WmV";
   }, []);
 
   return (
@@ -22,4 +22,3 @@ export default function AccountPage() {
     </>
   );
 }
-

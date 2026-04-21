@@ -21,7 +21,7 @@ export default function UploadPage() {
   } = useUpload();
 
   useEffect(() => {
-    document.title = "Upload Songs | WebMusicVault";
+    document.title = "Upload Songs | WmV";
   }, []);
 
   const idleCount = songs.filter((s) => s.status === "idle").length;
