@@ -2,6 +2,7 @@
 import { useAppSelector } from "@/store/hook";
 import Navbar from "@/components/Navbar/Navbar";
 import SongPlayerCombined from "@/components/SongPlayerPanel/SongPlayerCombined";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const playingSong = useAppSelector((state) => state.player.playingSong);
@@ -17,6 +18,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <SongPlayerCombined />
+      <ScrollToTopButton />
     </div>
   );
 }

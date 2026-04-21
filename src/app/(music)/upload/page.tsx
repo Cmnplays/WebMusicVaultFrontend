@@ -34,26 +34,26 @@ export default function UploadPage() {
 
   return (
     <ProtectedLayout>
-      <div className="min-h-screen bg-transparent flex justify-center items-start pb-12">
-        <div className="w-full max-w-2xl mt-8 flex flex-col gap-5">
+      <div className="min-h-screen bg-transparent flex justify-center items-start pb-6 px-4">
+        <div className="w-full max-w-2xl mt-4 flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <div
-              className="w-10 h-10 rounded-2xl bg-purple-500/20 flex items-center justify-center"
+              className="w-10 h-10 rounded-2xl bg-purple-500/20 flex items-center justify-center shrink-0 shadow-lg shadow-purple-500/10"
               aria-hidden="true"
             >
               <Music2 size={20} className="text-purple-300" />
             </div>
-            <div>
-              <h1 className="text-white font-bold text-xl leading-tight">
+            <div className="min-w-0">
+              <h1 className="text-white font-bold text-xl tracking-tight leading-tight truncate">
                 Upload Songs
               </h1>
-              <p className="text-purple-300/60 text-xs">
-                Up to 5 songs · Uploaded one by one
+              <p className="text-purple-300/60 text-[10px] font-medium uppercase tracking-wider">
+                Max 5 songs · Single queue
               </p>
             </div>
           </div>
 
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-5 flex flex-col gap-5 shadow-2xl shadow-black/30">
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl px-5 py-2.5 flex flex-col gap-4 shadow-2xl shadow-black/30">
             <DropZone
               onFiles={addFiles}
               disabled={isRunning}
