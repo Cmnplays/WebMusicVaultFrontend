@@ -28,9 +28,9 @@ const bottomNavItems = [
 
 const moreRoutes = [
   { name: "Search", to: "/search", icon: Search },
+  { name: "Upload", to: "/upload", icon: CloudUpload },
   { name: "About", to: "/about", icon: Info },
   { name: "Account", to: "/me", icon: CircleUser },
-  { name: "Upload", to: "/upload", icon: CloudUpload },
 ];
 
 const Navbar = () => {
@@ -46,9 +46,9 @@ const Navbar = () => {
     { name: "Playlist", to: "/playlist" },
     { name: "Shuffle", to: "/shuffle" },
     { name: "Search", to: "/search" },
-    { name: "About", to: "/about" },
-    { name: "Account", to: "/me" },
     { name: "Upload", to: "/upload" },
+    { name: "Account", to: "/me" },
+    { name: "About", to: "/about" },
   ];
 
   const handleLogout = async () => {
