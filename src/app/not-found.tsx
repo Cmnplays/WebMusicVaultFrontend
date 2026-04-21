@@ -8,7 +8,7 @@ export default function NotFound() {
   return (
     <div className="min-h-screen bg-[#5520A5] text-white overflow-x-hidden">
       <Navbar />
-      
+
       <div className="flex flex-col items-center justify-center p-4 pt-20 min-h-[calc(100vh-80px)]">
         {/* Background Decorative Circles */}
         <div className="fixed top-1/4 -left-20 w-64 h-64 bg-purple-400/10 rounded-full blur-3xl pointer-events-none" />
@@ -28,11 +28,15 @@ export default function NotFound() {
             Lost in the Rhythm?
           </h2>
           <p className="text-purple-200/70 mb-10 leading-relaxed">
-            The track you're looking for isn't in our vault. It might have been moved or deleted, or the URL might be mistyped.
+            The track you&apos;re looking for isn&apos;t in our vault. It might
+            have been moved or deleted, or the URL might be mistyped.
           </p>
 
           <Link href="/">
-            <Button size="lg" className="bg-white text-purple-900 hover:bg-purple-100 font-bold gap-2 px-8 rounded-full transition-transform active:scale-95 shadow-xl">
+            <Button
+              size="lg"
+              className="bg-white text-purple-900 hover:bg-purple-100 font-bold gap-2 px-8 rounded-full transition-transform active:scale-95 shadow-xl"
+            >
               <Home size={18} />
               Back to Home
             </Button>

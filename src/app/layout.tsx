@@ -16,6 +16,8 @@ export const metadata: Metadata = {
     "playlist",
     "WebMusicVault",
     "audio",
+    "songs",
+    "rythms",
   ],
   authors: [{ name: "Aaditya" }],
   icons: {

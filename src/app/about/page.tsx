@@ -27,11 +27,16 @@ const About = () => {
           </h1>
 
           <p className="text-purple-200 mt-3 text-base sm:text-lg">
-            WebMusicVault (WMV) is mine and my loved ones personal music hub to
-            upload, search, play, and download songs easily. Enjoy my music
-            taste with different playback modes. This is version 3 of this site
-            not fully optimized and not even complete. But works for now
-            that&apos;s it.
+            WebMusicVault (WmV) is my first fullstack project which is live and
+            can be used by people out there or at least me and my loved ones.
+            Here anyone can do to upload, search, play, and download songs
+            easily and enjoy my music taste with different playback modes.
+            {"\n"} This is version 3 of this site which is yet not fully
+            optimized and not even complete. But works for now. That&apos;s
+            it.🙂
+            {"\n"}
+            Btw, I am the daily user of this thing 😅.
+            {"\n"} Whoever is reading this, Love you💗!
           </p>
 
           <p className="mt-4 inline-block bg-white/10 backdrop-blur-md text-purple-100 px-3 py-1 rounded-full font-semibold text-sm border border-white/10 shadow">

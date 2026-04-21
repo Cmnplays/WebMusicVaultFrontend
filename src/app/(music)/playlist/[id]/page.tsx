@@ -10,11 +10,9 @@ import {
   replaceTempSongs,
   setTempHasMoreSongs,
   setTempNextCursor,
-  setSongsType
+  setSongsType,
 } from "@/reduxSlices/song/songSlice";
-import {
-  setExpandedPanelOpen,
-} from "@/reduxSlices/player/playerSlice";
+import { setExpandedPanelOpen } from "@/reduxSlices/player/playerSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import {
   getPlaylistSongs,
@@ -83,7 +81,7 @@ const PlaylistPage = () => {
           description: data.description,
           isDefault: data.isDefault,
         });
-        document.title = `${data.name} | WebMusicVault`;
+        document.title = `${data.name} | WmV`;
       } catch (error) {
         console.error(error);
       } finally {

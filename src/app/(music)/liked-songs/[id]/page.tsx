@@ -8,11 +8,9 @@ import {
   replaceTempSongs,
   setTempHasMoreSongs,
   setTempNextCursor,
-  setSongsType
+  setSongsType,
 } from "@/reduxSlices/song/songSlice";
-import {
-  setExpandedPanelOpen,
-} from "@/reduxSlices/player/playerSlice";
+import { setExpandedPanelOpen } from "@/reduxSlices/player/playerSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import SongList from "@/components/SongList/SongList";
 import SongListSkeleton from "@/components/SongList/SongListSkeleton";
@@ -79,7 +77,7 @@ const LikedSongsPage = () => {
           description: data.description,
           isDefault: data.isDefault,
         });
-        document.title = `${data.name} | WebMusicVault`;
+        document.title = `${data.name} | WmV`;
       } catch (error) {
         console.error("Error fetching liked songs:", error);
       } finally {

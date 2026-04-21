@@ -4,7 +4,12 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useSongs } from "@/hooks/useSongs";
 import { usePlaySong } from "@/hooks/usePlaySong";
 import { setSongsType, setTempSongs } from "@/reduxSlices/song/songSlice";
-import { setExpandedPanelOpen, setPlayingSong, setPlaying, setMiniPanelOpen } from "@/reduxSlices/player/playerSlice";
+import {
+  setExpandedPanelOpen,
+  setPlayingSong,
+  setPlaying,
+  setMiniPanelOpen,
+} from "@/reduxSlices/player/playerSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import MusicHeader from "@/components/MusicPage/MusicPageHeader";
 import SongList from "@/components/SongList/SongList";
@@ -36,7 +41,7 @@ const MusicPage: React.FC = () => {
 
   // Reset/Set states when the page changes
   useEffect(() => {
-    document.title = "Music Collection | WebMusicVault";
+    document.title = "Music Collection | WmV";
     dispatch(setSongsType("songs"));
     return () => {
       dispatch(setTempSongs([]));
