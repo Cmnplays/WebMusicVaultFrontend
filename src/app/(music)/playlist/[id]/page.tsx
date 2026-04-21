@@ -14,9 +14,7 @@ import {
 import {
   setPlaying,
   setExpandedPanelOpen,
-  setPlayingSong,
   setExpandedPanelTrigger,
-  setMiniPanelOpen,
 } from "@/reduxSlices/player/playerSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
@@ -83,25 +81,22 @@ const PlaylistPage = () => {
       dispatch(replaceTempSongs([]));
       dispatch(setTempHasMoreSongs(true));
       dispatch(setTempNextCursor(undefined));
-      dispatch(setPlaying(false));
-      dispatch(setPlayingSong(null));
       dispatch(setExpandedPanelOpen(false));
-      dispatch(setMiniPanelOpen(false));
       dispatch(setLoading(false));
     };
   }, [dispatch, id]);
 
   // Initial fetch
   useEffect(() => {
-    if (!id || shouldFetchUser) return;
+    if (!id) return;
     const fetchInitialSongs = async () => {
       try {
         dispatch(setLoading(true));
         const data = await getPlaylistSongs(id, { limit: 10 });
         if (data.songs && data.songs.length > 0) {
           dispatch(replaceTempSongs(data.songs as unknown as Song[]));
-          dispatch(setTempNextCursor(data.songs[data.songs.length - 1]._id));
-          dispatch(setTempHasMoreSongs(data.songs.length === 20));
+          dispatch(setTempNextCursor(data.nextCursor));
+          dispatch(setTempHasMoreSongs(data.hasMoreSongs));
         } else {
           dispatch(replaceTempSongs([]));
           dispatch(setTempHasMoreSongs(false));
@@ -119,14 +114,12 @@ const PlaylistPage = () => {
       }
     };
     fetchInitialSongs();
-  }, [dispatch, id, shouldFetchUser]);
+  }, [dispatch, id]);
 
   // Infinite Scroll fetch
   useEffect(() => {
     if (!id || !tempNextCursor || !tempHasMoreSongs) return;
 
-    // Use a flag or check if we are already loading to prevent race conditions
-    // Actually `useInfiniteScroll` only triggers if `loading` is false
     const fetchMoreSongs = async () => {
       try {
         dispatch(setLoading(true));
@@ -136,8 +129,8 @@ const PlaylistPage = () => {
         });
         if (data.songs && data.songs.length > 0) {
           dispatch(setTempSongs(data.songs as unknown as Song[]));
-          dispatch(setTempNextCursor(data.songs[data.songs.length - 1]._id));
-          dispatch(setTempHasMoreSongs(data.songs.length === 10));
+          dispatch(setTempNextCursor(data.nextCursor));
+          dispatch(setTempHasMoreSongs(data.hasMoreSongs));
         } else {
           dispatch(setTempHasMoreSongs(false));
         }
@@ -148,9 +141,7 @@ const PlaylistPage = () => {
       }
     };
 
-    // Check if we didn't just render logic. Only fire on trigger toggle.
     fetchMoreSongs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tempTriggerFetch]);
 
   return (

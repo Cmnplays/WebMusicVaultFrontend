@@ -44,6 +44,8 @@ export interface PlaylistWithSongs {
   description?: string;
   status: "private" | "public";
   isDefault: boolean;
+  nextCursor: string;
+  hasMoreSongs: boolean;
   createdAt: string;
   updatedAt: string;
   __v: number;

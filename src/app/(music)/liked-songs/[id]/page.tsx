@@ -14,9 +14,7 @@ import {
 import {
   setPlaying,
   setExpandedPanelOpen,
-  setPlayingSong,
   setExpandedPanelTrigger,
-  setMiniPanelOpen,
 } from "@/reduxSlices/player/playerSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
@@ -80,10 +78,7 @@ const LikedSongsPage = () => {
       dispatch(replaceTempSongs([]));
       dispatch(setTempHasMoreSongs(true));
       dispatch(setTempNextCursor(undefined));
-      dispatch(setPlaying(false));
-      dispatch(setPlayingSong(null));
       dispatch(setExpandedPanelOpen(false));
-      dispatch(setMiniPanelOpen(false));
       dispatch(setLoading(false));
     };
   }, [dispatch, id]);
@@ -141,7 +136,6 @@ const LikedSongsPage = () => {
       }
     };
     fetchMoreSongs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tempTriggerFetch]);
 
   return (

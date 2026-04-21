@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
@@ -84,10 +84,7 @@ const ShufflePlayer: React.FC = () => {
     return () => {
       mounted = false;
       dispatch(replaceTempSongs([]));
-      dispatch(setPlaying(false));
-      dispatch(setPlayingSong(null));
       dispatch(setExpandedPanelOpen(false));
-      dispatch(setMiniPanelOpen(false));
       dispatch(setLoading(false));
     };
   }, [dispatch]);
@@ -118,7 +115,9 @@ const ShufflePlayer: React.FC = () => {
         if (mounted) {
           // Filter out any songs that already exist in the buffer
           const existingIds = new Set(songs.map((s) => s._id));
-          const uniqueNewSongs = nextSongs.filter((s) => !existingIds.has(s._id));
+          const uniqueNewSongs = nextSongs.filter(
+            (s) => !existingIds.has(s._id),
+          );
           if (uniqueNewSongs.length > 0) {
             dispatch(setTempSongs(uniqueNewSongs));
           }

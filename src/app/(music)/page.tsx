@@ -1,6 +1,5 @@
 "use client";
 import React, { useRef, useEffect } from "react";
-import SongPlayerPanel from "@/components/SongPlayerPanel/index";
 import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useSongs } from "@/hooks/useSongs";
@@ -12,9 +11,7 @@ import { setTempSongs } from "@/reduxSlices/song/songSlice";
 import {
   setPlaying,
   setExpandedPanelOpen,
-  setPlayingSong,
   setExpandedPanelTrigger,
-  setMiniPanelOpen,
 } from "@/reduxSlices/player/playerSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
 import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
@@ -64,10 +61,7 @@ const MusicPage: React.FC = () => {
   useEffect(() => {
     return () => {
       dispatch(setTempSongs([]));
-      dispatch(setPlaying(false));
-      dispatch(setPlayingSong(null));
       dispatch(setExpandedPanelOpen(false));
-      dispatch(setMiniPanelOpen(false));
       dispatch(setLoading(false));
     };
   }, [dispatch]);
@@ -78,8 +72,8 @@ const MusicPage: React.FC = () => {
     >
       {/* Header */}
       <MusicHeader
-        HandleSortBy={(sortBy)=>handleSortBy(sortBy,dispatch)}
-        HandleSortOrder={(sortOrder)=>handleSortOrder(sortOrder,dispatch)}
+        HandleSortBy={(sortBy) => handleSortBy(sortBy, dispatch)}
+        HandleSortOrder={(sortOrder) => handleSortOrder(sortOrder, dispatch)}
         sortOrder={sortOrder}
         sortBy={sortBy}
       />
@@ -103,30 +97,6 @@ const MusicPage: React.FC = () => {
         preload="metadata"
         hidden
       />
-
-      {/* Player Panel */}
-
-      {/* <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-5xl z-50">
-        <SongPlayerPanel
-          audioRef={audioRef}
-          panelRef={panelRef}
-          handlePlayPause={async () => {
-            if (!playing) {
-              try {
-                await audioRef.current?.play();
-                dispatch(setPlaying(true));
-              } catch (err) {
-                console.warn("Audio play was interrupted", err);
-              }
-              return;
-            }
-            audioRef.current?.pause();
-            dispatch(setPlaying(false));
-          }}
-          moveToNextSong={moveToNextSong}
-          moveToPreviousSong={moveToPreviousSong}
-        />
-      </div> */}
 
       {/* ── MiniPlayer ── */}
       <div className="fixed bottom-16 lg:bottom-6 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:w-[500px] z-[60] lg:rounded-2xl lg:overflow-hidden lg:shadow-[0_-4px_30px_rgba(0,0,0,0.5)] lg:border lg:border-purple-500/20">
