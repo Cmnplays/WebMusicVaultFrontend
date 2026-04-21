@@ -6,21 +6,31 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { logout } from "@/services/auth.services";
 import { clearAuth } from "@/reduxSlices/auth/authSlice";
 import { useRouter, usePathname } from "next/navigation";
-import { Home, Search, ListMusic, MoreHorizontal } from "lucide-react";
+import { 
+  Home, 
+  Search, 
+  ListMusic, 
+  Shuffle, 
+  MoreHorizontal, 
+  Info, 
+  CircleUser, 
+  CloudUpload, 
+  LogOut 
+} from "lucide-react";
 import AppLogo from "./AppLogo";
 import Link from "next/link";
 
 const bottomNavItems = [
   { name: "Music", to: "/", icon: Home },
-  { name: "Search", to: "/search", icon: Search },
   { name: "Playlist", to: "/playlist", icon: ListMusic },
+  { name: "Shuffle", to: "/shuffle", icon: Shuffle },
 ];
 
 const moreRoutes = [
-  { name: "About", to: "/about" },
-  { name: "Account", to: "/me" },
-  { name: "Upload", to: "/upload" },
-  { name: "Shuffle", to: "/shuffle" },
+  { name: "Search", to: "/search", icon: Search },
+  { name: "About", to: "/about", icon: Info },
+  { name: "Account", to: "/me", icon: CircleUser },
+  { name: "Upload", to: "/upload", icon: CloudUpload },
 ];
 
 const Navbar = () => {
@@ -34,11 +44,11 @@ const Navbar = () => {
   const desktopRoutes = [
     { name: "Music", to: "/" },
     { name: "Playlist", to: "/playlist" },
+    { name: "Shuffle", to: "/shuffle" },
     { name: "Search", to: "/search" },
     { name: "About", to: "/about" },
     { name: "Account", to: "/me" },
     { name: "Upload", to: "/upload" },
-    { name: "Shuffle", to: "/shuffle" },
   ];
 
   const handleLogout = async () => {
@@ -93,28 +103,30 @@ const Navbar = () => {
       <>
         {moreOpen && (
           <div
-            className="fixed inset-0 z-110"
+            className="fixed inset-0 z-[110]"
             onClick={() => setMoreOpen(false)}
           >
             <div
               className="absolute bottom-16 left-0 right-0 mx-4 bg-[#1a0635] border border-purple-500/20 rounded-2xl shadow-[0_-4px_30px_rgba(0,0,0,0.5)] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              {moreRoutes.map((route) => (
+              {moreRoutes.map(({ name, to, icon: Icon }) => (
                 <Link
-                  key={route.to}
-                  href={route.to}
+                  key={to}
+                  href={to}
                   onClick={() => setMoreOpen(false)}
-                  className="flex items-center gap-3 px-5 py-4 text-sm text-zinc-300 hover:bg-purple-500/10 border-b border-purple-500/10 transition-colors"
+                  className="flex items-center gap-3 px-5 py-4 text-sm text-zinc-300 hover:bg-purple-500/10 border-b border-purple-500/10 transition-colors group"
                 >
-                  {route.name}
+                  <Icon className="w-4 h-4 text-purple-300/60 group-hover:text-purple-300 transition-colors" />
+                  {name}
                 </Link>
               ))}
               {accessToken && (
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left px-5 py-4 text-sm text-red-400 hover:bg-red-950/20 transition-colors"
+                  className="w-full text-left flex items-center gap-3 px-5 py-4 text-sm text-red-400 hover:bg-red-950/20 transition-colors group"
                 >
+                  <LogOut className="w-4 h-4 text-red-400/60 group-hover:text-red-400 transition-colors" />
                   Logout
                 </button>
               )}

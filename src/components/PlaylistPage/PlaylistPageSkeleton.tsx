@@ -14,7 +14,7 @@ const PlaylistCardSkeleton = () => (
 
 const PlaylistSkeleton = () => {
   return (
-    <main className="max-w-5xl mx-auto min-h-screen p-4 text-white">
+    <>
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Skeleton className="w-7 h-7 rounded-md" />
@@ -37,7 +37,7 @@ const PlaylistSkeleton = () => {
         <PlaylistCardSkeleton />
         <PlaylistCardSkeleton />
       </div>
-    </main>
+    </>
   );
 };
 

@@ -116,9 +116,7 @@ const LikedSongsPage = () => {
   }, [tempTriggerFetch]);
 
   return (
-    <main
-      className={`max-w-5xl mx-auto p-4 pb-32 min-h-screen text-white ${playing && "mb-[192px]"}`}
-    >
+    <>
       {/* Header */}
       <div className="mb-6 bg-white/10 p-6 rounded-lg shadow-lg">
         <button
@@ -170,7 +168,7 @@ const LikedSongsPage = () => {
           <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
         </div>
       )}
-    </main>
+    </>
   );
 };
 

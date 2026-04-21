@@ -5,6 +5,8 @@ export type repeatType = "repeat" | "noRepeat" | "single";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import useMediaSession from "./useMediaSession";
 
+import { usePathname } from "next/navigation";
+
 import {
   setPlaying,
   setRepeat,
@@ -33,6 +35,7 @@ export const useAudioPlayer = ({
   const repeat = useAppSelector((state) => state.player.repeat);
   const shuffle = useAppSelector((state) => state.player.shuffle);
   const playingSong = useAppSelector((state) => state.player.playingSong);
+  const pathname = usePathname();
 
   //    Play or pause audio based on playingSong and playing state
   useEffect(() => {
@@ -113,10 +116,13 @@ export const useAudioPlayer = ({
       }
       if (repeat === "repeat") {
         const nextIndex = currentIndex + 1;
+        const isShufflePage = pathname === "/shuffle";
+
         if (nextIndex < songs.length) {
           dispatch(setPlayingSong(songs[nextIndex]));
-        } else {
-          //in next update after shifting to redux store ,need to fetch songs here then if if i get 0 songs then only i should go to the first song          dispatch(setPlayingSong(songs[0]));
+        } else if (!isShufflePage) {
+          // Only loop back to the start if we are NOT on the mystery shuffle discovery page
+          dispatch(setPlayingSong(songs[0]));
         }
         dispatch(setPlaying(true));
       }
@@ -150,7 +156,12 @@ export const useAudioPlayer = ({
     if (currentIndex === -1) {
       dispatch(setPlayingSong(null));
       dispatch(setPlaying(false));
+      return;
     }
+
+    // discovery-style navigation: don't loop back to start in Shuffle mode
+    const isShufflePage = pathname === "/shuffle";
+
     //All cases when shuffle is false
     if (!shuffle) {
       if (repeat === "single") {
@@ -164,7 +175,7 @@ export const useAudioPlayer = ({
         const nextIndex = currentIndex + 1;
         if (nextIndex < songs.length) {
           dispatch(setPlayingSong(songs[nextIndex]));
-        } else {
+        } else if (!isShufflePage) {
           dispatch(setPlayingSong(songs[0]));
         }
         dispatch(setPlaying(true));
@@ -175,7 +186,7 @@ export const useAudioPlayer = ({
         const nextIndex = currentIndex + 1;
         if (nextIndex < songs.length) {
           dispatch(setPlayingSong(songs[nextIndex]));
-        } else {
+        } else if (!isShufflePage) {
           dispatch(setPlayingSong(songs[0]));
         }
         dispatch(setPlaying(true));
@@ -207,12 +218,23 @@ export const useAudioPlayer = ({
     const currentIndex = songs.findIndex((s) => s._id === playingSong?._id);
     if (currentIndex === -1) {
       dispatch(setPlayingSong(null));
+      return;
     }
-    const previousSong = currentIndex - 1;
-    if (previousSong < 0) {
-      dispatch(setPlayingSong(songs[songs.length - 1]));
+
+    const isShufflePage = pathname === "/shuffle";
+    const previousIndex = currentIndex - 1;
+
+    if (previousIndex < 0) {
+      if (isShufflePage) {
+        // In discovery mode, don't loop back to the end. Just restart the first song.
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+        }
+      } else {
+        dispatch(setPlayingSong(songs[songs.length - 1]));
+      }
     } else {
-      dispatch(setPlayingSong(songs[previousSong]));
+      dispatch(setPlayingSong(songs[previousIndex]));
     }
     dispatch(setPlaying(true));
   };

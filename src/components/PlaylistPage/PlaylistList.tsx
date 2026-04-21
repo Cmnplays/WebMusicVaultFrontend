@@ -12,7 +12,7 @@ const PlaylistList: React.FC<PlaylistListProps> = ({ playlists }) => {
     playlists.defaultPlaylists.length + playlists.personalPlaylists.length;
 
   return (
-    <main className="max-w-5xl mx-auto min-h-screen p-4 text-white">
+    <>
       <div className="flex items-center gap-3 mb-6">
         <ListMusic className="w-7 h-7 text-purple-300" />
         <h1 className="text-2xl font-bold tracking-tight">Your Playlists</h1>
@@ -44,7 +44,7 @@ const PlaylistList: React.FC<PlaylistListProps> = ({ playlists }) => {
           </div>
         </>
       )}
-    </main>
+    </>
   );
 };
 

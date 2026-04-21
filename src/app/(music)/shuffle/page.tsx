@@ -111,9 +111,7 @@ const ShufflePlayer: React.FC = () => {
   }, [playingSong?._id, songs.length, repeat, dispatch]);
 
   return (
-    <main
-      className={`max-w-5xl mx-auto p-4 min-h-screen text-white ${playing && "mb-[192px]"}`}
-    >
+    <>
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
         <h2 className="text-3xl font-extrabold text-white tracking-tight leading-tight">
@@ -150,7 +148,7 @@ const ShufflePlayer: React.FC = () => {
           <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
         </div>
       )}
-    </main>
+    </>
   );
 };
 

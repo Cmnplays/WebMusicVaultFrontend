@@ -139,9 +139,7 @@ const SearchPage: React.FC = () => {
   const noResults = hasSearched && tempSongs.length === 0 && !loading;
 
   return (
-    <main
-      className={`max-w-5xl mx-auto p-4 min-h-screen text-white ${playing && "mb-[192px]"}`}
-    >
+    <>
       {/* ── Search Header ── */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white mb-4">Search</h1>
@@ -244,7 +242,7 @@ const SearchPage: React.FC = () => {
           <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
         </div>
       )}
-    </main>
+    </>
   );
 };
 

@@ -26,9 +26,9 @@ const Page = () => {
   }, [accessToken]);
 
   return (
-    <main>
+    <>
       {loading ? <PlaylistSkeleton /> : <PlaylistList playlists={playlists} />}
-    </main>
+    </>
   );
 };
 

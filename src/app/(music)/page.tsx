@@ -42,9 +42,7 @@ const MusicPage: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <main
-      className={`max-w-5xl mx-auto p-4 min-h-screen text-white ${playing && "mb-[192px]"}`}
-    >
+    <>
       {/* Header */}
       <MusicHeader
         HandleSortBy={(sortBy) => handleSortBy(sortBy, dispatch)}
@@ -89,7 +87,7 @@ const MusicPage: React.FC = () => {
           <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
         </div>
       )}
-    </main>
+    </>
   );
 };
 
