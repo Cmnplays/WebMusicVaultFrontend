@@ -2,7 +2,6 @@
 import { useState, useCallback, useRef } from "react";
 import { uploadSong } from "@/services/song.services";
 import { useAppDispatch } from "@/store/hook";
-import { addSong } from "@/reduxSlices/song/songSlice";
 
 export type UploadStatus =
   | "idle"
@@ -82,7 +81,6 @@ export function useUpload() {
       setStatus(entry.id, "uploading");
       try {
         const newSong = await uploadSong(entry, controller.signal);
-        dispatch(addSong(newSong));
         setStatus(entry.id, "done");
       } catch (err: unknown) {
         if (controller.signal.aborted) {
@@ -102,7 +100,7 @@ export function useUpload() {
 
     abortRef.current = null;
     setIsRunning(false);
-  }, [isRunning]); // 👈 no longer depends on `songs`
+  }, [isRunning]); 
 
   const cancelUpload = useCallback(() => {
     abortRef.current?.abort();

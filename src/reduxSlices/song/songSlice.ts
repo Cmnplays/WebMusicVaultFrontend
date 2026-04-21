@@ -150,18 +150,6 @@ const songSlice = createSlice({
         if (likedSongsPlaylist.songs < 0) likedSongsPlaylist.songs = 0;
       }
     },
-    addSong: (state, action: PayloadAction<Song>) => {
-      if (state.sortBy === "createdAt" && state.sortOrder === "desc") {
-        state.songs = [action.payload, ...state.songs];
-      }
-      if (
-        state.songsType === "tempSongs" &&
-        state.tempSortBy === "createdAt" &&
-        state.tempSortOrder === "desc"
-      ) {
-        state.tempSongs = [action.payload, ...state.tempSongs];
-      }
-    },
   },
   extraReducers: (builder) => {
     const clearSongsState = (state: SongState) => {
@@ -203,10 +191,9 @@ export const {
   setTempSortBy,
   setTempSortChanged,
   setTempSortOrder,
-  setPlaylists, 
+  setPlaylists,
   setSongsType,
   updatePlaylistSongCount,
-  addSong
 } = songSlice.actions;
 
 export default songSlice.reducer;
