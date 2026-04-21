@@ -85,8 +85,8 @@ const MiniPlayer = ({
               src={playingSong.coverImageUrl}
               alt={playingSong.title}
               fill
-              sizes="44px"
-              quality={50}
+              sizes="100px"
+              quality={100}
               priority
               className="object-cover"
             />

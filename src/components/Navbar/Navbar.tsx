@@ -29,8 +29,8 @@ const bottomNavItems = [
 const moreRoutes = [
   { name: "Search", to: "/search", icon: Search },
   { name: "Upload", to: "/upload", icon: CloudUpload },
+  { name: "Profile", to: "/me", icon: CircleUser },
   { name: "About", to: "/about", icon: Info },
-  { name: "Account", to: "/me", icon: CircleUser },
 ];
 
 const Navbar = () => {
@@ -47,7 +47,7 @@ const Navbar = () => {
     { name: "Shuffle", to: "/shuffle" },
     { name: "Search", to: "/search" },
     { name: "Upload", to: "/upload" },
-    { name: "Account", to: "/me" },
+    { name: "Profile", to: "/me" },
     { name: "About", to: "/about" },
   ];
 

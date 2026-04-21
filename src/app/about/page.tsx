@@ -21,27 +21,41 @@ const About = () => {
       <Navbar />
       <div className="min-h-screen p-4 sm:p-6 flex flex-col gap-10 font-sans text-purple-100 bg-[#5520A5]">
         {/* Header */}
-        <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white drop-shadow-md">
-            WmV 🎵
+        <div className="text-center max-w-4xl mx-auto space-y-6">
+          <h1 className="text-4xl sm:text-6xl font-extrabold text-white drop-shadow-xl tracking-tight">
+            WmV <span className="text-purple-400">🎵</span>
           </h1>
 
-          <p className="text-purple-200 mt-3 text-base sm:text-lg">
-            WebMusicVault (WmV) is my first fullstack project which is live and
-            can be used by people out there or at least me and my loved ones.
-            Here anyone can do to upload, search, play, and download songs
-            easily and enjoy my music taste with different playback modes.
-            {"\n"} This is version 3 of this site which is yet not fully
-            optimized and not even complete. But works for now. That&apos;s
-            it.🙂
-            {"\n"}
-            Btw, I am the daily user of this thing 😅.
-            {"\n"} Whoever is reading this, Love you💗!
-          </p>
+          <div className="space-y-4 text-purple-300/80 text-base leading-relaxed max-w-2xl mx-auto px-4">
+            <p>
+              WebMusicVault (WmV) is my first fullstack project which is live and
+              can be used by people out there or at least me and my loved ones.
+            </p>
+            <p>
+              Here anyone can upload, search, play, and download songs
+              easily and enjoy my music taste with different playback modes.
+            </p>
+            
+            <p>
+              This is version 3 of this site which is yet not fully
+              optimized and not even complete. But works for now. That&apos;s
+              it. 🙂
+            </p>
 
-          <p className="mt-4 inline-block bg-white/10 backdrop-blur-md text-purple-100 px-3 py-1 rounded-full font-semibold text-sm border border-white/10 shadow">
-            Developed with ❤️ by Aaditya!
-          </p>
+            <div className="pt-2 text-purple-200/70">
+              <p className="font-medium">I am the daily user of this thing 😅.</p>
+              <p className="text-pink-300 font-semibold mt-1 animate-pulse">
+                Whoever is reading this, Love you💗!
+              </p>
+            </div>
+          </div>
+
+          <div className="pt-4">
+            <p className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-purple-100 px-4 py-1.5 rounded-full font-semibold text-sm border border-white/10 shadow-lg hover:bg-white/20 transition-all cursor-default">
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+              Developed with ❤️ by Aaditya!
+            </p>
+          </div>
         </div>
 
         {/* Stats + Hosting */}
