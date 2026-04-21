@@ -1,28 +1,22 @@
 "use client";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { useAudioPlayer } from "@/hooks/useAudioPlayer";
-import SongList from "@/components/SongList/SongList";
-import SongListSkeleton from "@/components/SongList/SongListSkeleton";
+import { usePlaySong } from "@/hooks/usePlaySong";
 import {
   replaceTempSongs,
   setTempHasMoreSongs,
   setTempNextCursor,
   setTempSongs,
   setTempSortChanged,
+  setSongsType
 } from "@/reduxSlices/song/songSlice";
 import {
-  setPlaying,
   setExpandedPanelOpen,
-  setExpandedPanelTrigger,
+
 } from "@/reduxSlices/player/playerSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
-import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
-import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
-import ShareSongModal from "@/components/Modal/ShareSongModal";
-import AuthPromptModal from "@/components/Modal/AuthPromptModal";
-import MiniPlayer from "@/components/SongPlayerPanel/MiniPlayer";
-import ExpandedPlayer from "@/components/SongPlayerPanel/ExpandedPlayer";
+import SongList from "@/components/SongList/SongList";
+import SongListSkeleton from "@/components/SongList/SongListSkeleton";
 import { Search, X } from "lucide-react";
 import { searchSong } from "@/services/song.services";
 import MusicHeader from "@/components/MusicPage/MusicPageHeader";
@@ -40,16 +34,7 @@ const SearchPage: React.FC = () => {
   const playingSong = useAppSelector((state) => state.player.playingSong);
   const downloading = useAppSelector((state) => state.ui.downloading);
   const deleting = useAppSelector((state) => state.ui.deleting);
-  const mountDeleteConfirmation = useAppSelector(
-    (state) => state.ui.mountDeleteConfirmation,
-  );
-  const mountDownloadConfirmation = useAppSelector(
-    (state) => state.ui.mountDownloadConfirmation,
-  );
-  const mountShareModal = useAppSelector((state) => state.ui.mountShareModal);
-  const mountAuthPromptModal = useAppSelector(
-    (state) => state.ui.mountAuthPromptModal,
-  );
+
   const tempHasMoreSongs = useAppSelector(
     (state) => state.song.tempHasMoreSongs,
   );
@@ -58,19 +43,15 @@ const SearchPage: React.FC = () => {
     (state) => state.song.tempTriggerFetch,
   );
 
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const { handlePlayClick } = usePlaySong();
 
-  const {
-    handlePlayClick,
-    handleAudioEnded,
-    moveToNextSong,
-    moveToPreviousSong,
-  } = useAudioPlayer({ audioRef, songs: tempSongs });
   const tempSortOrder = useAppSelector((state) => state.song.tempSortOrder);
   const tempSortBy = useAppSelector((state) => state.song.tempSortBy);
   const tempSortChanged = useAppSelector((state) => state.song.tempSortChanged);
+
   // Clear state on unmount
   useEffect(() => {
+    dispatch(setSongsType("tempSongs"));
     return () => {
       dispatch(replaceTempSongs([]));
       dispatch(setTempHasMoreSongs(true));
@@ -242,73 +223,6 @@ const SearchPage: React.FC = () => {
             isTemp={true}
           />
         ))}
-
-      {/* Audio Element */}
-      <audio
-        ref={audioRef}
-        onEnded={handleAudioEnded}
-        preload="metadata"
-        hidden
-      />
-
-      {/* ── MiniPlayer ── */}
-      <div className="fixed bottom-16 lg:bottom-6 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:w-[500px] z-[60] lg:rounded-2xl lg:overflow-hidden lg:shadow-[0_-4px_30px_rgba(0,0,0,0.5)] lg:border lg:border-purple-500/20">
-        <MiniPlayer
-          audioRef={audioRef}
-          handlePlayPause={async () => {
-            if (!playing) {
-              try {
-                await audioRef.current?.play();
-                dispatch(setPlaying(true));
-              } catch (err) {
-                console.warn("Audio play was interrupted", err);
-              }
-              return;
-            }
-            audioRef.current?.pause();
-            dispatch(setPlaying(false));
-          }}
-          onExpand={() => {
-            dispatch(setExpandedPanelTrigger());
-            dispatch(setExpandedPanelOpen(true));
-          }}
-        />
-      </div>
-
-      <ExpandedPlayer
-        audioRef={audioRef}
-        handlePlayPause={async () => {
-          if (!playing) {
-            try {
-              await audioRef.current?.play();
-              dispatch(setPlaying(true));
-            } catch (err) {
-              console.warn("Audio play was interrupted", err);
-            }
-            return;
-          }
-          audioRef.current?.pause();
-          dispatch(setPlaying(false));
-        }}
-        moveToNextSong={moveToNextSong}
-        moveToPreviousSong={moveToPreviousSong}
-      />
-
-      {/* ── Modals ── */}
-      {mountDeleteConfirmation && playingSong && (
-        <DeleteConfirmation
-          title={playingSong.title}
-          songId={playingSong._id}
-          moveToNextSong={moveToNextSong}
-        />
-      )}
-      {mountDownloadConfirmation && playingSong && (
-        <DownloadConfirmation title={playingSong.title} />
-      )}
-      {mountShareModal && playingSong && (
-        <ShareSongModal songId={playingSong._id} title={playingSong.title} />
-      )}
-      {mountAuthPromptModal && playingSong && <AuthPromptModal />}
 
       {/* ── Inline loader (loading more) ── */}
       {loading && tempSongs.length >= 10 && (

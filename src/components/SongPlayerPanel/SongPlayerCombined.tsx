@@ -1,0 +1,98 @@
+"use client";
+import React, { useRef, useEffect } from "react";
+import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { useAudioPlayer } from "@/hooks/useAudioPlayer";
+import {
+  setPlaying,
+  setExpandedPanelOpen,
+  setExpandedPanelTrigger,
+} from "@/reduxSlices/player/playerSlice";
+import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
+import ShareSongModal from "@/components/Modal/ShareSongModal";
+import AuthPromptModal from "@/components/Modal/AuthPromptModal";
+import MiniPlayer from "@/components/SongPlayerPanel/MiniPlayer";
+import ExpandedPlayer from "@/components/SongPlayerPanel/ExpandedPlayer";
+
+const SongPlayerCombined: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const playing = useAppSelector((state) => state.player.playing);
+  const playingSong = useAppSelector((state) => state.player.playingSong);
+
+  const mountDeleteConfirmation = useAppSelector(
+    (state) => state.ui.mountDeleteConfirmation,
+  );
+  const mountDownloadConfirmation = useAppSelector(
+    (state) => state.ui.mountDownloadConfirmation,
+  );
+  const mountShareModal = useAppSelector((state) => state.ui.mountShareModal);
+  const mountAuthPromptModal = useAppSelector(
+    (state) => state.ui.mountAuthPromptModal,
+  );
+
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const songsType = useAppSelector((state) => state.song.songsType);
+  const songs = useAppSelector((state) => state.song[songsType]);
+  const {
+    handleAudioEnded,
+    moveToNextSong,
+    moveToPreviousSong,
+  } = useAudioPlayer({ audioRef, songs });
+
+  return (
+    <main
+      className={`max-w-5xl mx-auto p-4 min-h-screen text-white ${playing && "mb-[192px]"}`}
+    >
+      {/* Audio Element */}
+      <audio
+        ref={audioRef}
+        onEnded={handleAudioEnded}
+        preload="metadata"
+        hidden
+      />
+
+      {/* ── MiniPlayer ── */}
+      <div className="fixed bottom-16 lg:bottom-6 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:w-[500px] z-[60] lg:rounded-2xl lg:overflow-hidden lg:shadow-[0_-4px_30px_rgba(0,0,0,0.5)] lg:border lg:border-purple-500/20">
+        <MiniPlayer
+          audioRef={audioRef}
+          handlePlayPause={() => {
+            dispatch(setPlaying(!playing));
+          }}
+          onExpand={() => {
+            dispatch(setExpandedPanelTrigger());
+            dispatch(setExpandedPanelOpen(true));
+          }}
+        />
+      </div>
+
+      <ExpandedPlayer
+        audioRef={audioRef}
+        handlePlayPause={() => {
+          dispatch(setPlaying(!playing));
+        }}
+        moveToNextSong={moveToNextSong}
+        moveToPreviousSong={moveToPreviousSong}
+      />
+
+      {/* Delete Confirmation */}
+      {mountDeleteConfirmation && (
+        <DeleteConfirmation
+          title={playingSong!.title}
+          songId={playingSong!._id}
+          moveToNextSong={moveToNextSong}
+        />
+      )}
+
+      {mountDownloadConfirmation && (
+        <DownloadConfirmation title={playingSong!.title} />
+      )}
+
+      {mountShareModal && playingSong && (
+        <ShareSongModal songId={playingSong._id} title={playingSong.title} />
+      )}
+      {mountAuthPromptModal && playingSong && <AuthPromptModal />}
+    </main>
+  );
+};
+
+export default SongPlayerCombined;

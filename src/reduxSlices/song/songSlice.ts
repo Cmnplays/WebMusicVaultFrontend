@@ -20,6 +20,7 @@ interface SongState {
   tempSortOrder: sortOrderT;
   tempSortChanged: boolean;
   playlists: PlaylistsResponse;
+  songsType: "songs" | "tempSongs";
 }
 
 const initialState: SongState = {
@@ -41,6 +42,7 @@ const initialState: SongState = {
     defaultPlaylists: [],
     personalPlaylists: [],
   },
+  songsType: "songs",
 };
 
 type setSongLikedByT = {
@@ -130,6 +132,9 @@ const songSlice = createSlice({
     setPlaylists: (state, action: PayloadAction<PlaylistsResponse>) => {
       state.playlists = action.payload;
     },
+    setSongsType: (state, action: PayloadAction<"songs" | "tempSongs">) => {
+      state.songsType = action.payload;
+    },
   },
   extraReducers: (builder) => {
     const clearSongsState = (state: SongState) => {
@@ -171,7 +176,8 @@ export const {
   setTempSortBy,
   setTempSortChanged,
   setTempSortOrder,
-  setPlaylists,
+  setPlaylists, 
+  setSongsType
 } = songSlice.actions;
 
 export default songSlice.reducer;

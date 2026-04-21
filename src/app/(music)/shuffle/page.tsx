@@ -1,25 +1,18 @@
 "use client";
-import React, { useRef, useEffect, useState } from "react";
-import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { useAudioPlayer } from "@/hooks/useAudioPlayer";
-import SongList from "@/components/SongList/SongList";
-import SongListSkeleton from "@/components/SongList/SongListSkeleton";
-import { setTempSongs, replaceTempSongs } from "@/reduxSlices/song/songSlice";
+import { usePlaySong } from "@/hooks/usePlaySong";
+import { setTempSongs, replaceTempSongs ,setSongsType} from "@/reduxSlices/song/songSlice";
 import {
   setPlaying,
   setExpandedPanelOpen,
   setPlayingSong,
-  setExpandedPanelTrigger,
   setMiniPanelOpen,
-  setMiniPanelTrigger,
+  
 } from "@/reduxSlices/player/playerSlice";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
-import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
-import ShareSongModal from "@/components/Modal/ShareSongModal";
-import AuthPromptModal from "@/components/Modal/AuthPromptModal";
-import MiniPlayer from "@/components/SongPlayerPanel/MiniPlayer";
-import ExpandedPlayer from "@/components/SongPlayerPanel/ExpandedPlayer";
+import SongList from "@/components/SongList/SongList";
+import SongListSkeleton from "@/components/SongList/SongListSkeleton";
 import { getRandomSong } from "@/services/song.services";
 
 const ShufflePlayer: React.FC = () => {
@@ -31,16 +24,6 @@ const ShufflePlayer: React.FC = () => {
 
   const downloading = useAppSelector((state) => state.ui.downloading);
   const deleting = useAppSelector((state) => state.ui.deleting);
-  const mountDeleteConfirmation = useAppSelector(
-    (state) => state.ui.mountDeleteConfirmation,
-  );
-  const mountDownloadConfirmation = useAppSelector(
-    (state) => state.ui.mountDownloadConfirmation,
-  );
-  const mountShareModal = useAppSelector((state) => state.ui.mountShareModal);
-  const mountAuthPromptModal = useAppSelector(
-    (state) => state.ui.mountAuthPromptModal,
-  );
 
   const songs = useAppSelector((state) => state.song.tempSongs);
   const [initLoading, setInitLoading] = useState(true);
@@ -49,18 +32,11 @@ const ShufflePlayer: React.FC = () => {
   // Tracks the highest song index the user has reached — only grows, never shrinks
   const [maxVisibleIndex, setMaxVisibleIndex] = useState(0);
 
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  // Use the existing hook as-is — all repeat/shuffle logic handled internally
-  const {
-    handlePlayClick,
-    handleAudioEnded,
-    moveToNextSong,
-    moveToPreviousSong,
-  } = useAudioPlayer({ audioRef, songs });
+  const { handlePlayClick } = usePlaySong();
 
   // ── Init: fetch first batch and auto‑play ──
   useEffect(() => {
+    dispatch(setSongsType("tempSongs"));
     let mounted = true;
     const init = async () => {
       try {
@@ -72,7 +48,6 @@ const ShufflePlayer: React.FC = () => {
         setMaxVisibleIndex(0); // start by showing only the first song
         dispatch(setPlaying(true));
         dispatch(setMiniPanelOpen(true));
-        dispatch(setMiniPanelTrigger());
       } catch (err) {
         console.error("Failed to load initial random songs", err);
       } finally {
@@ -157,75 +132,6 @@ const ShufflePlayer: React.FC = () => {
           songs={songs.slice(0, maxVisibleIndex + 1)}
         />
       )}
-
-      {/* Audio Element */}
-      <audio
-        ref={audioRef}
-        onEnded={handleAudioEnded}
-        preload="metadata"
-        hidden
-      />
-
-      {/* ── MiniPlayer ── */}
-      <div className="fixed bottom-16 lg:bottom-6 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:w-[500px] z-[60] lg:rounded-2xl lg:overflow-hidden lg:shadow-[0_-4px_30px_rgba(0,0,0,0.5)] lg:border lg:border-purple-500/20">
-        <MiniPlayer
-          audioRef={audioRef}
-          handlePlayPause={async () => {
-            if (!playing) {
-              try {
-                await audioRef.current?.play();
-                dispatch(setPlaying(true));
-              } catch (err) {
-                console.warn("Audio play was interrupted", err);
-              }
-              return;
-            }
-            audioRef.current?.pause();
-            dispatch(setPlaying(false));
-          }}
-          onExpand={() => {
-            dispatch(setExpandedPanelTrigger());
-            dispatch(setExpandedPanelOpen(true));
-          }}
-        />
-      </div>
-
-      <ExpandedPlayer
-        audioRef={audioRef}
-        handlePlayPause={async () => {
-          if (!playing) {
-            try {
-              await audioRef.current?.play();
-              dispatch(setPlaying(true));
-            } catch (err) {
-              console.warn("Audio play was interrupted", err);
-            }
-            return;
-          }
-          audioRef.current?.pause();
-          dispatch(setPlaying(false));
-        }}
-        moveToNextSong={moveToNextSong}
-        moveToPreviousSong={moveToPreviousSong}
-      />
-
-      {/* Delete Confirmation */}
-      {mountDeleteConfirmation && (
-        <DeleteConfirmation
-          title={playingSong!.title}
-          songId={playingSong!._id}
-          moveToNextSong={moveToNextSong}
-        />
-      )}
-
-      {mountDownloadConfirmation && (
-        <DownloadConfirmation title={playingSong!.title} />
-      )}
-
-      {mountShareModal && playingSong && (
-        <ShareSongModal songId={playingSong._id} title={playingSong.title} />
-      )}
-      {mountAuthPromptModal && playingSong && <AuthPromptModal />}
 
       {loading && (
         <p className="text-center mt-4 text-purple-200 whitespace-pre-line">

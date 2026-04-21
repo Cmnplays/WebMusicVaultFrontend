@@ -11,7 +11,6 @@ interface PlayerState {
   currentTime: number;
   expandedPanelOpen: boolean;
   expandedPanelTrigger: number;
-  miniPanelTrigger: number;
   miniPanelOpen: boolean;
   repeat: repeatType;
   shuffle: boolean;
@@ -24,7 +23,6 @@ const initialState: PlayerState = {
   currentTime: 0,
   expandedPanelOpen: false,
   expandedPanelTrigger: 0,
-  miniPanelTrigger: 0,
   miniPanelOpen: false,
   repeat: "repeat",
   shuffle: false,
@@ -54,9 +52,6 @@ const playerSlice = createSlice({
     },
     setMiniPanelOpen: (state, action: PayloadAction<boolean>) => {
       state.miniPanelOpen = action.payload;
-    },
-    setMiniPanelTrigger: (state) => {
-      state.miniPanelTrigger += 1;
     },
     setRepeat: (state, action: PayloadAction<repeatType>) => {
       state.repeat = action.payload;
@@ -92,7 +87,6 @@ export const {
   setRepeat,
   setShuffle,
   setMiniPanelOpen,
-  setMiniPanelTrigger,
 } = playerSlice.actions;
 
 export default playerSlice.reducer;

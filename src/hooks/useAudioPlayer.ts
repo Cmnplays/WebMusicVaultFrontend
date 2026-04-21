@@ -12,7 +12,6 @@ import {
   setDuration,
   setCurrentTime,
   setMiniPanelOpen,
-  setMiniPanelTrigger,
 } from "../reduxSlices/player/playerSlice";
 
 type customFnType = {
@@ -35,22 +34,33 @@ export const useAudioPlayer = ({
   const shuffle = useAppSelector((state) => state.player.shuffle);
   const playingSong = useAppSelector((state) => state.player.playingSong);
 
-  //    Play or pause audio based on playingSong change
+  //    Play or pause audio based on playingSong and playing state
   useEffect(() => {
     const audioEl = audioRef.current;
     if (!audioEl) return;
 
     if (playingSong?.fileUrl) {
+      // If the source changed, update it and reset time
       if (audioEl.src !== playingSong.fileUrl) {
         audioEl.src = playingSong.fileUrl;
+        audioEl.currentTime = 0;
       }
-      audioEl.currentTime = 0;
-      audioEl.play().catch((err) => console.error("Audio play error", err));
+
+      // Sync play/pause state
+      if (playing) {
+        audioEl.play().catch((err) => {
+          if (err.name !== "AbortError") {
+            console.error("Audio play error", err);
+          }
+        });
+      } else {
+        audioEl.pause();
+      }
     } else {
       audioEl.pause();
       audioEl.src = "";
     }
-  }, [playingSong?.fileUrl]);
+  }, [playingSong?.fileUrl, playing, audioRef]);
 
   //song time related data updatation
   useEffect(() => {
@@ -71,29 +81,7 @@ export const useAudioPlayer = ({
       song.removeEventListener("loadedmetadata", onLoadMetadata);
       song.removeEventListener("timeupdate", onTimeUpdate);
     };
-  }, [dispatch]);
-
-  // Handle play button click
-  function handlePlayClick(song: Song) {
-    if (playingSong?._id === song._id) {
-      if (playing) {
-        dispatch(setMiniPanelOpen(false));
-      } else {
-        dispatch(setPlaying(true));
-        audioRef.current?.play();
-        if (!miniPanelOpen) {
-          dispatch(setMiniPanelTrigger());
-        }
-      }
-    } else {
-      if (!miniPanelOpen) {
-        dispatch(setMiniPanelOpen(true));
-        dispatch(setMiniPanelTrigger());
-      }
-      dispatch(setPlayingSong(song));
-      dispatch(setPlaying(true));
-    }
-  }
+  }, [dispatch, audioRef]);
 
   function getNextShuffleSongIndex(): number {
     return Math.floor(Math.random() * songs.length);
@@ -111,8 +99,9 @@ export const useAudioPlayer = ({
     //All cases when shuffle is false
     if (!shuffle) {
       if (repeat === "single") {
-        audioRef.current!.currentTime = 0;
-        audioRef.current!.play();
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+        }
         dispatch(setPlaying(true));
         return;
       }
@@ -136,8 +125,9 @@ export const useAudioPlayer = ({
     //All cases when shuffle is true
     if (shuffle) {
       if (repeat === "single") {
-        audioRef.current!.currentTime = 0;
-        audioRef.current!.play();
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+        }
         dispatch(setPlaying(true));
         return;
       }
@@ -164,8 +154,9 @@ export const useAudioPlayer = ({
     //All cases when shuffle is false
     if (!shuffle) {
       if (repeat === "single") {
-        audioRef.current!.currentTime = 0;
-        audioRef.current!.play();
+        if (audioRef.current) {
+          audioRef.current.currentTime = 0;
+        }
         dispatch(setPlaying(true));
         return;
       }
@@ -230,7 +221,6 @@ export const useAudioPlayer = ({
     moveToPreviousSong: customFns?.previous ?? moveToPreviousSong,
   });
   return {
-    handlePlayClick,
     handleAudioEnded,
     moveToNextSong,
     moveToPreviousSong,
