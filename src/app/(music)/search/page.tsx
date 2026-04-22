@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { usePlaySong } from "@/hooks/usePlaySong";
 import {
@@ -24,6 +24,7 @@ const SearchPage: React.FC = () => {
 
   const [inputValue, setInputValue] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const tempSongs = useAppSelector((state) => state.song.tempSongs);
   const loading = useAppSelector((state) => state.ui.loading);
@@ -50,6 +51,8 @@ const SearchPage: React.FC = () => {
   useEffect(() => {
     document.title = "Search Songs | WmV";
     dispatch(setSongsType("tempSongs"));
+    // Auto focus search box
+    inputRef.current?.focus();
     return () => {
       dispatch(replaceTempSongs([]));
       dispatch(setTempHasMoreSongs(true));
@@ -146,6 +149,7 @@ const SearchPage: React.FC = () => {
           <input
             type="search"
             id="search-songs"
+            ref={inputRef}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}

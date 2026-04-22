@@ -26,16 +26,26 @@ const storage =
     ? createWebStorage("local")
     : createNoopStorage();
 
+const sessionStorage =
+  typeof window !== "undefined"
+    ? createWebStorage("session")
+    : createNoopStorage();
+
+const playerPersistConfig = {
+  key: "player",
+  storage: sessionStorage,
+};
+
 const rootReducer = combineReducers({
   song: songSlice,
   auth: authSlice,
-  player: playerSlice,
+  player: persistReducer(playerPersistConfig, playerSlice),
   ui: uiSlice,
 });
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "player"],
+  whitelist: ["auth"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
