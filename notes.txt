@@ -17,3 +17,6 @@ for everypage where i use searchParams i gotta have a check if they are expected
 use list virtualization or windowing to display list of songs for good performance
 
 as a admin, if i am in the app, i should be able to edits song details
+
+Latest issues: 
+1. when google login, first patch of songs come before the user data come so  no like data
