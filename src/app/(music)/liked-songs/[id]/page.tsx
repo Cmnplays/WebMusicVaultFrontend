@@ -112,7 +112,7 @@ const LikedSongsPage = () => {
       }
     };
     fetchMoreSongs();
-  }, [tempTriggerFetch, userId, tempNextCursor, tempHasMoreSongs, loading]);
+  }, [tempTriggerFetch, userId, dispatch]);
 
   return (
     <>

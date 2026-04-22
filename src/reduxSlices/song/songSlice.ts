@@ -11,8 +11,8 @@ interface SongState {
   tempHasMoreSongs: boolean;
   nextCursor: cursorT | undefined;
   tempNextCursor: cursorT | string | undefined;
-  triggerFetch: boolean;
-  tempTriggerFetch: boolean;
+  triggerFetch: number;
+  tempTriggerFetch: number;
   sortBy: sortByT;
   sortOrder: sortOrderT;
   sortChanged: boolean;
@@ -30,8 +30,8 @@ const initialState: SongState = {
   tempHasMoreSongs: true,
   nextCursor: undefined,
   tempNextCursor: undefined,
-  triggerFetch: false,
-  tempTriggerFetch: false,
+  triggerFetch: 0,
+  tempTriggerFetch: 0,
   sortBy: "createdAt",
   sortOrder: "desc",
   sortChanged: false,
@@ -106,10 +106,10 @@ const songSlice = createSlice({
       state.tempNextCursor = action.payload;
     },
     setTriggerFetch: (state) => {
-      state.triggerFetch = !state.triggerFetch;
+      state.triggerFetch += 1;
     },
     setTempTriggerFetch: (state) => {
-      state.tempTriggerFetch = !state.tempTriggerFetch;
+      state.tempTriggerFetch += 1;
     },
     setSortBy: (state, action: PayloadAction<sortByT>) => {
       state.sortBy = action.payload;
@@ -159,8 +159,8 @@ const songSlice = createSlice({
       state.tempHasMoreSongs = true;
       state.nextCursor = undefined;
       state.tempNextCursor = undefined;
-      state.triggerFetch = !state.triggerFetch;
-      state.tempTriggerFetch = !state.tempTriggerFetch;
+      state.triggerFetch = 0;
+      state.tempTriggerFetch = 0;
     };
 
     builder

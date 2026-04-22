@@ -51,24 +51,29 @@ const ExpandedPlayer = ({
   useEffect(() => {
     let mounted = true;
 
-    if (!playingSong?.coverImageUrl) {
-      const index = getSongGradientIndex(playingSong?._id || "", playingSong?.title || "");
-      setBgColor(gradientColors[index]);
-      return;
-    }
+    Promise.resolve().then(() => {
+      if (!playingSong?.coverImageUrl) {
+        const index = getSongGradientIndex(
+          playingSong?._id || "",
+          playingSong?.title || "",
+        );
+        if (mounted) setBgColor(gradientColors[index]);
+        return;
+      }
 
-    Vibrant.from(playingSong.coverImageUrl)
-      .getPalette()
-      .then((palette) => {
-        if (!mounted) return;
-        const color =
-          palette.DarkVibrant?.hex ?? palette.Vibrant?.hex ?? "#1a0635";
-        setBgColor(color);
-      })
-      .catch(() => {
-        if (!mounted) return;
-        setBgColor("#1a0635");
-      });
+      return Vibrant.from(playingSong.coverImageUrl)
+        .getPalette()
+        .then((palette) => {
+          if (!mounted) return;
+          const color =
+            palette.DarkVibrant?.hex ?? palette.Vibrant?.hex ?? "#1a0635";
+          setBgColor(color);
+        })
+        .catch(() => {
+          if (!mounted) return;
+          setBgColor("#1a0635");
+        });
+    });
 
     return () => {
       mounted = false;
@@ -115,7 +120,7 @@ const ExpandedPlayer = ({
       )}
     >
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/90 pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/90 pointer-events-none z-0" />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col h-full min-h-0">
@@ -184,4 +189,4 @@ const ExpandedPlayer = ({
   );
 };
 
-export default ExpandedPlayer;
+export default ExpandedPlayer;

@@ -20,9 +20,15 @@ api.interceptors.request.use((config) => {
 });
 
 let isRefreshing = false;
-let failedQueue: any[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+type FailedQueueItem = {
+  resolve: (token: string | null) => void;
+  reject: (err: unknown) => void;
+};
+
+let failedQueue: FailedQueueItem[] = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
@@ -84,7 +90,8 @@ api.interceptors.response.use(
         const newAccessToken = response.data.data; // Assuming the structure from backend controller
 
         store.dispatch(setAccessToken(newAccessToken));
-        api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
+        api.defaults.headers.common["Authorization"] =
+          `Bearer ${newAccessToken}`;
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
 
         processQueue(null, newAccessToken);

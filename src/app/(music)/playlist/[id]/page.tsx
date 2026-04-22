@@ -117,7 +117,7 @@ const PlaylistPage = () => {
     };
 
     fetchMoreSongs();
-  }, [tempTriggerFetch, id, tempNextCursor, tempHasMoreSongs, loading]);
+  }, [tempTriggerFetch, id, dispatch]);
 
   return (
     <ProtectedLayout>
