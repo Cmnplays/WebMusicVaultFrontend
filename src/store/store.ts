@@ -6,7 +6,6 @@ import playerSlice from "@/reduxSlices/player/playerSlice";
 import uiSlice from "@/reduxSlices/ui/uiSlice";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 
-
 const createNoopStorage = () => {
   return {
     getItem() {
@@ -36,17 +35,24 @@ const playerPersistConfig = {
   storage: sessionStorage,
 };
 
-const rootReducer = combineReducers({
-  song: songSlice,
-  auth: authSlice,
-  player: persistReducer(playerPersistConfig, playerSlice),
-  ui: uiSlice,
-});
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"],
+  whitelist: [],
 };
+
+const authPersistConfig = {
+  key: "auth",
+  storage,
+  whitelist: ["user", "accessToken"],
+};
+
+const rootReducer = combineReducers({
+  song: songSlice,
+  auth: persistReducer(authPersistConfig, authSlice),
+  player: persistReducer(playerPersistConfig, playerSlice),
+  ui: uiSlice,
+});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 const store = configureStore({

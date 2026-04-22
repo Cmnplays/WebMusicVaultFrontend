@@ -44,13 +44,11 @@ const MusicPage: React.FC = () => {
     document.title = "Music Collection | WmV";
     dispatch(setSongsType("songs"));
     return () => {
-      dispatch(setTempSongs([]));
       dispatch(setExpandedPanelOpen(false));
       dispatch(setLoading(false));
     };
   }, [dispatch]);
 
-  // Deep-link: if ?song=ID is in the URL, fetch and auto-play that song
   useEffect(() => {
     const songId = searchParams?.get("song");
     if (!songId || shouldFetchUser) return;

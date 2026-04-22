@@ -10,14 +10,12 @@ import { setAccessToken } from "@/reduxSlices/auth/authSlice";
 import { setUserData } from "@/reduxSlices/auth/authSlice";
 import { fetchUser } from "@/services/user.services";
 import { setLoading } from "@/reduxSlices/ui/uiSlice";
-import { useAppSelector } from "@/store/hook";
 
 const AuthCallbackHandler = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
 
   useEffect(() => {
     const auth = searchParams?.get("auth") as string;
