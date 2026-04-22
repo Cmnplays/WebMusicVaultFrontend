@@ -1,6 +1,6 @@
 import axios from "axios";
 import store from "@/store/store";
-import { clearAuth } from "@/reduxSlices/auth/authSlice";
+import { clearAuth, setAccessToken } from "@/reduxSlices/auth/authSlice";
 import { toastList } from "@/utils/toastList";
 import { ErrorCode } from "@/constants/ErrorCode";
 
@@ -19,6 +19,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+let isRefreshing = false;
+let failedQueue: any[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
+
 const handleSessionExpired = (code: string) => {
   store.dispatch(clearAuth());
   if (code === ErrorCode.TOKEN_REVOKED) {
@@ -35,14 +50,55 @@ const handleSessionExpired = (code: string) => {
 api.interceptors.response.use(
   (response) => {
     const code = response.data?.code;
-    if (code === ErrorCode.TOKEN_EXPIRED || code === ErrorCode.TOKEN_REVOKED) {
+    if (code === ErrorCode.TOKEN_REVOKED) {
       handleSessionExpired(code);
     }
     return response;
   },
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
     const code = error.response?.data?.code;
-    if (code === ErrorCode.TOKEN_EXPIRED || code === ErrorCode.TOKEN_REVOKED) {
+
+    if (code === ErrorCode.TOKEN_EXPIRED && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers["Authorization"] = "Bearer " + token;
+            return api(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const response = await axios.get(
+          `${api.defaults.baseURL}/auth/refresh-token`,
+          { withCredentials: true },
+        );
+        const newAccessToken = response.data.data; // Assuming the structure from backend controller
+
+        store.dispatch(setAccessToken(newAccessToken));
+        api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+
+        processQueue(null, newAccessToken);
+        return api(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        handleSessionExpired(ErrorCode.TOKEN_EXPIRED);
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    if (code === ErrorCode.TOKEN_REVOKED) {
       handleSessionExpired(code);
     } else if (!error.response) {
       toastList.networkError();

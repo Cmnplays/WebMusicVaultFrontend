@@ -15,3 +15,5 @@ backedn suggestion.
 for everypage where i use searchParams i gotta have a check if they are expected params or not if not redirect to some default page
 
 use list virtualization or windowing to display list of songs for good performance
+
+as a admin, if i am in the app, i should be able to edits song details
