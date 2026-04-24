@@ -41,15 +41,9 @@ const persistConfig = {
   whitelist: [],
 };
 
-const authPersistConfig = {
-  key: "auth",
-  storage,
-  whitelist: ["user", "accessToken"],
-};
-
 const rootReducer = combineReducers({
   song: songSlice,
-  auth: persistReducer(authPersistConfig, authSlice),
+  auth: authSlice,
   player: persistReducer(playerPersistConfig, playerSlice),
   ui: uiSlice,
 });

@@ -11,13 +11,12 @@ interface FetchUserLayoutProps {
 const FetchUserLayout: React.FC<FetchUserLayoutProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
-  const user = useAppSelector((state) => state.auth.user);
   const searchParams = useSearchParams();
   const hasOAuthCode = !!searchParams?.get("code");
   useEffect(() => {
     if (!shouldFetchUser || hasOAuthCode) return;
-    getUser({ dispatch, username: user?.username });
-  }, [shouldFetchUser, hasOAuthCode]);
+    getUser({ dispatch });
+  }, [shouldFetchUser, hasOAuthCode, dispatch]);
 
   return <>{children}</>;
 };
