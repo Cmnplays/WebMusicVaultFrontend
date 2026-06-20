@@ -16,7 +16,7 @@ const SongCard: React.FC<SongCardProps> = ({
   isPlaying,
 }) => {
   return (
-    <li
+    <div
       onClick={() => handlePlayClick(song)}
       role="button"
       tabIndex={0}
@@ -50,7 +50,7 @@ const SongCard: React.FC<SongCardProps> = ({
           size="sm"
           className="w-full h-full"
         />
-        
+
         {/* Play/Pause Overlay */}
         <div
           className={`
@@ -100,7 +100,7 @@ const SongCard: React.FC<SongCardProps> = ({
       <div className="shrink-0 text-purple-200/70 text-xs font-mono font-medium select-none">
         {formatDuration(song.duration)}
       </div>
-    </li>
+    </div>
   );
 };
 

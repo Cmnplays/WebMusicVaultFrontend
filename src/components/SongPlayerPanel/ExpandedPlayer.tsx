@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { ChevronDown } from "lucide-react";
-import Vibrant from "node-vibrant";
+import { Vibrant } from "node-vibrant/browser";
 import gsap from "gsap";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
