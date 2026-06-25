@@ -12,12 +12,12 @@ import {
   setTempSongs,
   setTempSortBy,
   setTempSortOrder,
-} from "@/reduxSlices/song/song.slice";
+} from "@/reduxSlices/song.slice";
 import {
   setPlayingSong,
   setExpandedPanelOpen,
   setMiniPanelOpen,
-} from "@/reduxSlices/player/player.slice";
+} from "@/reduxSlices/player.slice";
 const handleSort = (dispatch: AppDispatch, isTemp = false) => {
   if (isTemp) {
     dispatch(setTempSongs([]));

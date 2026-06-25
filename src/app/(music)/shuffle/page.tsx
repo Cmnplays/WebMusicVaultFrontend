@@ -6,13 +6,13 @@ import {
   setTempSongs,
   replaceTempSongs,
   setSongsType,
-} from "@/reduxSlices/song/song.slice";
+} from "@/reduxSlices/song.slice";
 import {
   setPlaying,
   setExpandedPanelOpen,
   setPlayingSong,
   setMiniPanelOpen,
-} from "@/reduxSlices/player/player.slice";
+} from "@/reduxSlices/player.slice";
 import { setLoading } from "@/reduxSlices/ui.slice";
 import SongList from "@/components/SongList/SongList";
 import SongListSkeleton from "@/components/SongList/SongListSkeleton";

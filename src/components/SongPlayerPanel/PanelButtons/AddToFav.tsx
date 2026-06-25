@@ -8,9 +8,9 @@ import {
   setTempSongLikedBy,
   deleteTempSong,
   updatePlaylistSongCount,
-} from "@/reduxSlices/song/song.slice";
+} from "@/reduxSlices/song.slice";
 import { setMountAuthPromptModal } from "@/reduxSlices/ui.slice";
-import { setPlayingSong } from "@/reduxSlices/player/player.slice";
+import { setPlayingSong } from "@/reduxSlices/player.slice";
 import { usePathname } from "next/navigation";
 
 interface AddToFavProps {

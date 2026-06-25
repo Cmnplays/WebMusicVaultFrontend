@@ -8,7 +8,7 @@ import SongCover from "@/components/ui/SongCover";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { fadeInMiniPlayer, fadeOutMiniPlayer } from "@/lib/animations";
-import { setPlaying, setPlayingSong } from "@/reduxSlices/player/player.slice";
+import { setPlaying, setPlayingSong } from "@/reduxSlices/player.slice";
 interface MiniPlayerProps {
   audioRef: React.RefObject<HTMLAudioElement | null>;
   handlePlayPause: () => void;

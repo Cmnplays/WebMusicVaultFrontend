@@ -4,7 +4,7 @@ import {
   setExpandedPanelOpen,
   setRepeat,
   setPlaying,
-} from "@/reduxSlices/player/player.slice";
+} from "@/reduxSlices/player.slice";
 
 interface ClosePanelBtnProps {
   panelRef: PanelRef;

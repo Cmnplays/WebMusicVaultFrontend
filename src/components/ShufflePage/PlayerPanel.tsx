@@ -3,7 +3,7 @@ import React from "react";
 import Marquee from "react-fast-marquee";
 import { formatDuration } from "../formatDuration";
 import { useAppDispatch } from "@/store/hook";
-import { setPlaying } from "@/reduxSlices/player/player.slice";
+import { setPlaying } from "@/reduxSlices/player.slice";
 import {
   setMountDeleteConfirmation,
   setMountDownloadConfirmation,

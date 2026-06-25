@@ -7,7 +7,7 @@ import {
   setPlaying,
   setExpandedPanelOpen,
   setExpandedPanelTrigger,
-} from "@/reduxSlices/player/player.slice";
+} from "@/reduxSlices/player.slice";
 import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
 import ShareSongModal from "@/components/Modal/ShareSongModal";
 import AuthPromptModal from "@/components/Modal/AuthPromptModal";

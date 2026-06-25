@@ -2,7 +2,7 @@
 import { Share2 } from "lucide-react";
 import { useAppDispatch } from "@/store/hook";
 import { setMountShareModal } from "@/reduxSlices/ui.slice";
-import { setPlaying } from "@/reduxSlices/player/player.slice";
+import { setPlaying } from "@/reduxSlices/player.slice";
 const ShareSongBtn: React.FC = () => {
   const dispatch = useAppDispatch();
 

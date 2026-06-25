@@ -1,6 +1,6 @@
 "use client";
 import { useAppDispatch } from "@/store/hook";
-import { setPlaying } from "@/reduxSlices/player/player.slice";
+import { setPlaying } from "@/reduxSlices/player.slice";
 import { setMountDeleteConfirmation } from "@/reduxSlices/ui.slice";
 import { Trash } from "lucide-react";
 interface DeleteBtnProps {

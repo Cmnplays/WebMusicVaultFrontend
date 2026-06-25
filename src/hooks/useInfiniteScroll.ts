@@ -4,8 +4,8 @@ import { useAppDispatch, useAppSelector } from "../store/hook";
 import {
   setTriggerFetch,
   setTempTriggerFetch,
-} from "../reduxSlices/song/song.slice";
-import {} from "@/reduxSlices/player/player.slice";
+} from "../reduxSlices/song.slice";
+import {} from "@/reduxSlices/player.slice";
 const useInfiniteScroll = ({
   isTemp = false,
   sentinelRef,

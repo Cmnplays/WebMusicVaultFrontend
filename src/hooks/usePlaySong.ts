@@ -5,7 +5,7 @@ import {
   setPlaying,
   setPlayingSong,
   setMiniPanelOpen,
-} from "../reduxSlices/player/player.slice";
+} from "../reduxSlices/player.slice";
 
 export const usePlaySong = () => {
   const dispatch = useAppDispatch();

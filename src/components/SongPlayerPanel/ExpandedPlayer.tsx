@@ -11,7 +11,7 @@ import SongTitleMarquee from "@/components/SongPlayerPanel/SongTitleMarquee";
 import ProgressSlider from "@/components/SongPlayerPanel/ProgressSlider";
 import PanelBottomControls from "@/components/SongPlayerPanel/PanelBottomControls";
 import PanelTopControls from "@/components/SongPlayerPanel/PanelTopControls";
-import { setExpandedPanelOpen } from "@/reduxSlices/player/player.slice";
+import { setExpandedPanelOpen } from "@/reduxSlices/player.slice";
 import { fadeInExpandedPanel, fadeOutExpandedPanel } from "@/lib/animations";
 import SongCover, {
   getSongGradientIndex,

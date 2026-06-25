@@ -11,7 +11,7 @@ import {
   setSortChanged,
   setHasMoreSongs,
   setNextCursor,
-} from "../reduxSlices/song/song.slice";
+} from "../reduxSlices/song.slice";
 import { setStatusText, setLoading } from "@/reduxSlices/ui.slice";
 
 export const useSongs = () => {
