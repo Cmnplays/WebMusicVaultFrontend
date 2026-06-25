@@ -5,13 +5,10 @@ import { LoginSchemaType } from "@/lib/schemas/auth.schema";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { loginService } from "@/services/auth.services";
 import { useAppDispatch } from "@/store/hook";
-import {
-  login,
-  toggleShouldAccessAuthLayer,
-} from "@/reduxSlices/auth/authSlice";
+import { login, toggleShouldAccessAuthLayer } from "@/reduxSlices/auth.slice";
 import { useRouter } from "next/navigation";
 import { EmailLoginForm } from "@/components/Forms/EmailLoginForm";
-import { setLoading } from "@/reduxSlices/ui/uiSlice";
+import { setLoading } from "@/reduxSlices/ui.slice";
 import { toastList } from "@/utils/toastList";
 import { ErrorCode } from "@/constants/ErrorCode";
 import { StatusCode } from "@/constants/StatusCode";

@@ -11,9 +11,9 @@ import {
   setTempHasMoreSongs,
   setTempNextCursor,
   setSongsType,
-} from "@/reduxSlices/song/songSlice";
-import { setExpandedPanelOpen } from "@/reduxSlices/player/playerSlice";
-import { setLoading } from "@/reduxSlices/ui/uiSlice";
+} from "@/reduxSlices/song/song.slice";
+import { setExpandedPanelOpen } from "@/reduxSlices/player/player.slice";
+import { setLoading } from "@/reduxSlices/ui.slice";
 import {
   getPlaylistSongs,
   PlaylistWithSongs,

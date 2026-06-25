@@ -1,6 +1,6 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "../store/hook";
-import { setDownloading } from "../reduxSlices/ui/uiSlice";
+import { setDownloading } from "../reduxSlices/ui.slice";
 export const useHandleDownload = () => {
   const dispatch = useAppDispatch();
   const playingSong = useAppSelector((state) => state.player.playingSong);

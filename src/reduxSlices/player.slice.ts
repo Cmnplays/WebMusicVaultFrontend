@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { Song } from "../../services/song.services";
-import { login, signup, clearAuth } from "../auth/authSlice";
+import type { Song } from "../services/song.services";
+import { login, signup, clearAuth } from "./auth.slice";
 
 export type repeatType = "repeat" | "noRepeat" | "single";
 

@@ -11,7 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { toastList } from "@/utils/toastList";
 import { reqOtp } from "@/utils/reqOtp";
 import { useAppDispatch } from "@/store/hook";
-import { setLoading } from "@/reduxSlices/ui/uiSlice";
+import { setLoading } from "@/reduxSlices/ui.slice";
 const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams();

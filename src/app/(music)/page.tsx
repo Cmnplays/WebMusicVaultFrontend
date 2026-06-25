@@ -3,14 +3,14 @@ import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useSongs } from "@/hooks/useSongs";
 import { usePlaySong } from "@/hooks/usePlaySong";
-import { setSongsType, setTempSongs } from "@/reduxSlices/song/songSlice";
+import { setSongsType } from "@/reduxSlices/song.slice";
 import {
   setExpandedPanelOpen,
   setPlayingSong,
   setPlaying,
   setMiniPanelOpen,
-} from "@/reduxSlices/player/playerSlice";
-import { setLoading } from "@/reduxSlices/ui/uiSlice";
+} from "@/reduxSlices/player.slice";
+import { setLoading } from "@/reduxSlices/ui.slice";
 import MusicHeader from "@/components/MusicPage/MusicPageHeader";
 import SongList from "@/components/SongList/SongList";
 import SongListSkeleton from "@/components/SongList/SongListSkeleton";

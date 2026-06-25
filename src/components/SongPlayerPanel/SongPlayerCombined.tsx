@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import DeleteConfirmation from "@/components/Modal/DeleteConfirmationModal";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
@@ -7,7 +7,7 @@ import {
   setPlaying,
   setExpandedPanelOpen,
   setExpandedPanelTrigger,
-} from "@/reduxSlices/player/playerSlice";
+} from "@/reduxSlices/player/player.slice";
 import DownloadConfirmation from "@/components/Modal/DownloadConfirmationModal";
 import ShareSongModal from "@/components/Modal/ShareSongModal";
 import AuthPromptModal from "@/components/Modal/AuthPromptModal";
@@ -33,11 +33,8 @@ const SongPlayerCombined: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const songsType = useAppSelector((state) => state.song.songsType);
   const songs = useAppSelector((state) => state.song[songsType]);
-  const {
-    handleAudioEnded,
-    moveToNextSong,
-    moveToPreviousSong,
-  } = useAudioPlayer({ audioRef, songs });
+  const { handleAudioEnded, moveToNextSong, moveToPreviousSong } =
+    useAudioPlayer({ audioRef, songs });
 
   return (
     <div>

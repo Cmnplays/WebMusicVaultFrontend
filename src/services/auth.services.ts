@@ -130,7 +130,6 @@ const exchangeOauthCode = async (code: string): Promise<void> => {
   }
 };
 
-
 interface SetPasswordType {
   identifier: string;
   password: string;
@@ -162,8 +161,6 @@ const logout = async (): Promise<void> => {
   }
 };
 
-
-
 export {
   getUsernameSuggestions,
   verifyUsername,
@@ -174,5 +171,5 @@ export {
   getAccessToken,
   setPassword,
   logout,
-  exchangeOauthCode
+  exchangeOauthCode,
 };

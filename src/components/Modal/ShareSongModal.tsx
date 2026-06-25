@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Button } from "@/components/ui/button";
-import { setMountShareModal } from "@/reduxSlices/ui/uiSlice";
+import { setMountShareModal } from "@/reduxSlices/ui.slice";
 import { useAppDispatch } from "@/store/hook";
 import { Copy, Check, X } from "lucide-react";
 
@@ -61,7 +61,8 @@ const ShareSongModal: React.FC<ShareSongProps> = ({ title, songId }) => {
         {/* Header */}
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-lg font-semibold leading-snug line-clamp-2">
-            Share <span className="font-bold">{title.replace(/\.mp3$/i, "")}</span>
+            Share{" "}
+            <span className="font-bold">{title.replace(/\.mp3$/i, "")}</span>
           </h3>
           <button
             onClick={closeWithAnimation}

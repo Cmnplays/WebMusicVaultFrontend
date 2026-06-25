@@ -1,9 +1,10 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
-import songSlice from "@/reduxSlices/song/songSlice";
-import authSlice from "@/reduxSlices/auth/authSlice";
-import playerSlice from "@/reduxSlices/player/playerSlice";
-import uiSlice from "@/reduxSlices/ui/uiSlice";
+import songSlice from "@/reduxSlices/song.slice";
+import authSlice from "@/reduxSlices/auth.slice";
+import playerSlice from "@/reduxSlices/player.slice";
+import uiSlice from "@/reduxSlices/ui.slice";
+import maintenanceSlice from "@/reduxSlices/maintenance.slice";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 
 const createNoopStorage = () => {
@@ -46,6 +47,7 @@ const rootReducer = combineReducers({
   auth: authSlice,
   player: persistReducer(playerPersistConfig, playerSlice),
   ui: uiSlice,
+  maintenance: maintenanceSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

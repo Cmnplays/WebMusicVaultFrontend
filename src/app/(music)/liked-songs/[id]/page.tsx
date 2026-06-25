@@ -9,9 +9,9 @@ import {
   setTempHasMoreSongs,
   setTempNextCursor,
   setSongsType,
-} from "@/reduxSlices/song/songSlice";
-import { setExpandedPanelOpen } from "@/reduxSlices/player/playerSlice";
-import { setLoading } from "@/reduxSlices/ui/uiSlice";
+} from "@/reduxSlices/song.slice";
+import { setExpandedPanelOpen } from "@/reduxSlices/player.slice";
+import { setLoading } from "@/reduxSlices/ui.slice";
 import SongList from "@/components/SongList/SongList";
 import SongListSkeleton from "@/components/SongList/SongListSkeleton";
 import { getLikedSongs, PlaylistWithSongs } from "@/services/playlist.services";

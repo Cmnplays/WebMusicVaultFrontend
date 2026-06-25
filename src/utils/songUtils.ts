@@ -1,6 +1,23 @@
 import { AppDispatch } from "@/store/store";
-import { setSongs, setNextCursor, setSortChanged, setHasMoreSongs, setSortBy, setSortOrder, setTempHasMoreSongs, setTempNextCursor, setTempSortChanged, setTempSongs, setTempSortBy, setTempSortOrder } from "@/reduxSlices/song/songSlice";
-import { setPlayingSong, setExpandedPanelOpen, setMiniPanelOpen } from "@/reduxSlices/player/playerSlice";
+import {
+  setSongs,
+  setNextCursor,
+  setSortChanged,
+  setHasMoreSongs,
+  setSortBy,
+  setSortOrder,
+  setTempHasMoreSongs,
+  setTempNextCursor,
+  setTempSortChanged,
+  setTempSongs,
+  setTempSortBy,
+  setTempSortOrder,
+} from "@/reduxSlices/song/song.slice";
+import {
+  setPlayingSong,
+  setExpandedPanelOpen,
+  setMiniPanelOpen,
+} from "@/reduxSlices/player/player.slice";
 const handleSort = (dispatch: AppDispatch, isTemp = false) => {
   if (isTemp) {
     dispatch(setTempSongs([]));
@@ -18,16 +35,24 @@ const handleSort = (dispatch: AppDispatch, isTemp = false) => {
   dispatch(setExpandedPanelOpen(false));
   dispatch(setMiniPanelOpen(false));
 };
- const handleSortBy = (sortBy: sortByT, dispatch: AppDispatch, isTemp = false) => {
+const handleSortBy = (
+  sortBy: sortByT,
+  dispatch: AppDispatch,
+  isTemp = false,
+) => {
   handleSort(dispatch, isTemp);
   if (isTemp) dispatch(setTempSortBy(sortBy));
   else dispatch(setSortBy(sortBy));
 };
 
-const handleSortOrder = (sortOrder: sortOrderT, dispatch: AppDispatch, isTemp = false) => {
+const handleSortOrder = (
+  sortOrder: sortOrderT,
+  dispatch: AppDispatch,
+  isTemp = false,
+) => {
   handleSort(dispatch, isTemp);
   if (isTemp) dispatch(setTempSortOrder(sortOrder));
   else dispatch(setSortOrder(sortOrder));
 };
 
-  export { handleSortBy, handleSortOrder };
+export { handleSortBy, handleSortOrder };

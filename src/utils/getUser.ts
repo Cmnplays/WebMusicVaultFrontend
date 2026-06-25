@@ -3,8 +3,8 @@ import {
   setAccessToken,
   setUserData,
   setShouldFetchUser,
-} from "@/reduxSlices/auth/authSlice";
-import { setLoading } from "@/reduxSlices/ui/uiSlice";
+} from "@/reduxSlices/auth.slice";
+import { setLoading } from "@/reduxSlices/ui.slice";
 import { getAccessToken } from "@/services/auth.services";
 import { fetchUser } from "@/services/user.services";
 import axios from "axios";

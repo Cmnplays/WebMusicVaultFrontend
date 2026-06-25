@@ -6,11 +6,11 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import {
   deleteSong as excludeSong,
   deleteTempSong as excludeTempSong,
-} from "@/reduxSlices/song/songSlice";
+} from "@/reduxSlices/song.slice";
 import {
   setDeleting,
   setMountDeleteConfirmation,
-} from "@/reduxSlices/ui/uiSlice";
+} from "@/reduxSlices/ui.slice";
 import { Button } from "@/components/ui/button";
 
 interface DeleteConfirmationProps {
@@ -77,9 +77,11 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
       await deleteSong(songId);
 
       if (temp) {
-        customExcludeFn
-          ? customExcludeFn(songId)
-          : dispatch(excludeTempSong(songId));
+        if (customExcludeFn) {
+          customExcludeFn(songId);
+        } else {
+          dispatch(excludeTempSong(songId));
+        }
       } else {
         dispatch(excludeSong(songId));
       }

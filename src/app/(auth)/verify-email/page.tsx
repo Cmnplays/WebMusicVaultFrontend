@@ -9,14 +9,14 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import type { OtpSchemaType } from "@/lib/schemas/auth.schema";
-import { setLoading } from "@/reduxSlices/ui/uiSlice";
+import { setLoading } from "@/reduxSlices/ui.slice";
 import { StatusCode } from "@/constants/StatusCode";
 import { ErrorCode } from "@/constants/ErrorCode";
 import { toastList } from "@/utils/toastList";
 import {
   toggleShouldAccessAuthLayer,
   setShouldFetchUser,
-} from "@/reduxSlices/auth/authSlice";
+} from "@/reduxSlices/auth.slice";
 import { reqOtp } from "@/utils/reqOtp";
 
 const Page = () => {

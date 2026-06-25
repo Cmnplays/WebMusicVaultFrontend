@@ -4,12 +4,12 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { toastList } from "@/utils/toastList";
 import { exchangeOauthCode } from "@/services/auth.services";
 import { useAppDispatch } from "@/store/hook";
-import { setShouldFetchUser } from "@/reduxSlices/auth/authSlice";
+import { setShouldFetchUser } from "@/reduxSlices/auth.slice";
 import { getAccessToken } from "@/services/auth.services";
-import { setAccessToken } from "@/reduxSlices/auth/authSlice";
-import { setUserData } from "@/reduxSlices/auth/authSlice";
+import { setAccessToken } from "@/reduxSlices/auth.slice";
+import { setUserData } from "@/reduxSlices/auth.slice";
 import { fetchUser } from "@/services/user.services";
-import { setLoading } from "@/reduxSlices/ui/uiSlice";
+import { setLoading } from "@/reduxSlices/ui.slice";
 
 const AuthCallbackHandler = () => {
   const searchParams = useSearchParams();

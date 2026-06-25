@@ -4,7 +4,7 @@ import PlaylistSkeleton from "@/components/PlaylistPage/PlaylistPageSkeleton";
 import { getPlaylists } from "@/services/playlist.services";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useEffect, useState } from "react";
-import { setPlaylists } from "@/reduxSlices/song/songSlice";
+import { setPlaylists } from "@/reduxSlices/song/song.slice";
 
 const Page = () => {
   const dispatch = useAppDispatch();

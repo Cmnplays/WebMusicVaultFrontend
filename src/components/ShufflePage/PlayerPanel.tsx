@@ -3,11 +3,11 @@ import React from "react";
 import Marquee from "react-fast-marquee";
 import { formatDuration } from "../formatDuration";
 import { useAppDispatch } from "@/store/hook";
-import { setPlaying } from "@/reduxSlices/player/playerSlice";
+import { setPlaying } from "@/reduxSlices/player/player.slice";
 import {
   setMountDeleteConfirmation,
   setMountDownloadConfirmation,
-} from "@/reduxSlices/ui/uiSlice";
+} from "@/reduxSlices/ui.slice";
 
 interface ShufflePlayerProps {
   playingSong: Song | null;

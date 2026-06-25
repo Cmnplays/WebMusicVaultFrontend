@@ -1,12 +1,11 @@
 "use client";
 import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../store/hook";
+import { useAppSelector } from "../../store/hook";
 import { useHandleSliderChange } from "@/components/useHandleSliderChange";
 import PanelTopControls from "./PanelTopControls";
 import SongTitleMarquee from "./SongTitleMarquee";
 import ProgressSlider from "./ProgressSlider";
 import PanelBottomControls from "./PanelBottomControls";
-import { setPlayingSong, setPlaying } from "@/reduxSlices/player/playerSlice";
 import { fadeOutPanel, fadeInPanel } from "@/lib/animations";
 
 interface SongPanelProps {
@@ -26,7 +25,6 @@ const SongPlayerPanel = ({
   panelRef,
   excludeTopControls = false,
 }: SongPanelProps) => {
-  const dispatch = useAppDispatch();
   const playing = useAppSelector((state) => state.player.playing);
   const duration = useAppSelector((state) => state.player.duration);
   const currentTime = useAppSelector((state) => state.player.currentTime);

@@ -1,21 +1,21 @@
 "use client";
 import { useState, useRef, useLayoutEffect } from "react";
 import { NavItem } from "./NavItem";
-import { setNavHeight } from "@/reduxSlices/ui/uiSlice";
+import { setNavHeight } from "@/reduxSlices/ui.slice";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { logout } from "@/services/auth.services";
-import { clearAuth } from "@/reduxSlices/auth/authSlice";
+import { clearAuth } from "@/reduxSlices/auth.slice";
 import { useRouter, usePathname } from "next/navigation";
-import { 
-  Home, 
-  Search, 
-  ListMusic, 
-  Shuffle, 
-  MoreHorizontal, 
-  Info, 
-  CircleUser, 
-  CloudUpload, 
-  LogOut 
+import {
+  Home,
+  Search,
+  ListMusic,
+  Shuffle,
+  MoreHorizontal,
+  Info,
+  CircleUser,
+  CloudUpload,
+  LogOut,
 } from "lucide-react";
 import AppLogo from "./AppLogo";
 import Link from "next/link";

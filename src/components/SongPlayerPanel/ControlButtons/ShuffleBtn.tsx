@@ -1,6 +1,6 @@
 "use client";
 import { useAppDispatch } from "@/store/hook";
-import { setShuffle } from "@/reduxSlices/player/playerSlice";
+import { setShuffle } from "@/reduxSlices/player/player.slice";
 import React from "react";
 import { Shuffle } from "lucide-react";
 

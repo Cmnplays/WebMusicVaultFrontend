@@ -13,7 +13,7 @@ import {
   setPlayingSong,
   setDuration,
   setCurrentTime,
-} from "../reduxSlices/player/playerSlice";
+} from "../reduxSlices//player.slice";
 
 type customFnType = {
   next: () => void;
@@ -29,7 +29,6 @@ export const useAudioPlayer = ({
   customFns?: customFnType;
 }) => {
   const dispatch = useAppDispatch();
-  const miniPanelOpen = useAppSelector((state) => state.player.miniPanelOpen);
   const playing = useAppSelector((state) => state.player.playing);
   const repeat = useAppSelector((state) => state.player.repeat);
   const shuffle = useAppSelector((state) => state.player.shuffle);

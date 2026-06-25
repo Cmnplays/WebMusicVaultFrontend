@@ -1,9 +1,12 @@
 import axios from "axios";
 import store from "@/store/store";
-import { clearAuth, setAccessToken } from "@/reduxSlices/auth/authSlice";
+import { clearAuth, setAccessToken } from "@/reduxSlices/auth.slice";
 import { toastList } from "@/utils/toastList";
 import { ErrorCode } from "@/constants/ErrorCode";
-
+import {
+  enableMaintenance,
+  disableMaintenance,
+} from "@/reduxSlices/maintenance.slice";
 const apiBase = process.env.NEXT_PUBLIC_API_URL;
 const api = axios.create({
   baseURL: process.env.NODE_ENV === "production" ? "/api/v1" : apiBase,
@@ -55,10 +58,6 @@ const handleSessionExpired = (code: string) => {
 
 api.interceptors.response.use(
   (response) => {
-    const code = response.data?.code;
-    if (code === ErrorCode.TOKEN_REVOKED) {
-      handleSessionExpired(code);
-    }
     return response;
   },
   async (error) => {
@@ -103,6 +102,15 @@ api.interceptors.response.use(
       } finally {
         isRefreshing = false;
       }
+    } else if (code === ErrorCode.MAINTENANCE_MODE) {
+      store.dispatch(
+        enableMaintenance(
+          error.response?.data?.message ||
+            "Server is under maintenance.\n Please try again later!",
+        ),
+      );
+    } else {
+      store.dispatch(disableMaintenance());
     }
 
     if (code === ErrorCode.TOKEN_REVOKED) {

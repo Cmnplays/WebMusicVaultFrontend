@@ -85,10 +85,14 @@ export const toastList = {
       type: "info",
     }),
   sessionExpired: () =>
-    showToast({ message: "Session expired, please login again", type: "error" }),
+    showToast({
+      message: "Session expired, please login again",
+      type: "error",
+    }),
   sessionRevoked: () =>
     showToast({
-      message: "Your account was logged in on another device. Please login again.",
+      message:
+        "Your account was logged in on another device or your session was compromised. Please login again.",
       type: "error",
     }),
   networkError: () =>

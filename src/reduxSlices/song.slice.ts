@@ -1,7 +1,7 @@
 // redux/slices/songSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { Song } from "../../services/song.services";
-import { login, signup, clearAuth } from "../auth/authSlice";
+import type { Song } from "../services/song.services";
+import { login, signup, clearAuth } from "./auth.slice";
 import { PlaylistsResponse } from "@/services/playlist.services";
 
 interface SongState {

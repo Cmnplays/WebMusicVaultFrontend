@@ -8,11 +8,9 @@ import {
   setTempSongLikedBy,
   deleteTempSong,
   updatePlaylistSongCount,
-} from "@/reduxSlices/song/songSlice";
-import { setMountAuthPromptModal } from "@/reduxSlices/ui/uiSlice";
-import {
-  setPlayingSong,
-} from "@/reduxSlices/player/playerSlice";
+} from "@/reduxSlices/song/song.slice";
+import { setMountAuthPromptModal } from "@/reduxSlices/ui.slice";
+import { setPlayingSong } from "@/reduxSlices/player/player.slice";
 import { usePathname } from "next/navigation";
 
 interface AddToFavProps {
@@ -38,8 +36,11 @@ const AddToFav: React.FC<AddToFavProps> = ({ songId, isLiked, audioRef }) => {
     if (loading) return;
 
     // Find the default playlist ID to check if we are on the "Favourites" page
-    const defaultPlaylistId = playlists.defaultPlaylists.find((p) => p.isDefault)?._id;
-    const isOnFavouritesPage = defaultPlaylistId && pathname.includes(defaultPlaylistId);
+    const defaultPlaylistId = playlists.defaultPlaylists.find(
+      (p) => p.isDefault,
+    )?._id;
+    const isOnFavouritesPage =
+      defaultPlaylistId && pathname.includes(defaultPlaylistId);
 
     const originalLikedStatus = isLiked;
     const nextLikedStatus = !isLiked;

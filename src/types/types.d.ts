@@ -1,4 +1,3 @@
-import { ApiError } from "next/dist/server/api-utils";
 import React from "react";
 
 declare global {

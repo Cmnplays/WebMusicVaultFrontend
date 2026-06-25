@@ -9,9 +9,9 @@ import {
   setTempSongs,
   setTempSortChanged,
   setSongsType,
-} from "@/reduxSlices/song/songSlice";
-import { setExpandedPanelOpen } from "@/reduxSlices/player/playerSlice";
-import { setLoading } from "@/reduxSlices/ui/uiSlice";
+} from "@/reduxSlices/song/song.slice";
+import { setExpandedPanelOpen } from "@/reduxSlices/player/player.slice";
+import { setLoading } from "@/reduxSlices/ui.slice";
 import SongList from "@/components/SongList/SongList";
 import SongListSkeleton from "@/components/SongList/SongListSkeleton";
 import { Search, X } from "lucide-react";
