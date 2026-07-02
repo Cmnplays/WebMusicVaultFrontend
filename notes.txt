@@ -1,5 +1,5 @@
 1: suppose a user submitted the signup for but didnot verify , other user or same user with same to same details if submits form then don't create  a user just redirect to otp i mean just return res backend suggestion                         
-2:add virtual scrolling for infinite scrolling
+DONE --- 2:add virtual scrolling for infinite scrolling
 3:add lazy loading for good ux
 4: later i can add your account was logged in other device please login again in this device to use your account
 

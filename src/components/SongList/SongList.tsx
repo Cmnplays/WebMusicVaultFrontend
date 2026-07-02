@@ -32,7 +32,8 @@ const SongList = ({
       ref={scrollableElemRef}
       style={{
         overflow: "auto",
-        height: "100%",
+        flex: 1,
+        width: "100%",
         scrollbarWidth: "none",
         msOverflowStyle: "none",
       }}
