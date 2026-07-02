@@ -226,20 +226,6 @@ const SearchPage: React.FC = () => {
           />
         ))}
 
-      {/* ── Inline loader (loading more) ── */}
-      {loading && tempSongs.length >= 10 && (
-        <p className="text-center mt-4 text-purple-200">
-          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin inline-block" />
-        </p>
-      )}
-
-      {/* ── End of results ── */}
-      {!tempHasMoreSongs && tempSongs.length > 0 && (
-        <p className="text-center mt-4 text-purple-200">
-          You have reached the end of the results.
-        </p>
-      )}
-
       {/* ── Global action spinner ── */}
       {(downloading || deleting) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">

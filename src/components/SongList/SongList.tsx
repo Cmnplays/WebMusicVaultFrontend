@@ -1,9 +1,9 @@
-"use client";
 import { useRef } from "react";
 import type { Song } from "../../services/song.services";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import SongCard from "./SongCard";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { useAppSelector } from "@/store/hook";
 const SongList = ({
   songs,
   handlePlayClick,
@@ -19,6 +19,11 @@ const SongList = ({
 }) => {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const scrollableElemRef = useRef<HTMLDivElement>(null);
+  const loading = useAppSelector((state) => state.ui.loading);
+
+  const hasMoreSongs = useAppSelector(
+    (state) => state.song[isTemp ? "tempHasMoreSongs" : "hasMoreSongs"],
+  );
   useInfiniteScroll({ isTemp, sentinelRef });
 
   const virtualizer = useVirtualizer({
@@ -48,7 +53,6 @@ const SongList = ({
         {virtualizer.getVirtualItems().map((virtualItem) => {
           const song = songs[virtualItem.index];
           const isActive = playingSong?._id === song._id;
-
           return (
             <li
               key={song._id}
@@ -72,7 +76,22 @@ const SongList = ({
           );
         })}
       </ul>
+
       <div ref={sentinelRef} className="h-px w-full bg-transparent"></div>
+
+      {/* ── Inline loader (loading more) ── */}
+      {loading && songs.length >= 10 && (
+        <p className="text-center mt-4 text-purple-200">
+          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin inline-block" />
+        </p>
+      )}
+
+      {/* ── End of results ── */}
+      {!hasMoreSongs && songs.length > 0 && (
+        <p className="text-center text-purple-200 mb-2">
+          You have reached the end of the results.
+        </p>
+      )}
     </div>
   );
 };

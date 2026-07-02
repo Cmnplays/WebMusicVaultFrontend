@@ -97,19 +97,6 @@ const MusicPage: React.FC = () => {
         </p>
       )}
 
-      {loading && (
-        <p className="text-center mt-4 text-purple-200 whitespace-pre-line">
-          {/* Inline loader */}
-          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin inline-block" />
-        </p>
-      )}
-
-      {!hasMoreSongs && (
-        <p className="text-center mt-4 text-purple-200">
-          You have reached the end of the list.
-        </p>
-      )}
-
       {(downloading || deleting) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
           <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />

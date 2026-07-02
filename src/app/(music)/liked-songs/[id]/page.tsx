@@ -152,18 +152,6 @@ const LikedSongsPage = () => {
         />
       )}
 
-      {loading && tempSongs.length >= 10 && (
-        <p className="text-center mt-4 text-purple-200 whitespace-pre-line">
-          <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin inline-block" />
-        </p>
-      )}
-
-      {!tempHasMoreSongs && tempSongs.length > 0 && (
-        <p className="text-center mt-4 text-purple-200">
-          You have reached the end of the playlist.
-        </p>
-      )}
-
       {(downloading || deleting) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
           <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
