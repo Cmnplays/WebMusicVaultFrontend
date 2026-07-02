@@ -27,23 +27,15 @@ const useInfiniteScroll = ({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        console.log("entered observer");
-        console.log({ notintersecting: !entry.isIntersecting, loading });
         if (!entry.isIntersecting || loading) return;
-        console.log("passed observer lvl 1 ");
 
         if (isTemp) {
-          console.log("passed observer lvl 2 ");
           if (!tempHasMoreSongs || tempSongs.length === 0) return;
-          console.log("passed observer lvl 3 ");
           dispatch(setTempTriggerFetch());
-          console.log("worked");
           return;
         }
-        console.log("passed observer lvl 2 but skipped is temp");
         if (!hasMoreSongs || songs.length === 0) return;
         dispatch(setTriggerFetch());
-        console.log("worked but outside tempm case");
       },
       { rootMargin: "300px" },
     );

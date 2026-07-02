@@ -11,7 +11,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="bg-[#5520A5] flex flex-col h-screen">
       <Navbar />
       <main
-        className={`flex-1 flex flex-col min-h-0 overflow-hidden max-w-5xl mx-auto w-full p-4 text-white ${
+        className={`flex-1 flex flex-col min-h-0 overflow-hidden max-w-5xl mx-auto w-full p-4 text-white transition-all duration-300 ${
           playingSong ? "pb-32 md:pb-24" : "pb-16 md:pb-4"
         }`}
       >
