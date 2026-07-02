@@ -58,7 +58,7 @@ const SongList = ({
                 left: 0,
                 width: "100%",
                 height: `${virtualItem.size}px`,
-                transform: `translateY(${virtualItem.start}px)`, // Simpler transform
+                transform: `translateY(${virtualItem.start}px)`,
               }}
             >
               <SongCard
@@ -70,9 +70,8 @@ const SongList = ({
             </li>
           );
         })}
-        {/* Infinite Scroll Sentinel */}
-        <div ref={sentinelRef} className="h-px w-full bg-transparent"></div>
       </ul>
+      <div ref={sentinelRef} className="h-px w-full bg-transparent"></div>
     </div>
   );
 };

@@ -1,11 +1,11 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import {
   setTriggerFetch,
   setTempTriggerFetch,
 } from "../reduxSlices/song.slice";
-import {} from "@/reduxSlices/player.slice";
+
 const useInfiniteScroll = ({
   isTemp = false,
   sentinelRef,
@@ -21,19 +21,14 @@ const useInfiniteScroll = ({
   const songs = useAppSelector((state) => state.song.songs);
   const tempSongs = useAppSelector((state) => state.song.tempSongs);
   const dispatch = useAppDispatch();
-  const firstIntersectionDone = useRef(false);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const observer = new IntersectionObserver((entries) => {
-      const target = entries[0];
-      if (!firstIntersectionDone.current) {
-        firstIntersectionDone.current = true;
-        return;
-      }
-      if (target.isIntersecting) {
-        if (loading) {
-          return;
-        }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || loading) return;
+
         if (isTemp) {
           if (!tempHasMoreSongs || tempSongs.length === 0) return;
           dispatch(setTempTriggerFetch());
@@ -41,16 +36,15 @@ const useInfiniteScroll = ({
         }
         if (!hasMoreSongs || songs.length === 0) return;
         dispatch(setTriggerFetch());
-      }
-    });
+      },
+      { rootMargin: "300px" },
+    );
+
     const sentinel = sentinelRef.current;
-    if (sentinel) {
-      observer.observe(sentinel);
-    }
+    if (sentinel) observer.observe(sentinel);
+
     return () => {
-      if (sentinel) {
-        observer.unobserve(sentinel);
-      }
+      if (sentinel) observer.unobserve(sentinel);
       observer.disconnect();
     };
   }, [
