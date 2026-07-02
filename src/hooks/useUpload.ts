@@ -1,5 +1,6 @@
 "use client";
 import { useState, useCallback, useRef } from "react";
+import { uploadSong } from "@/services/song.services";
 
 export type UploadStatus =
   | "idle"
@@ -77,6 +78,7 @@ export function useUpload() {
 
       setStatus(entry.id, "uploading");
       try {
+        await uploadSong(entry, controller.signal);
         setStatus(entry.id, "done");
       } catch (err: unknown) {
         if (controller.signal.aborted) {
