@@ -5,8 +5,7 @@ import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { useAppSelector } from "@/store/hook";
 import EditSongModal from "@/components/Modal/EditSongModal";
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  // const isAdmin = useAppSelector((state) => state.auth.user?.role) === "admin";
-  const isAdmin = true;
+  const isAdmin = useAppSelector((state) => state.auth.user?.role) === "admin";
   return (
     <div className="bg-[#5520A5] flex flex-col h-screen">
       <Navbar />

@@ -24,8 +24,7 @@ const SongList = ({
   const scrollableElemRef = useRef<HTMLDivElement>(null);
   const loading = useAppSelector((state) => state.ui.loading);
   const dispatch = useAppDispatch();
-  // const isAdmin = useAppSelector((state) => state.auth.user?.role) === "admin";
-  const isAdmin = true;
+  const isAdmin = useAppSelector((state) => state.auth.user?.role) === "admin";
 
   const hasMoreSongs = useAppSelector(
     (state) => state.song[isTemp ? "tempHasMoreSongs" : "hasMoreSongs"],
