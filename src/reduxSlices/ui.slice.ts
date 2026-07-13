@@ -11,6 +11,7 @@ interface UIState {
   mountShareModal: boolean;
   mountAuthPromptModal: boolean;
   navHeight: number;
+  mountEditSongModal: boolean;
 }
 
 const initialState: UIState = {
@@ -23,6 +24,7 @@ const initialState: UIState = {
   mountShareModal: false,
   mountAuthPromptModal: false,
   navHeight: 0,
+  mountEditSongModal: false,
 };
 
 const uiSlice = createSlice({
@@ -56,6 +58,9 @@ const uiSlice = createSlice({
     setNavHeight: (state, action: PayloadAction<number>) => {
       state.navHeight = action.payload;
     },
+    setMountEditSongModal: (state, action: PayloadAction<boolean>) => {
+      state.mountEditSongModal = action.payload;
+    },
   },
 });
 
@@ -69,6 +74,7 @@ export const {
   setMountShareModal,
   setMountAuthPromptModal,
   setNavHeight,
+  setMountEditSongModal,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

@@ -28,3 +28,17 @@ Latest issues:
 
 latest issues: (03-07-2026: 03:19):
 the upload page not functioning idk why.(saw that somehow its not using the uplaod function but it was working before i guess this is the jaadu of ai, cuz i don't remember editing upload file even like that? ....)
+ 
+
+the move to top button has to be fixed now.
+
+
+Tonight's goal: 
+1.to add admin dashboard for editing song title, author and song image.
+2.make its related ui good in both pc and mobile.
+3. this won't include doing bulk things, but rather it will only include doing small things i mean single edits single song edits 
+which would be the best and unoverkilled feature.
+
+
+latest working notes:
+the thing is all setup is done, now have to see why the edit panel is not workiing when the state of edit panel is changing

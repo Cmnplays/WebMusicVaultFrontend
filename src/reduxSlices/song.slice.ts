@@ -21,6 +21,7 @@ interface SongState {
   tempSortChanged: boolean;
   playlists: PlaylistsResponse;
   songsType: "songs" | "tempSongs";
+  editableSong: Song | null;
 }
 
 const initialState: SongState = {
@@ -43,12 +44,20 @@ const initialState: SongState = {
     personalPlaylists: [],
   },
   songsType: "songs",
+  editableSong: null,
 };
 
 type setSongLikedByT = {
   songId: string;
   isLiked: boolean;
 };
+
+type songChangesT = Partial<{
+  songId: string;
+  title: string;
+  artist: string;
+  coverImageUrl: string;
+}>;
 
 const setSongsFn =
   (key: "songs" | "tempSongs") =>
@@ -150,6 +159,18 @@ const songSlice = createSlice({
         if (likedSongsPlaylist.songs < 0) likedSongsPlaylist.songs = 0;
       }
     },
+    setEditableSong: (state, action: PayloadAction<Song | null>) => {
+      state.editableSong = action.payload;
+    },
+    updateSong: (state, action: PayloadAction<songChangesT>) => {
+      const song = state.songs.filter(
+        (song) => song._id === action.payload.songId,
+      )[0];
+      if (action.payload.artist) song.artist = action.payload.artist;
+      if (action.payload.title) song.title = action.payload.title;
+      if (action.payload.coverImageUrl)
+        song.coverImageUrl = action.payload.coverImageUrl;
+    },
   },
   extraReducers: (builder) => {
     const clearSongsState = (state: SongState) => {
@@ -194,6 +215,8 @@ export const {
   setPlaylists,
   setSongsType,
   updatePlaylistSongCount,
+  setEditableSong,
+  updateSong,
 } = songSlice.actions;
 
 export default songSlice.reducer;

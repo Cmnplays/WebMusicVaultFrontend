@@ -3,7 +3,10 @@ import type { Song } from "../../services/song.services";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import SongCard from "./SongCard";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { useAppSelector } from "@/store/hook";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { setEditableSong } from "@/reduxSlices/song.slice";
+import { setMountEditSongModal } from "@/reduxSlices/ui.slice";
+
 const SongList = ({
   songs,
   handlePlayClick,
@@ -20,6 +23,9 @@ const SongList = ({
   const sentinelRef = useRef<HTMLDivElement>(null);
   const scrollableElemRef = useRef<HTMLDivElement>(null);
   const loading = useAppSelector((state) => state.ui.loading);
+  const dispatch = useAppDispatch();
+  // const isAdmin = useAppSelector((state) => state.auth.user?.role) === "admin";
+  const isAdmin = true;
 
   const hasMoreSongs = useAppSelector(
     (state) => state.song[isTemp ? "tempHasMoreSongs" : "hasMoreSongs"],
@@ -32,6 +38,14 @@ const SongList = ({
     getScrollElement: () => scrollableElemRef.current,
     overscan: 4,
   });
+
+  const handleEditSong = (song: Song) => {
+    console.log("initated");
+    dispatch(setMountEditSongModal(true));
+    dispatch(setEditableSong(song));
+    console.log("done");
+  };
+
   return (
     <div
       ref={scrollableElemRef}
@@ -71,6 +85,8 @@ const SongList = ({
                 song={song}
                 isActive={isActive}
                 isPlaying={isActive && playing}
+                isAdmin={isAdmin}
+                handleEditSong={handleEditSong}
               />
             </li>
           );

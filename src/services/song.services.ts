@@ -33,6 +33,15 @@ interface searchParams {
   sortBy?: sortByT;
   sortOrder?: sortOrderT;
 }
+
+export type SongChanges = {
+  songId: string;
+} & Partial<{
+  title: string;
+  artist: string;
+  coverImage: File;
+}>;
+
 const getSongs = async ({
   limit = 10,
   cursor,
@@ -91,7 +100,7 @@ const getSongsLength = async (): Promise<number> => {
   return response.data.totalNumOfSongs;
 };
 
-const getRandomSong = async (count: number=10): Promise<Song[]> => {
+const getRandomSong = async (count: number = 10): Promise<Song[]> => {
   const response = await api.get(`/song/random/${count}`);
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to get random song");
@@ -168,6 +177,28 @@ const uploadSong = async (
   return response.data.data;
 };
 
+const updateSong = async (changes: SongChanges): Promise<Song> => {
+  const formData = new FormData();
+  if (changes.title?.trim()) formData.append("title", changes.title.trim());
+  if (changes.artist?.trim()) formData.append("artist", changes.artist.trim());
+  if (changes.coverImage) formData.append("coverImage", changes.coverImage);
+  const response = await api.patch<apiResponse<Song>>(
+    `/song/${changes.songId}`,
+    formData,
+    {
+      timeout: 1000 * 300,
+    },
+  );
+
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message || "There was a problem while updating the song",
+    );
+  }
+
+  return response.data.data;
+};
+
 export {
   getSongs,
   deleteSong,
@@ -177,4 +208,5 @@ export {
   toggleAddToFav,
   getSongWithId,
   uploadSong,
+  updateSong,
 };

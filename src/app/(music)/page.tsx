@@ -31,7 +31,6 @@ const MusicPage: React.FC = () => {
 
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
   const sortBy = useAppSelector((state) => state.song.sortBy);
-  const hasMoreSongs = useAppSelector((state) => state.song.hasMoreSongs);
   const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
 
   const { handlePlayClick } = usePlaySong();
