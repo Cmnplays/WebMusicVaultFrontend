@@ -53,15 +53,18 @@ const SongEditPanel = () => {
     if (editableSong?.title !== title) changes.title = title;
     if (editableSong?.artist !== artist) changes.artist = artist;
     if (coverImage) changes.coverImage = coverImage;
-    console.log(changes);
+    if (!changes.title && !changes.artist && !changes.coverImage) {
+      handleClose();
+      return;
+    }
     const updatedSong = await updateSong(changes);
-
     dispatch(
       updateSongInRedux({
         songId: updatedSong._id,
         title: updatedSong.title,
         artist: updatedSong.artist,
         coverImageUrl: updatedSong.coverImageUrl,
+        ...(editableSong.isTemp && { isTemp: true }),
       }),
     );
     handleClose();

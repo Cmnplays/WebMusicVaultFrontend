@@ -21,7 +21,7 @@ interface SongState {
   tempSortChanged: boolean;
   playlists: PlaylistsResponse;
   songsType: "songs" | "tempSongs";
-  editableSong: Song | null;
+  editableSong: editableSongT | null;
 }
 
 const initialState: SongState = {
@@ -57,8 +57,11 @@ type songChangesT = Partial<{
   title: string;
   artist: string;
   coverImageUrl: string;
+  isTemp?: boolean;
 }>;
 
+type editableSongT = Song & { isTemp?: boolean };
+type songTypes = "songs" | "tempSongs";
 const setSongsFn =
   (key: "songs" | "tempSongs") =>
   (state: SongState, action: PayloadAction<Song[]>) => {
@@ -141,7 +144,7 @@ const songSlice = createSlice({
     setPlaylists: (state, action: PayloadAction<PlaylistsResponse>) => {
       state.playlists = action.payload;
     },
-    setSongsType: (state, action: PayloadAction<"songs" | "tempSongs">) => {
+    setSongsType: (state, action: PayloadAction<songTypes>) => {
       state.songsType = action.payload;
     },
     updatePlaylistSongCount: (
@@ -149,21 +152,24 @@ const songSlice = createSlice({
       action: PayloadAction<{ isLiked: boolean }>,
     ) => {
       const { isLiked } = action.payload;
-      // Find the default "Favourite Songs" playlist
       const likedSongsPlaylist = state.playlists.defaultPlaylists.find(
         (p) => p.isDefault,
       );
       if (likedSongsPlaylist) {
         likedSongsPlaylist.songs += isLiked ? 1 : -1;
-        // Ensure count doesn't go below 0
         if (likedSongsPlaylist.songs < 0) likedSongsPlaylist.songs = 0;
       }
     },
-    setEditableSong: (state, action: PayloadAction<Song | null>) => {
+    setEditableSong: (state, action: PayloadAction<editableSongT | null>) => {
       state.editableSong = action.payload;
     },
     updateSong: (state, action: PayloadAction<songChangesT>) => {
-      const song = state.songs.filter(
+      let filterVar: songTypes = "songs";
+      if (action.payload.isTemp) {
+        filterVar = "tempSongs";
+      }
+
+      const song = state[filterVar].filter(
         (song) => song._id === action.payload.songId,
       )[0];
       if (action.payload.artist) song.artist = action.payload.artist;

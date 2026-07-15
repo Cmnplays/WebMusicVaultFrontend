@@ -39,10 +39,8 @@ const SongList = ({
   });
 
   const handleEditSong = (song: Song) => {
-    console.log("initated");
     dispatch(setMountEditSongModal(true));
-    dispatch(setEditableSong(song));
-    console.log("done");
+    dispatch(setEditableSong({ ...song, isTemp }));
   };
 
   return (

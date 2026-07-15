@@ -134,6 +134,7 @@ const ShufflePlayer: React.FC = () => {
           playing={playing}
           playingSong={playingSong}
           songs={songs.slice(0, maxVisibleIndex + 1)}
+          isTemp={true}
         />
       )}
 
