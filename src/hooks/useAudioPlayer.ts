@@ -13,6 +13,7 @@ import {
   setPlayingSong,
   setDuration,
   setCurrentTime,
+  setMiniPanelOpen,
 } from "../reduxSlices//player.slice";
 
 type customFnType = {
@@ -178,6 +179,7 @@ export const useAudioPlayer = ({
     const currentIndex = songs.findIndex((s) => s._id === playingSong?._id);
     if (currentIndex === -1) {
       dispatch(setPlayingSong(null));
+      dispatch(setMiniPanelOpen(false));
       dispatch(setPlaying(false));
       return;
     }
