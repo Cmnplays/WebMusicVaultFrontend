@@ -27,7 +27,6 @@ const bottomNavItems = [
 ];
 
 const moreRoutes = [
-  { name: "Search", to: "/search", icon: Search },
   { name: "Upload", to: "/upload", icon: CloudUpload },
   { name: "Profile", to: "/me", icon: CircleUser },
   { name: "About", to: "/about", icon: Info },
@@ -41,11 +40,12 @@ const Navbar = () => {
   const navRef = useRef<HTMLDivElement | null>(null);
   const accessToken = useAppSelector((state) => state.auth.accessToken);
 
+  const isSearchActive = pathname === "/search";
+
   const desktopRoutes = [
     { name: "Music", to: "/" },
     { name: "Playlist", to: "/playlist" },
     { name: "Shuffle", to: "/shuffle" },
-    { name: "Search", to: "/search" },
     { name: "Upload", to: "/upload" },
     { name: "Profile", to: "/me" },
     { name: "About", to: "/about" },
@@ -80,6 +80,19 @@ const Navbar = () => {
 
           {/* Desktop nav links */}
           <ul className="hidden lg:flex items-center space-x-2">
+            <li>
+              <Link
+                href="/search"
+                aria-label="Search"
+                className={
+                  isSearchActive
+                    ? "flex items-center justify-center p-1 rounded-lg text-white bg-purple-600/40 border border-purple-400/30 transition-all"
+                    : "flex items-center justify-center p-1 rounded-lg text-zinc-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10 transition-all duration-200"
+                }
+              >
+                <Search className="w-6 h-6" />
+              </Link>
+            </li>
             {desktopRoutes.map((link) => (
               <li key={link.to}>
                 <NavItem href={link.to} label={link.name} variant="desktop" />
