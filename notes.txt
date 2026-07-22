@@ -42,3 +42,25 @@ which would be the best and unoverkilled feature.
 
 latest working notes:
 the thing is all setup is done, now have to see why the edit panel is not workiing when the state of edit panel is changing
+fixed above latest workin note.
+today 15/07/2026 , later i want to like make the user edit theirs own song i mean the songs which belong to them they can for now delete it but not like edit it, later i will 
+make them be able to edit it.
+also in default playlists of user ui, show a new playlist which will contain the songs uploaded by user.
+while the song is being updated, add a loading spinner there
+
+add a sound booster later .
+learn about atomicity and try to apply at some places in the app.
+(atomicity basically means if a happen b should happen if they are in a function which is being executed . but if a happend and b failed then a must be reverted(reversed))
+
+
+next time sit , and add playlist creation feature right there and then right after that fix all the things realted to loading and toasts and good user toast messages across the whole app.
+
+Implement a unique visitor tracking system using a combination of persistent UUIDs and browser fingerprints to improve visitor identification accuracy.
+
+Track each visitor's total visits, first/last visit timestamps, and distinguish new visitors from returning ones while minimizing duplicate counts across sessions.
+
+remove search btn from more base nav menu and add to top right corner in mobile view as its free space there, and we can utilize it by placing search bar there. - done
+
+share button is not working, fix it and change the url structure when a song is running so that it would be better to share songs - done
+
+you can add share to whatsapp button or share to other apps

@@ -20,6 +20,7 @@ const AuthCallbackHandler = () => {
   useEffect(() => {
     const auth = searchParams?.get("auth") as string;
     const code = searchParams?.get("code") as string;
+    if (!auth || !code) return;
 
     async function handleGoogleLogin(code: string) {
       try {
