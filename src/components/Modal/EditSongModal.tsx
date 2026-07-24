@@ -1,14 +1,10 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useAppSelector, useAppDispatch } from "../../store/hook";
-import { setMountEditSongModal } from "@/reduxSlices/ui.slice";
+import { setLoading, setMountEditSongModal } from "@/reduxSlices/ui.slice";
 import { fadeInPanel, fadeOutPanel } from "@/lib/animations";
 import { X, Save, Music2, Mic2, Image } from "lucide-react";
 import SongCover from "../ui/SongCover";
-import {
-  setMiniPanelOpen,
-  setExpandedPanelOpen,
-} from "@/reduxSlices/player.slice";
 import NextImage from "next/image";
 import { SongChanges } from "@/services/song.services";
 import { updateSong } from "@/services/song.services";
@@ -30,8 +26,6 @@ const SongEditPanel = () => {
 
   useEffect(() => {
     if (!editPanelRef.current || !mountEditSongModal) return;
-    dispatch(setExpandedPanelOpen(false));
-    dispatch(setMiniPanelOpen(false));
     fadeInPanel(editPanelRef.current);
   }, [mountEditSongModal]);
 
@@ -48,12 +42,14 @@ const SongEditPanel = () => {
       handleClose();
       return;
     }
+    dispatch(setLoading(true));
     const changes: SongChanges = { songId: editableSong._id };
 
     if (editableSong?.title !== title) changes.title = title;
     if (editableSong?.artist !== artist) changes.artist = artist;
     if (coverImage) changes.coverImage = coverImage;
     if (!changes.title && !changes.artist && !changes.coverImage) {
+      dispatch(setLoading(false));
       handleClose();
       return;
     }
@@ -67,6 +63,7 @@ const SongEditPanel = () => {
         ...(editableSong.isTemp && { isTemp: true }),
       }),
     );
+    dispatch(setLoading(false));
     handleClose();
   };
 
