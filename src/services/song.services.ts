@@ -193,7 +193,6 @@ const togglePinSong = async (id: string, pin: boolean): Promise<string> => {
   const response = pin
     ? await api.put(`/song/${id}/pin`)
     : await api.delete(`/song/${id}/pin`);
-  console.log(response);
 
   if (response.data.status !== 200) {
     throw new Error(

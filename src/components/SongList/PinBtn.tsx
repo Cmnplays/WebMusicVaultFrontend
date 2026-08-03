@@ -35,7 +35,6 @@ const PinBtn: React.FC<PinBtnProps> = ({
       return;
     }
     if (pinnedSongs.length >= 3 && !isPinned) {
-      console.log(isPinned);
       showToast({
         message: "You can only pin up to 3 songs. Unpin one to add another.",
         type: "error",

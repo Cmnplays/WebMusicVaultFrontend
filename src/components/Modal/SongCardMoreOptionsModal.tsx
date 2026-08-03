@@ -1,7 +1,8 @@
 import React from "react";
 import type { Song } from "@/services/song.services";
-import { ListPlus, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import PinBtn from "../SongList/PinBtn";
+import AddToPlaylistBtn from "../SongList/AddToPlaylistBtn";
 
 interface SongCardMoreOptionsModalProps {
   song: Song;
@@ -37,27 +38,7 @@ const SongCardMoreOptionsModal: React.FC<SongCardMoreOptionsModalProps> = ({
           closeMoreOptionsModal={onClose}
         />
 
-        <button
-          type="button"
-          onClick={() => {
-            console.log("add to playlist clicked", song._id);
-            onClose();
-          }}
-          className="
-            flex w-full items-center gap-3
-            px-4 py-3
-            text-sm font-medium text-white/80
-            transition-all duration-150
-            hover:bg-white/10
-            hover:text-white
-            active:scale-[0.98]
-            focus:outline-none
-            focus:bg-white/10
-          "
-        >
-          <ListPlus className="h-4 w-4 shrink-0" />
-          <span>Add to playlist</span>
-        </button>
+        <AddToPlaylistBtn song={song} closeMoreOptionsModal={onClose} />
 
         {isAdmin && (
           <button
