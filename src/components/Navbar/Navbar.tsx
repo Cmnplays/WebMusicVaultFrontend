@@ -90,7 +90,7 @@ const Navbar = () => {
                     : "flex items-center justify-center p-1 rounded-lg text-zinc-300 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10 transition-all duration-200"
                 }
               >
-                <Search className="w-6 h-6" />
+                <Search className="w-6   h-6" />
               </Link>
             </li>
             {desktopRoutes.map((link) => (

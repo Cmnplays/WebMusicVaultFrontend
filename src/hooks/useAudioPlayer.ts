@@ -13,7 +13,6 @@ import {
   setPlayingSong,
   setDuration,
   setCurrentTime,
-  setMiniPanelOpen,
   setExpandedPanelOpen,
 } from "../reduxSlices//player.slice";
 

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { Song } from "../../services/song.services";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import SongCard from "./SongCard";
@@ -43,6 +43,9 @@ const SongList = ({
     dispatch(setEditableSong({ ...song, isTemp }));
   };
 
+  const [openMenuSongId, setOpenMenuSongId] = useState<string | null>(null);
+  const pinnedSongs = useAppSelector((state) => state.song.pinnedSongs);
+  const pinnedSongsSet = new Set(pinnedSongs.map((song) => song._id));
   return (
     <div
       ref={scrollableElemRef}
@@ -67,7 +70,6 @@ const SongList = ({
           return (
             <li
               key={song._id}
-              data-index={virtualItem.index}
               style={{
                 position: "absolute",
                 top: 0,
@@ -75,6 +77,7 @@ const SongList = ({
                 width: "100%",
                 height: `${virtualItem.size}px`,
                 transform: `translateY(${virtualItem.start}px)`,
+                zIndex: openMenuSongId === song._id ? 9999 : 1,
               }}
             >
               <SongCard
@@ -84,6 +87,14 @@ const SongList = ({
                 isPlaying={isActive && playing}
                 isAdmin={isAdmin}
                 handleEditSong={handleEditSong}
+                isPinned={pinnedSongsSet.has(song._id)}
+                isMenuOpen={openMenuSongId === song._id}
+                onMenuToggle={() =>
+                  setOpenMenuSongId(
+                    openMenuSongId === song._id ? null : song._id,
+                  )
+                }
+                onCloseMenu={() => setOpenMenuSongId(null)}
               />
             </li>
           );

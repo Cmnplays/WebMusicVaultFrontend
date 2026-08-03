@@ -1,16 +1,17 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { getSongs } from "../services/song.services";
-import type { songsReturnType } from "../services/song.services";
+import { getPinnedSongs, getSongs } from "../services/song.services";
 export type repeatType = "repeat" | "noRepeat" | "single";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import axios from "axios";
 import {
   setSongs,
+  replaceSongs,
   handleSortByChange,
   setSortChanged,
   setHasMoreSongs,
   setNextCursor,
+  setPinnedSongs,
 } from "../reduxSlices/song.slice";
 import { setStatusText, setLoading } from "@/reduxSlices/ui.slice";
 
@@ -24,7 +25,18 @@ export const useSongs = () => {
   const triggerFetch = useAppSelector((state) => state.song.triggerFetch);
   const nextCursor = useAppSelector((state) => state.song.nextCursor);
   const songs = useAppSelector((state) => state.song.songs);
+  const pinnedSongs = useAppSelector((state) => state.song.pinnedSongs);
   const didMount = useRef(false);
+  const nextCursorRef = useRef(nextCursor);
+  const songsLengthRef = useRef(songs.length);
+
+  useEffect(() => {
+    nextCursorRef.current = nextCursor;
+  }, [nextCursor]);
+
+  useEffect(() => {
+    songsLengthRef.current = songs.length;
+  }, [songs.length]);
 
   useEffect(() => {
     const loadSongs = async () => {
@@ -32,7 +44,7 @@ export const useSongs = () => {
       if (shouldFetchUser) {
         return;
       }
-      if (!didMount.current && songs.length > 0) {
+      if (!didMount.current && songsLengthRef.current > 0) {
         didMount.current = true;
         return; // skip only first mount
       }
@@ -40,7 +52,7 @@ export const useSongs = () => {
       dispatch(setLoading(true));
       try {
         setError(false);
-        if (!nextCursor) {
+        if (!nextCursorRef.current) {
           if (sortOrder === "asc") {
             dispatch(setStatusText("Fetching songs... Newest to Oldest."));
           } else {
@@ -49,12 +61,17 @@ export const useSongs = () => {
         } else {
           dispatch(setStatusText("Loading more songs..."));
         }
-        const response: songsReturnType = await getSongs({
-          sortBy,
-          sortOrder,
-          cursor: nextCursor,
-        });
-        const newSongs = response.songs;
+        const [response, pinnedSongs] = await Promise.all([
+          getSongs({
+            sortBy,
+            sortOrder,
+            cursor: nextCursorRef.current,
+          }),
+          getPinnedSongs(),
+        ]);
+        dispatch(setPinnedSongs(pinnedSongs));
+        const newSongs = [...pinnedSongs, ...response.songs];
+
         dispatch(setNextCursor(response.nextCursor));
         dispatch(setHasMoreSongs(response.hasMoreSongs));
 
@@ -88,6 +105,29 @@ export const useSongs = () => {
     };
     loadSongs();
   }, [triggerFetch, sortBy, sortOrder, sortChanged, dispatch, shouldFetchUser]);
+
+  useEffect(() => {
+    if (songs.length === 0 && pinnedSongs.length === 0) return;
+
+    const pinnedIds = new Set(pinnedSongs.map((song) => song._id));
+    const currentPinnedOrder = songs.filter((song) => pinnedIds.has(song._id));
+    const remainingSongs = songs.filter((song) => !pinnedIds.has(song._id));
+
+    const orderedPinnedSongs = pinnedSongs.map((song) => {
+      const existing = currentPinnedOrder.find((s) => s._id === song._id);
+      return existing ?? song;
+    });
+
+    const needsUpdate =
+      orderedPinnedSongs.length !== currentPinnedOrder.length ||
+      orderedPinnedSongs.some(
+        (song, index) => song._id !== currentPinnedOrder[index]?._id,
+      );
+
+    if (!needsUpdate) return;
+
+    dispatch(replaceSongs([...orderedPinnedSongs, ...remainingSongs]));
+  }, [dispatch, pinnedSongs, songs]);
 
   return { error };
 };

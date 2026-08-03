@@ -1,4 +1,6 @@
 import api from "../lib/api";
+import store from "@/store/store";
+import { setLoading } from "@/reduxSlices/ui.slice";
 
 export interface Song {
   _id: string;
@@ -70,27 +72,6 @@ const deleteSong = async (id: string): Promise<number> => {
   }
   return response.data.data;
 };
-
-// const searchSong = async ({
-//   limit = 10,
-//   query,
-//   cursor,
-//   signal,
-// }: searchParams): Promise<songsReturnType> => {
-//   const response = await api.get<apiResponse<songsReturnType>>(`/song/search`, {
-//     params: {
-//       searchQuery: query,
-//       cursor,
-//       limit,
-//     },
-//     signal,
-//     timeout: 1000 * 100, //120seconds
-//   });
-//   if (response.data.status !== 200) {
-//     throw new Error(response.data.message || "Failed to fetch songs");
-//   }
-//   return response.data.data;
-// };
 
 const getSongsLength = async (): Promise<number> => {
   const response = await api.get(`/public/about`);
@@ -191,12 +172,36 @@ const updateSong = async (changes: SongChanges): Promise<Song> => {
   );
 
   if (response.data.status !== 200) {
+    store.dispatch(setLoading(false));
     throw new Error(
       response.data.message || "There was a problem while updating the song",
     );
   }
 
   return response.data.data;
+};
+
+const getPinnedSongs = async (): Promise<Song[] | []> => {
+  const response = await api.get(`/song/pinned`);
+  if (response.data.status !== 200) {
+    throw new Error(response.data.message || "Failed to get pinned songs");
+  }
+  return response.data.data;
+};
+
+const togglePinSong = async (id: string, pin: boolean): Promise<string> => {
+  const response = pin
+    ? await api.put(`/song/${id}/pin`)
+    : await api.delete(`/song/${id}/pin`);
+  console.log(response);
+
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message || `Failed to ${pin ? "pin" : "unpin"} song`,
+    );
+  }
+
+  return response.data.message || (pin ? "Pinned song" : "Unpinned song");
 };
 
 export {
@@ -209,4 +214,6 @@ export {
   getSongWithId,
   uploadSong,
   updateSong,
+  getPinnedSongs,
+  togglePinSong,
 };

@@ -1,14 +1,21 @@
+import React, { useEffect, useRef } from "react";
 import type { Song } from "@/services/song.services";
 import { formatDuration } from "../formatDuration";
 import SongCover from "../ui/SongCover";
-import { Pencil } from "lucide-react";
+import SongCardMoreOptionsModal from "../Modal/SongCardMoreOptionsModal";
+import { EllipsisVertical, Pin } from "lucide-react";
+
 interface SongCardProps {
   song: Song;
   handlePlayClick: (song: Song) => void;
   isActive: boolean;
   isPlaying: boolean;
   isAdmin: boolean;
+  isPinned: boolean;
   handleEditSong: (song: Song) => void;
+  isMenuOpen: boolean;
+  onMenuToggle: () => void;
+  onCloseMenu: () => void;
 }
 
 const SongCard: React.FC<SongCardProps> = ({
@@ -17,28 +24,60 @@ const SongCard: React.FC<SongCardProps> = ({
   isActive,
   isPlaying,
   isAdmin,
+  isPinned,
   handleEditSong,
+  isMenuOpen,
+  onMenuToggle,
+  onCloseMenu,
 }) => {
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        !menuRef.current ||
+        !(event.target instanceof Node) ||
+        menuRef.current.contains(event.target)
+      ) {
+        return;
+      }
+      onCloseMenu();
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen, onCloseMenu]);
+
   return (
     <div
       className={`
-        flex items-center gap-3 p-2 rounded-xl
-        border transition-colors duration-200
-        ${
-          isActive
-            ? "bg-purple-700/60 border-purple-400/30 shadow-[inset_0_0_14px_rgba(255,255,255,0.1)]"
-            : "bg-white/10 border-white/10 hover:bg-white/15 active:bg-white/20"
-        }
-      `}
+  flex items-center gap-3 p-2 rounded-xl
+  border transition-colors duration-200
+  ${
+    isActive
+      ? "bg-purple-700/60 border-purple-400/30 shadow-[inset_0_0_14px_rgba(255,255,255,0.1)]"
+      : isPinned
+        ? "bg-white/10 border-amber-400/25 hover:bg-white/15 active:bg-white/20"
+        : "bg-white/10 border-white/10 hover:bg-white/15 active:bg-white/20"
+  }
+`}
     >
       {/* Clickable play area */}
       <div
-        onClick={() => handlePlayClick(song)}
+        onClick={() => {
+          onCloseMenu();
+          handlePlayClick(song);
+        }}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
+            onCloseMenu();
             handlePlayClick(song);
           }
         }}
@@ -46,6 +85,7 @@ const SongCard: React.FC<SongCardProps> = ({
         title={isPlaying ? "Pause" : "Play"}
         className="flex items-center gap-3 grow min-w-0 cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-xl"
       >
+        {/* Song Cover / Icon */}
         {/* Song Cover / Icon */}
         <div className="relative shrink-0 w-14 h-14">
           <SongCover
@@ -57,12 +97,34 @@ const SongCard: React.FC<SongCardProps> = ({
             className="w-full h-full"
           />
 
+          {/* Pin Badge */}
+          {isPinned && (
+            <div
+              className="
+      absolute -top-1.5 -right-1.5
+      z-30
+      flex items-center justify-center
+      w-6 h-6
+      rounded-full
+      bg-black/40
+      backdrop-blur-xl
+      border border-purple-400/70
+      shadow-[0_0_12px_rgba(168,85,247,0.45)]
+    "
+            >
+              <Pin className="w-3 h-3 text-purple-300" />
+            </div>
+          )}
           {/* Play/Pause Overlay */}
           <div
             className={`
-              absolute inset-0 z-20 flex items-center justify-center rounded-xl transition-all duration-200 backdrop-blur-[2px]
-              ${isActive ? "bg-black/50 opacity-100" : "bg-black/30 opacity-0 hover:opacity-100"}
-            `}
+      absolute inset-0 z-20 flex items-center justify-center rounded-xl transition-all duration-200 backdrop-blur-[2px]
+      ${
+        isActive
+          ? "bg-black/50 opacity-100"
+          : "bg-black/30 opacity-0 hover:opacity-100"
+      }
+    `}
           >
             <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 shadow-lg">
               {isPlaying ? (
@@ -108,17 +170,28 @@ const SongCard: React.FC<SongCardProps> = ({
         </div>
       </div>
 
-      {/* Edit button — sits outside the clickable play area */}
-      {isAdmin && (
+      {/* Three-dot menu trigger */}
+      <div ref={menuRef} className="relative shrink-0 flex items-center">
         <button
           type="button"
-          onClick={() => handleEditSong(song)}
-          title="Edit Song Details"
-          className="shrink-0 hover:text-black transition-all duration-300"
+          onClick={onMenuToggle}
+          title="More options"
+          aria-label="More options"
+          className="text-white/50 hover:text-white transition-colors duration-200"
         >
-          <Pencil className="w-4 h-4" />
+          <EllipsisVertical className="w-5 h-5" />
         </button>
-      )}
+
+        {isMenuOpen && (
+          <SongCardMoreOptionsModal
+            song={song}
+            isAdmin={isAdmin}
+            isPinned={isPinned}
+            handleEditSong={handleEditSong}
+            onClose={onMenuToggle}
+          />
+        )}
+      </div>
     </div>
   );
 };

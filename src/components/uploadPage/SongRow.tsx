@@ -1,9 +1,10 @@
 "use client";
 import React, { useRef } from "react";
+import Image from "next/image";
 import {
   Music,
   X,
-  Image,
+  Image as ImageIcon,
   CheckCircle2,
   AlertCircle,
   Loader2,
@@ -133,7 +134,9 @@ export function SongRow({
           </div>
         </div>
 
-        <p className="text-white/50 text-xs truncate px-1">{entry.file.name.replace(/\.mp3$/i, "")}</p>
+        <p className="text-white/50 text-xs truncate px-1">
+          {entry.file.name.replace(/\.mp3$/i, "")}
+        </p>
 
         <div className="flex flex-col gap-2">
           <input
@@ -158,13 +161,16 @@ export function SongRow({
             className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-white/20 hover:border-purple-400/50 hover:bg-purple-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-all w-full"
           >
             <div className="w-7 h-7 rounded-lg bg-purple-500/20 flex items-center justify-center shrink-0">
-              <Image size={14} className="text-purple-300" />
+              <ImageIcon size={14} className="text-purple-300" />
             </div>
             {entry.coverImage ? (
               <>
-                <img
+                <Image
                   src={URL.createObjectURL(entry.coverImage)}
                   alt="cover"
+                  width={28}
+                  height={28}
+                  unoptimized
                   className="w-7 h-7 rounded-lg object-cover shrink-0"
                 />
                 <span className="text-xs text-white/70 truncate">
@@ -243,13 +249,16 @@ export function SongRow({
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-white/20 hover:border-purple-400/50 hover:bg-purple-500/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
           >
             {entry.coverImage ? (
-              <img
+              <Image
                 src={URL.createObjectURL(entry.coverImage)}
                 alt="cover"
+                width={24}
+                height={24}
+                unoptimized
                 className="w-6 h-6 rounded-md object-cover"
               />
             ) : (
-              <Image size={14} className="text-purple-300" />
+              <ImageIcon size={14} className="text-purple-300" />
             )}
             <span className="text-xs text-white/50">
               {entry.coverImage ? "change" : "Cover"}

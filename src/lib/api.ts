@@ -86,7 +86,7 @@ api.interceptors.response.use(
           `${api.defaults.baseURL}/auth/refresh-token`,
           { withCredentials: true },
         );
-        const newAccessToken = response.data.data; // Assuming the structure from backend controller
+        const newAccessToken = response.data.data;
 
         store.dispatch(setAccessToken(newAccessToken));
         api.defaults.headers.common["Authorization"] =

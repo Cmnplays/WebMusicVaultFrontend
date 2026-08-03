@@ -1,6 +1,6 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { Play, Pause, ChevronUp } from "lucide-react";
+import { Play, Pause, ChevronUp, Pin } from "lucide-react";
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import AddToFav from "@/components/SongPlayerPanel/PanelButtons/AddToFav";
@@ -51,10 +51,12 @@ const MiniPlayer = ({
       });
     }
   }, [miniPanelOpen, dispatch]);
-
+  const pinnedSongs = useAppSelector((state) => state.song.pinnedSongs);
   if (!playingSong) return null;
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const pinnedSongsSet = new Set(pinnedSongs.map((song) => song._id));
+  const isPinned = Boolean(pinnedSongsSet.has(playingSong._id));
 
   function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -64,7 +66,8 @@ const MiniPlayer = ({
     <div
       ref={panelRef}
       className={cn(
-        "relative w-full bg-[#1a0635]/95 backdrop-blur-md border-t border-purple-500/20 shadow-[0_-4px_20px_rgba(0,0,0,0.4)] cursor-pointer select-none",
+        "relative w-full bg-[#1a0635]/95 backdrop-blur-md border-t shadow-[0_-4px_20px_rgba(0,0,0,0.4)] cursor-pointer select-none transition-colors duration-200",
+        isPinned ? "border-amber-400/25" : "border-purple-500/20",
         !miniPanelOpen && "opacity-0 translate-y-full pointer-events-none",
       )}
       onClick={onExpand}
@@ -78,14 +81,35 @@ const MiniPlayer = ({
       </div>
 
       <div className="flex items-center gap-3 px-3 py-2">
-        <SongCover
-          id={playingSong._id}
-          title={playingSong.title}
-          artist={playingSong.artist}
-          src={playingSong.coverImageUrl}
-          size="sm"
-          className="shrink-0 w-14 h-14 rounded-lg shadow-md"
-        />
+        {/* Cover with pin badge */}
+        <div className="relative shrink-0 w-14 h-14">
+          <SongCover
+            id={playingSong._id}
+            title={playingSong.title}
+            artist={playingSong.artist}
+            src={playingSong.coverImageUrl}
+            size="sm"
+            className="w-full h-full rounded-lg shadow-md"
+          />
+
+          {isPinned && (
+            <div
+              className="
+                absolute -top-1.5 -right-1.5
+                z-30
+                flex items-center justify-center
+                w-6 h-6
+                rounded-full
+                bg-black/40
+                backdrop-blur-xl
+                border border-purple-400/70
+                shadow-[0_0_12px_rgba(168,85,247,0.45)]
+              "
+            >
+              <Pin className="w-3 h-3 text-purple-300" />
+            </div>
+          )}
+        </div>
 
         {/* Song info */}
         <div className="flex-1 min-w-0">

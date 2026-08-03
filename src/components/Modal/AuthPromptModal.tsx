@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
-import { useAppDispatch } from "@/store/hook";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { setMountAuthPromptModal } from "@/reduxSlices/ui.slice";
 import { Button } from "../ui/button";
 import { Heart } from "lucide-react";
@@ -14,7 +14,7 @@ interface AuthPromptModalProps {
 const AuthPromptModal: React.FC<AuthPromptModalProps> = ({ onClose }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-
+  const text = useAppSelector((state) => state.ui.authPromptText);
   useEffect(() => {
     if (!containerRef.current) return;
     gsap.fromTo(
@@ -57,8 +57,8 @@ const AuthPromptModal: React.FC<AuthPromptModalProps> = ({ onClose }) => {
             Like what you hear?
           </h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Sign in or create an account to like songs and build your favourites
-            collection.
+            Sign in or create an account to {text ? text : "like"} songs and
+            build your favourites collection.
           </p>
         </div>
 

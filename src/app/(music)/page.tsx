@@ -48,6 +48,7 @@ const MusicPage: React.FC = () => {
     };
   }, [dispatch]);
 
+  //for playing shared song links
   useEffect(() => {
     const songId = searchParams?.get("song");
     if (!songId || shouldFetchUser) return;

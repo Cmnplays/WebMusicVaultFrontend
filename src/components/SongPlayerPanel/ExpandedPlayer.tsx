@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Pin } from "lucide-react";
 import { Vibrant } from "node-vibrant/browser";
 import gsap from "gsap";
 import { clsx, type ClassValue } from "clsx";
@@ -100,8 +100,12 @@ const ExpandedPlayer = ({
       fadeOutExpandedPanel(panelRef.current);
     }
   }, [expandedPanelOpen]);
+  const pinnedSongs = useAppSelector((state) => state.song.pinnedSongs);
 
   if (!playingSong) return null;
+
+  const pinnedSongsSet = new Set(pinnedSongs.map((song) => song._id));
+  const isPinned = Boolean(pinnedSongsSet.has(playingSong._id));
 
   function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -141,7 +145,10 @@ const ExpandedPlayer = ({
         {/* Cover Art */}
         <div className="flex-1 flex items-center justify-center px-6 min-h-0">
           <div
-            className="relative w-full max-w-sm rounded-lg overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)] aspect-square"
+            className={cn(
+              "relative w-full max-w-sm rounded-lg overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)] aspect-square border transition-colors duration-200",
+              isPinned ? "border-amber-400/25" : "border-transparent",
+            )}
             style={{ maxHeight: "100%" }}
           >
             <SongCover
@@ -152,6 +159,24 @@ const ExpandedPlayer = ({
               size="lg"
               className="w-full h-full"
             />
+
+            {isPinned && (
+              <div
+                className="
+                  absolute top-3 right-3
+                  z-30
+                  flex items-center justify-center
+                  w-9 h-9
+                  rounded-full
+                  bg-black/40
+                  backdrop-blur-xl
+                  border border-purple-400/70
+                  shadow-[0_0_14px_rgba(168,85,247,0.5)]
+                "
+              >
+                <Pin className="w-4 h-4 text-purple-300" />
+              </div>
+            )}
           </div>
         </div>
 

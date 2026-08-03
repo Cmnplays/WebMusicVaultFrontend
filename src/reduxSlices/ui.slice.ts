@@ -12,6 +12,7 @@ interface UIState {
   mountAuthPromptModal: boolean;
   navHeight: number;
   mountEditSongModal: boolean;
+  authPromptText: string;
 }
 
 const initialState: UIState = {
@@ -23,6 +24,7 @@ const initialState: UIState = {
   mountDownloadConfirmation: false,
   mountShareModal: false,
   mountAuthPromptModal: false,
+  authPromptText: "like",
   navHeight: 0,
   mountEditSongModal: false,
 };
@@ -61,6 +63,9 @@ const uiSlice = createSlice({
     setMountEditSongModal: (state, action: PayloadAction<boolean>) => {
       state.mountEditSongModal = action.payload;
     },
+    setAuthPromptString: (state, action: PayloadAction<string>) => {
+      state.authPromptText = action.payload;
+    },
   },
 });
 
@@ -75,6 +80,7 @@ export const {
   setMountAuthPromptModal,
   setNavHeight,
   setMountEditSongModal,
+  setAuthPromptString,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

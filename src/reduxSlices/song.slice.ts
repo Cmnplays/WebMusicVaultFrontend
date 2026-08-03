@@ -7,6 +7,7 @@ import { PlaylistsResponse } from "@/services/playlist.services";
 interface SongState {
   songs: Song[];
   tempSongs: Song[];
+  pinnedSongs: Song[];
   hasMoreSongs: boolean;
   tempHasMoreSongs: boolean;
   nextCursor: cursorT | undefined;
@@ -27,6 +28,7 @@ interface SongState {
 const initialState: SongState = {
   songs: [],
   tempSongs: [],
+  pinnedSongs: [],
   hasMoreSongs: true,
   tempHasMoreSongs: true,
   nextCursor: undefined,
@@ -97,6 +99,9 @@ const songSlice = createSlice({
     setTempSongs: setSongsFn("tempSongs"),
     replaceTempSongs: (state, action: PayloadAction<Song[]>) => {
       state.tempSongs = action.payload;
+    },
+    replaceSongs: (state, action: PayloadAction<Song[]>) => {
+      state.songs = action.payload;
     },
     handleSortByChange: (state, action: PayloadAction<Song[]>) => {
       state.songs = action.payload;
@@ -177,6 +182,18 @@ const songSlice = createSlice({
       if (action.payload.coverImageUrl)
         song.coverImageUrl = action.payload.coverImageUrl;
     },
+
+    setPinnedSongs: (state, action: PayloadAction<Song[]>) => {
+      state.pinnedSongs = action.payload;
+    },
+    pinSong: (state, action: PayloadAction<Song>) => {
+      state.pinnedSongs.push(action.payload);
+    },
+    unpinSong: (state, action: PayloadAction<string>) => {
+      state.pinnedSongs = state.pinnedSongs.filter(
+        (song) => song._id !== action.payload,
+      );
+    },
   },
   extraReducers: (builder) => {
     const clearSongsState = (state: SongState) => {
@@ -223,6 +240,10 @@ export const {
   updatePlaylistSongCount,
   setEditableSong,
   updateSong,
+  setPinnedSongs,
+  replaceSongs,
+  pinSong,
+  unpinSong,
 } = songSlice.actions;
 
 export default songSlice.reducer;

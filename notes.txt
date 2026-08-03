@@ -64,3 +64,11 @@ remove search btn from more base nav menu and add to top right corner in mobile 
 share button is not working, fix it and change the url structure when a song is running so that it would be better to share songs - done
 
 you can add share to whatsapp button or share to other apps
+
+increase the zindex of edit panel to more than the z of song  player panel
+
+
+latest update, wrote everything related to pin feature in backend, now gotta implement 
+all that in frontend and after that gotta finish the playlist feature
+
+when user is not logged in, it doesn't show login/ register route fix that
