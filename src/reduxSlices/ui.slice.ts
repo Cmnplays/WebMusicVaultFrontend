@@ -1,5 +1,6 @@
 // redux/slices/uiSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { Song } from "../services/song.services";
 
 interface UIState {
   loading: boolean;
@@ -12,6 +13,7 @@ interface UIState {
   mountAuthPromptModal: boolean;
   navHeight: number;
   mountEditSongModal: boolean;
+  actionSong: Song | null;
   authPromptText: string;
 }
 
@@ -27,6 +29,7 @@ const initialState: UIState = {
   authPromptText: "like",
   navHeight: 0,
   mountEditSongModal: false,
+  actionSong: null,
 };
 
 const uiSlice = createSlice({
@@ -63,6 +66,9 @@ const uiSlice = createSlice({
     setMountEditSongModal: (state, action: PayloadAction<boolean>) => {
       state.mountEditSongModal = action.payload;
     },
+    setActionSong: (state, action: PayloadAction<Song | null>) => {
+      state.actionSong = action.payload;
+    },
     setAuthPromptString: (state, action: PayloadAction<string>) => {
       state.authPromptText = action.payload;
     },
@@ -80,6 +86,7 @@ export const {
   setMountAuthPromptModal,
   setNavHeight,
   setMountEditSongModal,
+  setActionSong,
   setAuthPromptString,
 } = uiSlice.actions;
 

@@ -1,8 +1,14 @@
 import React from "react";
 import type { Song } from "@/services/song.services";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash, Download } from "lucide-react";
+import { useAppDispatch } from "@/store/hook";
 import PinBtn from "../SongList/PinBtn";
 import AddToPlaylistBtn from "../SongList/AddToPlaylistBtn";
+import {
+  setActionSong,
+  setMountDeleteConfirmation,
+  setMountDownloadConfirmation,
+} from "@/reduxSlices/ui.slice";
 
 interface SongCardMoreOptionsModalProps {
   song: Song;
@@ -19,6 +25,20 @@ const SongCardMoreOptionsModal: React.FC<SongCardMoreOptionsModalProps> = ({
   handleEditSong,
   onClose,
 }) => {
+  const dispatch = useAppDispatch();
+
+  const handleDownloadClick = () => {
+    dispatch(setActionSong(song));
+    dispatch(setMountDownloadConfirmation(true));
+    onClose();
+  };
+
+  const handleDeleteClick = () => {
+    dispatch(setActionSong(song));
+    dispatch(setMountDeleteConfirmation(true));
+    onClose();
+  };
+
   return (
     <div
       className="
@@ -39,6 +59,44 @@ const SongCardMoreOptionsModal: React.FC<SongCardMoreOptionsModalProps> = ({
         />
 
         <AddToPlaylistBtn song={song} closeMoreOptionsModal={onClose} />
+
+        <button
+          type="button"
+          onClick={handleDownloadClick}
+          className="
+            flex w-full items-center gap-3
+            px-4 py-3
+            text-sm font-medium text-white/80
+            transition-all duration-150
+            hover:bg-white/10
+            hover:text-white
+            active:scale-[0.98]
+            focus:outline-none
+            focus:bg-white/10
+          "
+        >
+          <Download className="h-4 w-4 shrink-0" />
+          <span>Download song</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={handleDeleteClick}
+          className="
+            flex w-full items-center gap-3
+            px-4 py-3
+            text-sm font-medium text-white/80
+            transition-all duration-150
+            hover:bg-white/10
+            hover:text-white
+            active:scale-[0.98]
+            focus:outline-none
+            focus:bg-white/10
+          "
+        >
+          <Trash className="h-4 w-4 shrink-0" />
+          <span>Delete song</span>
+        </button>
 
         {isAdmin && (
           <button

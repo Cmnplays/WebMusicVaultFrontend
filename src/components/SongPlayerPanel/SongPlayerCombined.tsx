@@ -18,6 +18,7 @@ const SongPlayerCombined: React.FC = () => {
   const dispatch = useAppDispatch();
   const playing = useAppSelector((state) => state.player.playing);
   const playingSong = useAppSelector((state) => state.player.playingSong);
+  const actionSong = useAppSelector((state) => state.ui.actionSong);
 
   const mountDeleteConfirmation = useAppSelector(
     (state) => state.ui.mountDeleteConfirmation,
@@ -48,7 +49,7 @@ const SongPlayerCombined: React.FC = () => {
 
       {/* ── MiniPlayer ── */}
       {playingSong && (
-        <div className="fixed bottom-16 lg:bottom-6 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:w-[500px] z-[60] lg:rounded-2xl lg:overflow-hidden lg:shadow-[0_-4px_30px_rgba(0,0,0,0.5)] lg:border lg:border-purple-500/20">
+        <div className="fixed bottom-16 lg:bottom-6 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:w-125 z-60 lg:rounded-2xl lg:overflow-hidden lg:shadow-[0_-4px_30px_rgba(0,0,0,0.5)] lg:border lg:border-purple-500/20">
           <MiniPlayer
             audioRef={audioRef}
             handlePlayPause={() => {
@@ -72,16 +73,23 @@ const SongPlayerCombined: React.FC = () => {
       />
 
       {/* Delete Confirmation */}
-      {mountDeleteConfirmation && (
+      {mountDeleteConfirmation && actionSong && (
         <DeleteConfirmation
-          title={playingSong!.title}
-          songId={playingSong!._id}
-          moveToNextSong={moveToNextSong}
+          title={actionSong.title}
+          songId={actionSong._id}
+          moveToNextSong={
+            playingSong && actionSong._id === playingSong._id
+              ? moveToNextSong
+              : () => {}
+          }
         />
       )}
 
-      {mountDownloadConfirmation && (
-        <DownloadConfirmation title={playingSong!.title} />
+      {mountDownloadConfirmation && (actionSong || playingSong) && (
+        <DownloadConfirmation
+          title={(actionSong || playingSong)!.title}
+          song={actionSong || playingSong!}
+        />
       )}
 
       {mountShareModal && playingSong && (

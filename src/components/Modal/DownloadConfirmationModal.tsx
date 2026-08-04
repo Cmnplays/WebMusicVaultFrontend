@@ -2,22 +2,28 @@
 import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useHandleDownload } from "@/hooks/useHandleDownload";
-import { setMountDownloadConfirmation } from "@/reduxSlices/ui.slice";
+import {
+  setActionSong,
+  setMountDownloadConfirmation,
+} from "@/reduxSlices/ui.slice";
+import type { Song } from "@/services/song.services";
 import { useAppDispatch } from "@/store/hook";
 import { Button } from "../ui/button";
 
 interface DownloadConfirmationProps {
   title: string;
+  song: Song;
   onClose?: () => void;
 }
 
 const DownloadConfirmation: React.FC<DownloadConfirmationProps> = ({
   title,
   onClose,
+  song,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const handleDownload = useHandleDownload();
+  const handleDownload = useHandleDownload(song);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -37,6 +43,7 @@ const DownloadConfirmation: React.FC<DownloadConfirmationProps> = ({
       ease: "power2.in",
       onComplete: () => {
         dispatch(setMountDownloadConfirmation(false));
+        dispatch(setActionSong(null));
         callback?.();
       },
     });
@@ -66,14 +73,14 @@ const DownloadConfirmation: React.FC<DownloadConfirmationProps> = ({
           <Button
             variant="secondary"
             onClick={() => handleInput(false)}
-            className="min-w-[80px]"
+            className="min-w-20"
           >
             No
           </Button>
           <Button
             variant="default"
             onClick={() => handleInput(true)}
-            className="min-w-[80px]"
+            className="min-w-20"
           >
             Yes
           </Button>

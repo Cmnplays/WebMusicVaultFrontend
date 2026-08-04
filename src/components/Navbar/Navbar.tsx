@@ -16,6 +16,8 @@ import {
   CircleUser,
   CloudUpload,
   LogOut,
+  LogIn,
+  UserPlus,
 } from "lucide-react";
 import AppLogo from "./AppLogo";
 import Link from "next/link";
@@ -98,7 +100,7 @@ const Navbar = () => {
                 <NavItem href={link.to} label={link.name} variant="desktop" />
               </li>
             ))}
-            {accessToken && (
+            {accessToken ? (
               <li className="pl-2 border-l border-white/10">
                 <button
                   onClick={handleLogout}
@@ -108,6 +110,15 @@ const Navbar = () => {
                   Logout
                 </button>
               </li>
+            ) : (
+              <>
+                <li>
+                  <NavItem href="/login" label="Login" variant="desktop" />
+                </li>
+                <li>
+                  <NavItem href="/signup" label="Register" variant="desktop" />
+                </li>
+              </>
             )}
           </ul>
         </div>
@@ -135,7 +146,7 @@ const Navbar = () => {
                   {name}
                 </Link>
               ))}
-              {accessToken && (
+              {accessToken ? (
                 <button
                   onClick={handleLogout}
                   className="w-full text-left flex items-center gap-3 px-5 py-4 text-sm text-red-400 hover:bg-red-950/20 transition-colors group"
@@ -143,6 +154,25 @@ const Navbar = () => {
                   <LogOut className="w-4 h-4 text-red-400/60 group-hover:text-red-400 transition-colors" />
                   Logout
                 </button>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setMoreOpen(false)}
+                    className="flex items-center gap-3 px-5 py-4 text-sm text-zinc-300 hover:bg-purple-500/10 border-b border-purple-500/10 transition-colors group"
+                  >
+                    <LogIn className="w-4 h-4 text-purple-300/60 group-hover:text-purple-300 transition-colors" />
+                    Login
+                  </Link>
+                  <Link
+                    href="/signup"
+                    onClick={() => setMoreOpen(false)}
+                    className="flex items-center gap-3 px-5 py-4 text-sm text-zinc-300 hover:bg-purple-500/10 border-b border-purple-500/10 transition-colors group"
+                  >
+                    <UserPlus className="w-4 h-4 text-purple-300/60 group-hover:text-purple-300 transition-colors" />
+                    Register
+                  </Link>
+                </>
               )}
             </div>
           </div>

@@ -8,6 +8,7 @@ import {
   deleteTempSong as excludeTempSong,
 } from "@/reduxSlices/song.slice";
 import {
+  setActionSong,
   setDeleting,
   setMountDeleteConfirmation,
 } from "@/reduxSlices/ui.slice";
@@ -58,6 +59,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
       ease: "power2.in",
       onComplete: () => {
         dispatch(setMountDeleteConfirmation(false));
+        dispatch(setActionSong(null));
       },
     });
   };
