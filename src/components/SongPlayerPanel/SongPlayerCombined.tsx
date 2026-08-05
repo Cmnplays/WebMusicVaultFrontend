@@ -95,7 +95,7 @@ const SongPlayerCombined: React.FC = () => {
       {mountShareModal && playingSong && (
         <ShareSongModal songId={playingSong._id} title={playingSong.title} />
       )}
-      {mountAuthPromptModal && playingSong && <AuthPromptModal />}
+      {mountAuthPromptModal && <AuthPromptModal />}
     </div>
   );
 };

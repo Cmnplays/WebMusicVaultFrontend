@@ -4,12 +4,17 @@ import Link from "next/link";
 import AuthNavbar from "../Navbar/AuthNavbar";
 import { toastList } from "@/utils/toastList";
 import { useRouter } from "next/navigation";
+import { logout } from "@/services/auth.services";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { clearAuth } from "@/reduxSlices/auth.slice";
 interface AuthPromptPageProps {
   feature?: string;
 }
 
 const AuthPromptPage = ({ feature = "This page" }: AuthPromptPageProps) => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const accessToken = useAppSelector((state) => state.auth.accessToken);
 
   return (
     <>
@@ -54,7 +59,15 @@ const AuthPromptPage = ({ feature = "This page" }: AuthPromptPageProps) => {
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => {
+              onClick={async () => {
+                dispatch(clearAuth());
+                if (accessToken) {
+                  try {
+                    await logout();
+                  } catch (e) {
+                    // ignore logout errors
+                  }
+                }
                 router.replace("/");
                 toastList.guestMode();
               }}

@@ -31,7 +31,6 @@ const PinBtn: React.FC<PinBtnProps> = ({
       closeMoreOptionsModal();
       dispatch(setAuthPromptString("pin"));
       dispatch(setMountAuthPromptModal(true));
-
       return;
     }
     if (pinnedSongs.length >= 3 && !isPinned) {
