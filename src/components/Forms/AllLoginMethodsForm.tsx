@@ -18,7 +18,7 @@ import { toastList } from "@/utils/toastList";
 import { useRouter } from "next/navigation";
 import { logout } from "@/services/auth.services";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { clearAuth } from "@/reduxSlices/auth.slice";
+import { clearAuth, setShouldFetchUser } from "@/reduxSlices/auth.slice";
 
 export function AllLoginMethodsForm() {
   const router = useRouter();
@@ -46,6 +46,7 @@ export function AllLoginMethodsForm() {
                     onClick={async () => {
                       // clear client auth state
                       dispatch(clearAuth());
+                      dispatch(setShouldFetchUser(false));
                       if (accessToken) {
                         try {
                           await logout();

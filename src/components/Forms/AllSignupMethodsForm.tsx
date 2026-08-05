@@ -17,7 +17,7 @@ import {
 import { toastList } from "@/utils/toastList";
 import { logout } from "@/services/auth.services";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { clearAuth } from "@/reduxSlices/auth.slice";
+import { clearAuth, setShouldFetchUser } from "@/reduxSlices/auth.slice";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -47,6 +47,7 @@ export function AllSignupMethods() {
                     className="w-full"
                     onClick={async () => {
                       dispatch(clearAuth());
+                      dispatch(setShouldFetchUser(false));
                       if (accessToken) {
                         try {
                           await logout();

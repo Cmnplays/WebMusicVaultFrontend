@@ -6,7 +6,7 @@ import { toastList } from "@/utils/toastList";
 import { useRouter } from "next/navigation";
 import { logout } from "@/services/auth.services";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { clearAuth } from "@/reduxSlices/auth.slice";
+import { clearAuth, setShouldFetchUser } from "@/reduxSlices/auth.slice";
 interface AuthPromptPageProps {
   feature?: string;
 }
@@ -61,6 +61,7 @@ const AuthPromptPage = ({ feature = "This page" }: AuthPromptPageProps) => {
               className="w-full"
               onClick={async () => {
                 dispatch(clearAuth());
+                dispatch(setShouldFetchUser(false));
                 if (accessToken) {
                   try {
                     await logout();
