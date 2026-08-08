@@ -58,7 +58,8 @@ type songChangesT = Partial<{
   songId: string;
   title: string;
   artist: string;
-  coverImageUrl: string;
+  coverImageUrl: string | null;
+  removeCoverImage?: boolean;
   isTemp?: boolean;
 }>;
 
@@ -66,30 +67,25 @@ type editableSongT = Song & { isTemp?: boolean };
 type songTypes = "songs" | "tempSongs";
 const setSongsFn =
   (key: "songs" | "tempSongs") =>
-  (state: SongState, action: PayloadAction<Song[]>) => {
-    if (state[key].length === 0) {
-      state[key] = action.payload;
-    } else {
-      const allSongs = [...state[key], ...action.payload];
-      const uniqueSongMap = new Map<string, Song>();
-      allSongs.forEach((song: Song) => uniqueSongMap.set(song._id, song));
-      state[key] = Array.from(uniqueSongMap.values());
-    }
-  };
+    (state: SongState, action: PayloadAction<Song[]>) => {
+      if (state[key].length === 0) {
+        state[key] = action.payload;
+      } else {
+        const allSongs = [...state[key], ...action.payload];
+        const uniqueSongMap = new Map<string, Song>();
+        allSongs.forEach((song: Song) => uniqueSongMap.set(song._id, song));
+        state[key] = Array.from(uniqueSongMap.values());
+      }
+    };
 
-const deleteSongFn =
-  (key: "songs" | "tempSongs") =>
-  (state: SongState, action: PayloadAction<string>) => {
-    state[key] = state[key].filter((song) => song._id !== action.payload);
-  };
 
 const likeSongFn =
   (key: "songs" | "tempSongs") =>
-  (state: SongState, action: PayloadAction<setSongLikedByT>) => {
-    const { songId, isLiked } = action.payload;
-    const songIndex = state[key].findIndex((song) => song._id === songId);
-    if (songIndex !== -1) state[key][songIndex].isLiked = isLiked;
-  };
+    (state: SongState, action: PayloadAction<setSongLikedByT>) => {
+      const { songId, isLiked } = action.payload;
+      const songIndex = state[key].findIndex((song) => song._id === songId);
+      if (songIndex !== -1) state[key][songIndex].isLiked = isLiked;
+    };
 
 const songSlice = createSlice({
   name: "song",
@@ -106,8 +102,17 @@ const songSlice = createSlice({
     handleSortByChange: (state, action: PayloadAction<Song[]>) => {
       state.songs = action.payload;
     },
-    deleteSong: deleteSongFn("songs"),
-    deleteTempSong: deleteSongFn("tempSongs"),
+    deleteSong: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
+      state.songs = state.songs.filter((song) => song._id !== id);
+      state.tempSongs = state.tempSongs.filter((song) => song._id !== id);
+      state.pinnedSongs = state.pinnedSongs.filter((song) => song._id !== id);
+    },
+    deleteTempSong: (state, action: PayloadAction<string>) => {
+      state.tempSongs = state.tempSongs.filter(
+        (song) => song._id !== action.payload,
+      );
+    },
     setSongLikedBy: likeSongFn("songs"),
     setTempSongLikedBy: likeSongFn("tempSongs"),
     setHasMoreSongs: (state, action: PayloadAction<boolean>) => {
@@ -169,18 +174,21 @@ const songSlice = createSlice({
       state.editableSong = action.payload;
     },
     updateSong: (state, action: PayloadAction<songChangesT>) => {
-      let filterVar: songTypes = "songs";
-      if (action.payload.isTemp) {
-        filterVar = "tempSongs";
-      }
+      const { songId, title, artist, coverImageUrl, removeCoverImage } =
+        action.payload;
+      const updateItem = (song: Song) => {
+        if (title) song.title = title;
+        if (artist) song.artist = artist;
+        if (removeCoverImage || coverImageUrl === null || coverImageUrl === "") {
+          song.coverImageUrl = undefined;
+        } else if (coverImageUrl) {
+          song.coverImageUrl = coverImageUrl;
+        }
+      };
 
-      const song = state[filterVar].filter(
-        (song) => song._id === action.payload.songId,
-      )[0];
-      if (action.payload.artist) song.artist = action.payload.artist;
-      if (action.payload.title) song.title = action.payload.title;
-      if (action.payload.coverImageUrl)
-        song.coverImageUrl = action.payload.coverImageUrl;
+      state.songs.filter((s) => s._id === songId).forEach(updateItem);
+      state.tempSongs.filter((s) => s._id === songId).forEach(updateItem);
+      state.pinnedSongs.filter((s) => s._id === songId).forEach(updateItem);
     },
 
     setPinnedSongs: (state, action: PayloadAction<Song[]>) => {

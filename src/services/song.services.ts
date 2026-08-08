@@ -9,7 +9,7 @@ export interface Song {
   duration: number;
   artist: string;
   isLiked: boolean;
-  coverImageUrl: string;
+  coverImageUrl: string | undefined
   owner: {
     _id: string;
     username: string;
@@ -42,6 +42,7 @@ export type SongChanges = {
   title: string;
   artist: string;
   coverImage: File;
+  removeCoverImage: boolean;
 }>;
 
 const getSongs = async ({
@@ -103,7 +104,7 @@ const toggleAddToFav = async (
   if (response.data.status !== 200) {
     throw new Error(
       response.data.message ||
-        "There was a error while adding song to favourites",
+      "There was a error while adding song to favourites",
     );
   }
   return { songId: id, isLiked: response.data.data };
@@ -163,6 +164,7 @@ const updateSong = async (changes: SongChanges): Promise<Song> => {
   if (changes.title?.trim()) formData.append("title", changes.title.trim());
   if (changes.artist?.trim()) formData.append("artist", changes.artist.trim());
   if (changes.coverImage) formData.append("coverImage", changes.coverImage);
+  if (changes.removeCoverImage) formData.append("removeCoverImage", "true");
   const response = await api.patch<apiResponse<Song>>(
     `/song/${changes.songId}`,
     formData,

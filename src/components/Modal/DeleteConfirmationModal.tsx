@@ -3,10 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { deleteSong } from "../../services/song.services";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
-import {
-  deleteSong as excludeSong,
-  deleteTempSong as excludeTempSong,
-} from "@/reduxSlices/song.slice";
+import { deleteSong as excludeSong } from "@/reduxSlices/song.slice";
 import {
   setActionSong,
   setDeleting,
@@ -19,7 +16,6 @@ interface DeleteConfirmationProps {
   songId: string;
   moveToNextSong: () => void;
   temp?: boolean;
-  customExcludeFn?: (songId: string) => void;
 }
 
 const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
@@ -27,7 +23,6 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
   songId,
   moveToNextSong,
   temp = false,
-  customExcludeFn,
 }) => {
   const dispatch = useAppDispatch();
   const deleting = useAppSelector((state) => state.ui.deleting);
@@ -77,16 +72,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
 
     try {
       await deleteSong(songId);
-
-      if (temp) {
-        if (customExcludeFn) {
-          customExcludeFn(songId);
-        } else {
-          dispatch(excludeTempSong(songId));
-        }
-      } else {
-        dispatch(excludeSong(songId));
-      }
+      dispatch(excludeSong(songId));
 
       setMessage("Successfully deleted song!");
 
@@ -111,13 +97,12 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
     >
       <div className="w-full max-w-md rounded-xl bg-card border border-border p-6 shadow-xl">
         <h3
-          className={`mb-4 text-lg font-semibold line-clamp-2 ${
-            message.includes("Successfully")
+          className={`mb-4 text-lg font-semibold line-clamp-2 ${message.includes("Successfully")
               ? "text-green-500"
               : message.includes("Invalid")
                 ? "text-destructive"
                 : "text-foreground"
-          }`}
+            }`}
         >
           {message || (
             <>
