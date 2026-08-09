@@ -1,76 +1,45 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useAppSelector, useAppDispatch } from "../../store/hook";
 import { setLoading, setMountEditSongModal } from "@/reduxSlices/ui.slice";
 import { fadeInPanel, fadeOutPanel } from "@/lib/animations";
-import { X, Save, Music2, Mic2, Image, Trash2 } from "lucide-react";
-import SongCover from "../ui/SongCover";
-import NextImage from "next/image";
-import { SongChanges } from "@/services/song.services";
-import { updateSong } from "@/services/song.services";
+import { X, Music2 } from "lucide-react";
+import { SongChanges, updateSong } from "@/services/song.services";
 import { updateSong as updateSongInRedux } from "@/reduxSlices/song.slice";
 import { setPlayingSong } from "@/reduxSlices/player.slice";
+import SongEditForm from "../Forms/EditSongForm";
 
-const SongEditPanel = () => {
-  const [newImagePreview, setNewImagePreview] = useState<string | null>(null);
-  const [coverImage, setCoverImage] = useState<File | null>(null);
-  const [removeCoverImage, setRemoveCoverImage] = useState<boolean>(false);
-  const imageInputRef = useRef<HTMLInputElement>(null);
-  const [title, setTitle] = useState<string>("");
-  const [artist, setArtist] = useState<string>("");
-
+const EditSongModal = () => {
   const dispatch = useAppDispatch();
   const editPanelRef = useRef<HTMLDivElement>(null);
+
   const editableSong = useAppSelector((state) => state.song.editableSong);
   const playingSong = useAppSelector((state) => state.player.playingSong);
   const mountEditSongModal = useAppSelector(
     (state) => state.ui.mountEditSongModal,
   );
 
+  // This effect only triggers an imperative animation — it never calls a
+  // state setter, so it's outside the scope of react-hooks/set-state-in-effect.
   useEffect(() => {
     if (!mountEditSongModal) return;
     if (editPanelRef.current) {
       fadeInPanel(editPanelRef.current);
     }
-    if (editableSong) {
-      setTitle(editableSong.title ? editableSong.title.replace(/\.mp3$/i, "") : "");
-      setArtist(editableSong.artist ?? "");
-      setCoverImage(null);
-      setNewImagePreview(null);
-      setRemoveCoverImage(false);
-    }
-  }, [mountEditSongModal, editableSong]);
+  }, [mountEditSongModal]);
 
   const handleClose = () => {
-    if (!editPanelRef.current) return;
+    if (!editPanelRef.current) {
+      dispatch(setMountEditSongModal(false));
+      return;
+    }
     fadeOutPanel(editPanelRef.current, () => {
       dispatch(setMountEditSongModal(false));
-      setCoverImage(null);
-      setNewImagePreview(null);
-      setRemoveCoverImage(false);
     });
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editableSong) {
-      handleClose();
-      return;
-    }
+  const handleSave = async (changes: SongChanges) => {
     dispatch(setLoading(true));
-    const changes: SongChanges = { songId: editableSong._id };
-
-    const initialTitle = editableSong.title ? editableSong.title.replace(/\.mp3$/i, "") : "";
-    if (initialTitle !== title.trim()) changes.title = title.trim();
-    if ((editableSong.artist || "") !== artist.trim()) changes.artist = artist.trim();
-    if (coverImage) changes.coverImage = coverImage;
-    if (removeCoverImage) changes.removeCoverImage = true;
-
-    if (!changes.title && !changes.artist && !changes.coverImage && !changes.removeCoverImage) {
-      dispatch(setLoading(false));
-      handleClose();
-      return;
-    }
     const updatedSong = await updateSong(changes);
     dispatch(
       updateSongInRedux({
@@ -78,7 +47,7 @@ const SongEditPanel = () => {
         title: updatedSong.title,
         artist: updatedSong.artist,
         coverImageUrl: updatedSong.coverImageUrl,
-        removeCoverImage: removeCoverImage || !updatedSong.coverImageUrl,
+        removeCoverImage: !!changes.removeCoverImage || !updatedSong.coverImageUrl,
       }),
     );
     if (playingSong && playingSong._id === updatedSong._id) {
@@ -93,14 +62,6 @@ const SongEditPanel = () => {
     }
     dispatch(setLoading(false));
     handleClose();
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setRemoveCoverImage(false);
-    setCoverImage(file);
-    setNewImagePreview(URL.createObjectURL(file));
   };
 
   if (!mountEditSongModal || !editableSong) return null;
@@ -151,142 +112,21 @@ const SongEditPanel = () => {
 
         <hr className="border-white/10 mb-4" />
 
-        {/* Matching Form Layout */}
-        <form onSubmit={handleSave} className="space-y-4 max-w-2xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Song thumbnail */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-purple-200/80 tracking-wide">
-                Song Thumbnail
-              </label>
-
-              <input
-                ref={imageInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageChange}
-              />
-
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => imageInputRef.current?.click()}
-                  className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0 group border border-white/10"
-                >
-                  {newImagePreview ? (
-                    <NextImage
-                      src={newImagePreview}
-                      alt="New thumbnail preview"
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <SongCover
-                      id={editableSong._id}
-                      title={title || editableSong.title}
-                      artist={artist || editableSong.artist}
-                      src={removeCoverImage ? undefined : editableSong.coverImageUrl}
-                      size="sm"
-                      className="w-full h-full"
-                    />
-                  )}
-
-                  {/* Darken on hover */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                  {/* Always-visible edit badge */}
-                  <div className="absolute bottom-0.5 right-0.5 w-5 h-5 rounded-full bg-purple-600 border border-white/30 flex items-center justify-center shadow-md">
-                    <Image size={11} className="text-white" />
-                  </div>
-                </button>
-
-                {/* Remove / Reset Thumbnail Button */}
-                {((editableSong.coverImageUrl && !removeCoverImage) || newImagePreview) ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setRemoveCoverImage(true);
-                      setCoverImage(null);
-                      setNewImagePreview(null);
-                    }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition-all"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>Remove thumbnail</span>
-                  </button>
-                ) : removeCoverImage ? (
-                  <div className="flex flex-col gap-1">
-                    <span className="text-xs text-amber-300 font-medium">Thumbnail marked for removal</span>
-                    <button
-                      type="button"
-                      onClick={() => imageInputRef.current?.click()}
-                      className="text-[11px] font-semibold text-purple-300 underline hover:text-white"
-                    >
-                      Choose new image
-                    </button>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-
-            {/* Title Input Field */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-purple-200/80 tracking-wide">
-                Song Title
-              </label>
-              <div className="relative">
-                <Music2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-300/50 pointer-events-none" />
-                <input
-                  type="text"
-                  value={title}
-                  placeholder="e.g., Bella Ciao"
-                  className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:bg-white/10 focus:border-purple-400/50 focus:ring-1 focus:ring-purple-400/50 transition-all"
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {/* Artist Input Field */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-purple-200/80 tracking-wide">
-                Artist / Owner
-              </label>
-              <div className="relative">
-                <Mic2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-300/50 pointer-events-none" />
-                <input
-                  type="text"
-                  value={artist}
-                  placeholder="e.g., Manu Pilas"
-                  className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:bg-white/10 focus:border-purple-400/50 focus:ring-1 focus:ring-purple-400/50 transition-all"
-                  onChange={(e) => setArtist(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Form Actions */}
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="px-4 py-2.5 text-xs font-semibold rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-all"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold bg-white text-purple-900 rounded-xl hover:bg-purple-100 active:scale-[0.98] transition-all shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/50"
-            >
-              <Save className="w-3.5 h-3.5" />
-              Save Changes
-            </button>
-          </div>
-        </form>
+        {/*
+          key={editableSong._id} is the whole fix: whenever the song being
+          edited changes, React unmounts the old form and mounts a brand new
+          one. Its useState initializers read the new song directly — no
+          effect, no setState-after-render, no stale-field bug.
+        */}
+        <SongEditForm
+          key={editableSong._id}
+          song={editableSong}
+          onSave={handleSave}
+          onCancel={handleClose}
+        />
       </div>
     </>
   );
 };
 
-export default SongEditPanel;
-
+export default EditSongModal;
