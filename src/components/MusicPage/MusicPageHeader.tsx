@@ -42,6 +42,9 @@ const MusicHeader: React.FC<MusicPageHeaderProps> = ({
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Sort By</SelectLabel>
+              {isTemp && (
+                <SelectItem value="relevance">Relevance</SelectItem>
+              )}
               <SelectItem value="createdAt">Created At</SelectItem>
               <SelectItem value="duration">Duration</SelectItem>
               <SelectItem value="title">Title</SelectItem>
@@ -50,26 +53,28 @@ const MusicHeader: React.FC<MusicPageHeaderProps> = ({
           </SelectContent>
         </Select>
 
-        <Select
-          value={sortOrder}
-          onValueChange={(val) => HandleSortOrder(val as sortOrderT, isTemp)}
-        >
-          <SelectTrigger className="h-9 flex-1 sm:w-40 text-sm flex items-center gap-2">
-            {sortOrder === "asc" ? (
-              <ArrowUp size={16} className="text-zinc-400" />
-            ) : (
-              <ArrowDown size={16} className="text-zinc-400" />
-            )}
-            <SelectValue placeholder="Order" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Order</SelectLabel>
-              <SelectItem value="asc">Ascending</SelectItem>
-              <SelectItem value="desc">Descending</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        {sortBy !== "relevance" && (
+          <Select
+            value={sortOrder}
+            onValueChange={(val) => HandleSortOrder(val as sortOrderT, isTemp)}
+          >
+            <SelectTrigger className="h-9 flex-1 sm:w-40 text-sm flex items-center gap-2">
+              {sortOrder === "asc" ? (
+                <ArrowUp size={16} className="text-zinc-400" />
+              ) : (
+                <ArrowDown size={16} className="text-zinc-400" />
+              )}
+              <SelectValue placeholder="Order" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Order</SelectLabel>
+                <SelectItem value="asc">Ascending</SelectItem>
+                <SelectItem value="desc">Descending</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        )}
       </div>
     </div>
   );

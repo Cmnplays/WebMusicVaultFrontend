@@ -10,7 +10,7 @@ declare global {
         _id?: string;
       }
     | undefined;
-  type sortByT = "createdAt" | "title" | "duration" | "playCount";
+  type sortByT = "relevance" | "createdAt" | "title" | "duration" | "playCount";
   type sortOrderT = "asc" | "desc";
   interface apiResponse<K> {
     status: number;

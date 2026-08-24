@@ -38,7 +38,7 @@ const initialState: SongState = {
   sortBy: "createdAt",
   sortOrder: "desc",
   sortChanged: false,
-  tempSortBy: "createdAt",
+  tempSortBy: "relevance",
   tempSortOrder: "desc",
   tempSortChanged: false,
   playlists: {
