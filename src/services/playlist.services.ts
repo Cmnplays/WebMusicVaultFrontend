@@ -57,6 +57,21 @@ export interface GetPlaylistSongsOptions {
   cursor?: string;
 }
 
+export interface CreatePlaylistInput {
+  name: string;
+  description?: string;
+  status?: "private" | "public";
+}
+
+export interface AddSongsResponse {
+  playlist: PlaylistWithSongs;
+  skipped: {
+    title?: string;
+    id: string;
+    message: string;
+  }[];
+}
+
 const getPlaylistSongs = async (
   playlistId: string,
   options?: GetPlaylistSongsOptions,
@@ -104,4 +119,52 @@ const getLikedSongs = async (
   return response.data.data;
 };
 
-export { getPlaylists, getPlaylistSongs, getLikedSongs };
+const createPlaylist = async (
+  input: CreatePlaylistInput,
+): Promise<Playlist> => {
+  const response = await api.post("/playlist", input);
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message ??
+        "There was a problem while creating the playlist",
+    );
+  }
+  return response.data.data;
+};
+
+const addSongs = async (
+  playlistId: string,
+  songIds: string[],
+): Promise<AddSongsResponse> => {
+  const response = await api.patch(`/playlist/${playlistId}/add`, { songIds });
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message ?? "There was a problem while adding songs",
+    );
+  }
+  return response.data.data;
+};
+
+const removeSongs = async (
+  playlistId: string,
+  songIds: string[],
+): Promise<AddSongsResponse> => {
+  const response = await api.patch(`/playlist/${playlistId}/remove`, {
+    songIds,
+  });
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message ?? "There was a problem while removing songs",
+    );
+  }
+  return response.data.data;
+};
+
+export {
+  getPlaylists,
+  getPlaylistSongs,
+  getLikedSongs,
+  createPlaylist,
+  addSongs,
+  removeSongs,
+};

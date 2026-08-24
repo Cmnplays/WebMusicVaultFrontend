@@ -4,6 +4,8 @@ import SongPlayerCombined from "@/components/SongPlayerPanel/SongPlayerCombined"
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { useAppSelector } from "@/store/hook";
 import EditSongModal from "@/components/Modal/EditSongModal";
+import CreatePlaylistModal from "@/components/Modal/CreatePlaylistModal";
+import AddToPlaylistModal from "@/components/Modal/AddToPlaylistModal";
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const isAdmin = useAppSelector((state) => state.auth.user?.role) === "admin";
   return (
@@ -15,6 +17,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       {isAdmin && <EditSongModal />}
+      <CreatePlaylistModal />
+      <AddToPlaylistModal />
       <SongPlayerCombined />
       <ScrollToTopButton />
     </div>

@@ -4,6 +4,7 @@ import { Pencil, Trash, Download } from "lucide-react";
 import { useAppDispatch } from "@/store/hook";
 import PinBtn from "../SongList/PinBtn";
 import AddToPlaylistBtn from "../SongList/AddToPlaylistBtn";
+import RemoveFromPlaylistBtn from "../SongList/RemoveFromPlaylistBtn";
 import {
   setActionSong,
   setMountDeleteConfirmation,
@@ -59,6 +60,8 @@ const SongCardMoreOptionsModal: React.FC<SongCardMoreOptionsModalProps> = ({
         />
 
         <AddToPlaylistBtn song={song} closeMoreOptionsModal={onClose} />
+
+        <RemoveFromPlaylistBtn song={song} closeMoreOptionsModal={onClose} />
 
         <button
           type="button"

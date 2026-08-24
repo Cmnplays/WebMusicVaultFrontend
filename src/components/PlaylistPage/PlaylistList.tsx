@@ -1,15 +1,32 @@
 "use client";
-import { ListMusic } from "lucide-react";
+import { ListMusic, Plus } from "lucide-react";
 import PlaylistCard from "@/components/PlaylistPage/PlaylistCard";
 import type { PlaylistsResponse } from "@/services/playlist.services";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import {
+  setMountCreatePlaylistModal,
+  setAuthPromptString,
+  setMountAuthPromptModal,
+} from "@/reduxSlices/ui.slice";
 
 interface PlaylistListProps {
   playlists: PlaylistsResponse;
 }
 
 const PlaylistList: React.FC<PlaylistListProps> = ({ playlists }) => {
+  const dispatch = useAppDispatch();
+  const accessToken = useAppSelector((state) => state.auth.accessToken);
   const total =
     playlists.defaultPlaylists.length + playlists.personalPlaylists.length;
+
+  const handleCreateClick = () => {
+    if (!accessToken) {
+      dispatch(setAuthPromptString("create playlists"));
+      dispatch(setMountAuthPromptModal(true));
+      return;
+    }
+    dispatch(setMountCreatePlaylistModal(true));
+  };
 
   return (
     <>
@@ -19,6 +36,15 @@ const PlaylistList: React.FC<PlaylistListProps> = ({ playlists }) => {
         <span className="ml-auto text-sm text-purple-300">
           {total} playlists
         </span>
+        <button
+          type="button"
+          onClick={handleCreateClick}
+          aria-label="Create new playlist"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-600 text-white text-xs font-bold hover:bg-purple-500 active:scale-[0.98] transition-all shadow-md"
+        >
+          <Plus className="w-4 h-4" />
+          New Playlist
+        </button>
       </div>
 
       {/* Default playlists */}

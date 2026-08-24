@@ -166,8 +166,26 @@ const songSlice = createSlice({
         (p) => p.isDefault,
       );
       if (likedSongsPlaylist) {
-        likedSongsPlaylist.songs += isLiked ? 1 : -1;
-        if (likedSongsPlaylist.songs < 0) likedSongsPlaylist.songs = 0;
+        likedSongsPlaylist.songs = Math.max(
+          0,
+          Number(likedSongsPlaylist.songs) + (isLiked ? 1 : -1),
+        );
+      }
+    },
+    incrementPlaylistSongCount: (state, action: PayloadAction<string>) => {
+      const playlist = state.playlists.personalPlaylists.find(
+        (p) => p._id === action.payload,
+      );
+      if (playlist) {
+        playlist.songs = Number(playlist.songs) + 1;
+      }
+    },
+    decrementPlaylistSongCount: (state, action: PayloadAction<string>) => {
+      const playlist = state.playlists.personalPlaylists.find(
+        (p) => p._id === action.payload,
+      );
+      if (playlist) {
+        playlist.songs = Math.max(0, Number(playlist.songs) - 1);
       }
     },
     setEditableSong: (state, action: PayloadAction<editableSongT | null>) => {
@@ -246,6 +264,8 @@ export const {
   setPlaylists,
   setSongsType,
   updatePlaylistSongCount,
+  incrementPlaylistSongCount,
+  decrementPlaylistSongCount,
   setEditableSong,
   updateSong,
   setPinnedSongs,

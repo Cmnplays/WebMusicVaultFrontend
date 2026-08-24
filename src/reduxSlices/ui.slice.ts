@@ -13,6 +13,8 @@ interface UIState {
   mountAuthPromptModal: boolean;
   navHeight: number;
   mountEditSongModal: boolean;
+  mountCreatePlaylistModal: boolean;
+  mountAddToPlaylistModal: boolean;
   actionSong: Song | null;
   authPromptText: string;
 }
@@ -29,6 +31,8 @@ const initialState: UIState = {
   authPromptText: "like",
   navHeight: 0,
   mountEditSongModal: false,
+  mountCreatePlaylistModal: false,
+  mountAddToPlaylistModal: false,
   actionSong: null,
 };
 
@@ -66,6 +70,12 @@ const uiSlice = createSlice({
     setMountEditSongModal: (state, action: PayloadAction<boolean>) => {
       state.mountEditSongModal = action.payload;
     },
+    setMountCreatePlaylistModal: (state, action: PayloadAction<boolean>) => {
+      state.mountCreatePlaylistModal = action.payload;
+    },
+    setMountAddToPlaylistModal: (state, action: PayloadAction<boolean>) => {
+      state.mountAddToPlaylistModal = action.payload;
+    },
     setActionSong: (state, action: PayloadAction<Song | null>) => {
       state.actionSong = action.payload;
     },
@@ -86,6 +96,8 @@ export const {
   setMountAuthPromptModal,
   setNavHeight,
   setMountEditSongModal,
+  setMountCreatePlaylistModal,
+  setMountAddToPlaylistModal,
   setActionSong,
   setAuthPromptString,
 } = uiSlice.actions;

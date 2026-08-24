@@ -3,7 +3,13 @@
 import React from "react";
 import type { Song } from "@/services/song.services";
 import { ListPlus } from "lucide-react";
-import { showToast } from "@/hooks/useToast";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
+import {
+  setActionSong,
+  setAuthPromptString,
+  setMountAddToPlaylistModal,
+  setMountAuthPromptModal,
+} from "@/reduxSlices/ui.slice";
 
 interface AddToPlaylistBtnProps {
   song: Song;
@@ -11,15 +17,21 @@ interface AddToPlaylistBtnProps {
 }
 
 const AddToPlaylistBtn: React.FC<AddToPlaylistBtnProps> = ({
+  song,
   closeMoreOptionsModal,
 }) => {
+  const dispatch = useAppDispatch();
+  const accessToken = useAppSelector((state) => state.auth.accessToken);
+
   const handleClick = () => {
     closeMoreOptionsModal();
-    showToast({
-      message: "This feature is coming soon",
-      type: "info",
-      duration: 1200,
-    });
+    if (!accessToken) {
+      dispatch(setAuthPromptString("add songs to playlists"));
+      dispatch(setMountAuthPromptModal(true));
+      return;
+    }
+    dispatch(setActionSong(song));
+    dispatch(setMountAddToPlaylistModal(true));
   };
   return (
     <button
