@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import AppLogo from "./AppLogo";
 import Link from "next/link";
+import { toastList } from "@/utils/toastList";
 
 const bottomNavItems = [
   { name: "Music", to: "/", icon: Home },
@@ -54,10 +55,16 @@ const Navbar = () => {
   ];
 
   const handleLogout = async () => {
-    await logout();
-    dispatch(clearAuth());
-    router.replace("/login");
-    setMoreOpen(false);
+    try {
+      await logout();
+      toastList.loggedOut();
+    } catch {
+      toastList.genericError("Logout failed on the server, but you're signed out here.");
+    } finally {
+      dispatch(clearAuth());
+      setMoreOpen(false);
+      router.replace("/login");
+    }
   };
 
   useLayoutEffect(() => {

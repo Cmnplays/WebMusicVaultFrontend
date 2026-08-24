@@ -2,6 +2,7 @@
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { setDownloading } from "../reduxSlices/ui.slice";
 import type { Song } from "@/services/song.services";
+import { showToast } from "./useToast";
 export const useHandleDownload = (song?: Song) => {
   const dispatch = useAppDispatch();
   const playingSong = useAppSelector((state) => state.player.playingSong);
@@ -9,7 +10,7 @@ export const useHandleDownload = (song?: Song) => {
 
   return async () => {
     if (!targetSong || !targetSong.fileUrl) {
-      console.error("No song available to download");
+      showToast({ message: "No song available to download.", type: "error" });
       return;
     }
 
@@ -30,8 +31,16 @@ export const useHandleDownload = (song?: Song) => {
       a.remove();
 
       window.URL.revokeObjectURL(url);
+      showToast({
+        message: `Downloaded "${targetSong.title.replace(/\.mp3$/i, "")}"`,
+        type: "success",
+      });
     } catch (e) {
       console.error(e);
+      showToast({
+        message: "Download failed. Please try again.",
+        type: "error",
+      });
     } finally {
       dispatch(setDownloading(false));
     }

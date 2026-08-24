@@ -17,6 +17,7 @@ import { setLoading } from "@/reduxSlices/ui.slice";
 import SongList from "@/components/SongList/SongList";
 import SongListSkeleton from "@/components/SongList/SongListSkeleton";
 import { getRandomSong } from "@/services/song.services";
+import { Shuffle } from "lucide-react";
 
 const ShufflePlayer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -32,6 +33,8 @@ const ShufflePlayer: React.FC = () => {
   const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
   const [initLoading, setInitLoading] = useState(true);
   const [fetchingNext, setFetchingNext] = useState(false);
+  const [initError, setInitError] = useState(false);
+  const [retryTick, setRetryTick] = useState(0);
 
   // Tracks the highest song index the user has reached — only grows, never shrinks
   const [maxVisibleIndex, setMaxVisibleIndex] = useState(0);
@@ -47,6 +50,7 @@ const ShufflePlayer: React.FC = () => {
     const init = async () => {
       try {
         setInitLoading(true);
+        setInitError(false);
         const randomSongs = await getRandomSong();
         if (!mounted) return;
         dispatch(replaceTempSongs(randomSongs));
@@ -56,6 +60,7 @@ const ShufflePlayer: React.FC = () => {
         dispatch(setMiniPanelOpen(true));
       } catch (err) {
         console.error("Failed to load initial random songs", err);
+        if (mounted) setInitError(true);
       } finally {
         if (mounted) setInitLoading(false);
       }
@@ -68,7 +73,7 @@ const ShufflePlayer: React.FC = () => {
       dispatch(setExpandedPanelOpen(false));
       dispatch(setLoading(false));
     };
-  }, [dispatch, shouldFetchUser]);
+  }, [dispatch, shouldFetchUser, retryTick]);
 
   // ── Grow visible window whenever the playing song advances ──
   useEffect(() => {
@@ -128,6 +133,21 @@ const ShufflePlayer: React.FC = () => {
       {/* Song List */}
       {initLoading ? (
         <SongListSkeleton rows={10} />
+      ) : initError ? (
+        <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
+          <Shuffle className="w-10 h-10 text-red-300/60" />
+          <p className="text-red-300 text-sm">
+            Couldn&apos;t start shuffle mode. Please check your connection and
+            try again.
+          </p>
+          <button
+            type="button"
+            onClick={() => setRetryTick((t) => t + 1)}
+            className="px-4 py-2 text-xs font-bold bg-purple-600 hover:bg-purple-500 rounded-lg transition-colors"
+          >
+            Retry
+          </button>
+        </div>
       ) : (
         <SongList
           handlePlayClick={handlePlayClick}

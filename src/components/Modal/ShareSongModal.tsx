@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { setMountShareModal } from "@/reduxSlices/ui.slice";
 import { useAppDispatch } from "@/store/hook";
 import { Copy, Check, X } from "lucide-react";
+import { showToast } from "@/hooks/useToast";
 
 interface ShareSongProps {
   title: string;
@@ -43,10 +44,17 @@ const ShareSongModal: React.FC<ShareSongProps> = ({ title, songId }) => {
   };
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(shareLink);
-    setCopied(true);
-    // setTimeout(() => setCopied(false), 1500);
-    closeWithAnimation();
+    try {
+      await navigator.clipboard.writeText(shareLink);
+      setCopied(true);
+      showToast({ message: "Link copied to clipboard", type: "success" });
+      closeWithAnimation();
+    } catch {
+      showToast({
+        message: "Couldn't copy automatically. Please copy it manually.",
+        type: "error",
+      });
+    }
   };
 
   return (

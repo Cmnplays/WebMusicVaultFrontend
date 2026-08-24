@@ -1,7 +1,6 @@
 "use client";
 import Navbar from "@/components/Navbar/Navbar";
 import SongPlayerCombined from "@/components/SongPlayerPanel/SongPlayerCombined";
-import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { useAppSelector } from "@/store/hook";
 import EditSongModal from "@/components/Modal/EditSongModal";
 import CreatePlaylistModal from "@/components/Modal/CreatePlaylistModal";
@@ -20,7 +19,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <CreatePlaylistModal />
       <AddToPlaylistModal />
       <SongPlayerCombined />
-      <ScrollToTopButton />
     </div>
   );
 }

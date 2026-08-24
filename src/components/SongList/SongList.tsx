@@ -6,6 +6,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { setEditableSong } from "@/reduxSlices/song.slice";
 import { setMountEditSongModal } from "@/reduxSlices/ui.slice";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const SongList = ({
   songs,
@@ -46,9 +47,50 @@ const SongList = ({
   const [openMenuSongId, setOpenMenuSongId] = useState<string | null>(null);
   const pinnedSongs = useAppSelector((state) => state.song.pinnedSongs);
   const pinnedSongsSet = new Set(pinnedSongs.map((song) => song._id));
+
+  // ── Floating action button (jump-to-playing / scroll-to-top) ──
+  const [scrolledFar, setScrolledFar] = useState(false);
+
+  const playingIdx = playingSong
+    ? songs.findIndex((s) => s._id === playingSong._id)
+    : -1;
+
+  const vRange = virtualizer.range;
+  const playingOffscreen =
+    playingIdx !== -1 &&
+    !!vRange &&
+    (playingIdx < vRange.startIndex || playingIdx > vRange.endIndex);
+
+  // Jump-to-playing only when NOT scrolled far — scroll-to-top wins first,
+  // then after returning to top the ▼ jump arrow points at the song below.
+  const jumpMode = !scrolledFar && playingOffscreen;
+  const showFab = scrolledFar || playingOffscreen;
+
+  const handleFabClick = () => {
+    const el = scrollableElemRef.current;
+    if (!el) return;
+    if (jumpMode && playingIdx !== -1) {
+      // All rows are a fixed 90px, so the offset math is exact.
+      // Center the playing row in the viewport — smoothly, not a teleport.
+      const itemSize = 90;
+      const target = Math.max(
+        0,
+        Math.min(
+          playingIdx * itemSize + itemSize / 2 - el.clientHeight / 2,
+          el.scrollHeight - el.clientHeight,
+        ),
+      );
+      el.scrollTo({ top: target, behavior: "smooth" });
+    } else {
+      el.scrollTo({ top: 0, behavior: "smooth" });
+      setScrolledFar(false);
+    }
+  };
+
   return (
     <div
       ref={scrollableElemRef}
+      onScroll={(e) => setScrolledFar(e.currentTarget.scrollTop > 400)}
       style={{
         overflow: "auto",
         flex: 1,
@@ -115,6 +157,33 @@ const SongList = ({
         <p className="text-center text-purple-200 mb-2">
           You have reached the end of the results.
         </p>
+      )}
+
+      {/* ── Spacer so the last card is never hidden behind the fixed MiniPlayer ── */}
+      {playingSong && <div className="h-20 lg:h-16" aria-hidden="true" />}
+
+      {/* ── Floating action button: jump to playing song OR scroll to top ── */}
+      {showFab && (
+        <button
+          type="button"
+          onClick={handleFabClick}
+          aria-label={jumpMode ? "Jump to playing song" : "Scroll to top"}
+          title={jumpMode ? "Jump to playing song" : "Scroll to top"}
+          className={`fixed ${
+            playingSong ? "bottom-36 lg:bottom-28" : "bottom-24"
+          } right-5 z-40 p-3 rounded-full bg-purple-600/30 backdrop-blur-md border border-purple-400/30 text-purple-100 shadow-xl hover:bg-purple-500/50 hover:text-white transition-all active:scale-95 animate-in fade-in zoom-in-95 duration-150`}
+        >
+          {jumpMode ? (
+            // Arrow points toward the playing song's position in the list
+            playingIdx < (virtualizer.range?.startIndex ?? 0) ? (
+              <ChevronUp size={24} />
+            ) : (
+              <ChevronDown size={24} />
+            )
+          ) : (
+            <ChevronUp size={24} />
+          )}
+        </button>
       )}
     </div>
   );

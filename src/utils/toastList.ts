@@ -5,6 +5,8 @@ export const toastList = {
   loginSuccess: () => {
     showToast({ message: "Successfully logged in", type: "success" });
   },
+  loggedOut: () =>
+    showToast({ message: "Logged out successfully", type: "info" }),
   accountCreated: () =>
     showToast({ message: "Account created successfully", type: "success" }),
   passwordReset: () =>

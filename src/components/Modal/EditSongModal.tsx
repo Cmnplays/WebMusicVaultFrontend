@@ -8,6 +8,7 @@ import { SongChanges, updateSong } from "@/services/song.services";
 import { updateSong as updateSongInRedux } from "@/reduxSlices/song.slice";
 import { setPlayingSong } from "@/reduxSlices/player.slice";
 import SongEditForm from "../Forms/EditSongForm";
+import { showToast } from "@/hooks/useToast";
 
 const EditSongModal = () => {
   const dispatch = useAppDispatch();
@@ -40,28 +41,40 @@ const EditSongModal = () => {
 
   const handleSave = async (changes: SongChanges) => {
     dispatch(setLoading(true));
-    const updatedSong = await updateSong(changes);
-    dispatch(
-      updateSongInRedux({
-        songId: updatedSong._id,
-        title: updatedSong.title,
-        artist: updatedSong.artist,
-        coverImageUrl: updatedSong.coverImageUrl,
-        removeCoverImage: !!changes.removeCoverImage || !updatedSong.coverImageUrl,
-      }),
-    );
-    if (playingSong && playingSong._id === updatedSong._id) {
+    try {
+      const updatedSong = await updateSong(changes);
       dispatch(
-        setPlayingSong({
-          ...playingSong,
+        updateSongInRedux({
+          songId: updatedSong._id,
           title: updatedSong.title,
           artist: updatedSong.artist,
           coverImageUrl: updatedSong.coverImageUrl,
+          removeCoverImage: !!changes.removeCoverImage || !updatedSong.coverImageUrl,
         }),
       );
+      if (playingSong && playingSong._id === updatedSong._id) {
+        dispatch(
+          setPlayingSong({
+            ...playingSong,
+            title: updatedSong.title,
+            artist: updatedSong.artist,
+            coverImageUrl: updatedSong.coverImageUrl,
+          }),
+        );
+      }
+      showToast({ message: "Song updated successfully", type: "success" });
+      handleClose();
+    } catch (err) {
+      showToast({
+        message:
+          err instanceof Error
+            ? err.message
+            : "Couldn't update the song. Please try again.",
+        type: "error",
+      });
+    } finally {
+      dispatch(setLoading(false));
     }
-    dispatch(setLoading(false));
-    handleClose();
   };
 
   if (!mountEditSongModal || !editableSong) return null;

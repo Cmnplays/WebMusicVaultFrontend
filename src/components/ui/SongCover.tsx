@@ -124,6 +124,8 @@ const SongCover: React.FC<SongCoverProps> = ({
 
   return (
     <div
+      role={src ? undefined : "img"}
+      aria-label={title}
       className={cn(
         "relative rounded-xl overflow-hidden flex items-center justify-center select-none transition-all duration-300 group",
         src ? "bg-zinc-900" : cn("bg-gradient-to-br", gradientClass),

@@ -12,6 +12,7 @@ import {
 import { setMountAuthPromptModal } from "@/reduxSlices/ui.slice";
 import { setPlayingSong } from "@/reduxSlices/player.slice";
 import { usePathname } from "next/navigation";
+import { showToast } from "@/hooks/useToast";
 
 interface AddToFavProps {
   songId: string;
@@ -74,6 +75,10 @@ const AddToFav: React.FC<AddToFavProps> = ({ songId, isLiked, audioRef }) => {
       }
     } catch (err) {
       console.error("Failed to toggle favorite:", err);
+      showToast({
+        message: "Couldn't update favourite. Please try again.",
+        type: "error",
+      });
 
       // --- Revert: Return to original state on failure ---
       const revertData = { songId, isLiked: originalLikedStatus };

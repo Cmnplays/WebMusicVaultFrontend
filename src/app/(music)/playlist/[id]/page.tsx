@@ -21,6 +21,7 @@ import {
 import { Song } from "@/services/song.services";
 import { ArrowLeft } from "lucide-react";
 import ProtectedLayout from "@/components/ProtectedLayout";
+import { showToast } from "@/hooks/useToast";
 
 const PlaylistPage = () => {
   const params = useParams();
@@ -30,6 +31,8 @@ const PlaylistPage = () => {
 
   const [playlistInfo, setPlaylistInfo] =
     useState<Partial<PlaylistWithSongs> | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [retryTick, setRetryTick] = useState(0);
   const tempSongs = useAppSelector((state) => state.song.tempSongs);
   const loading = useAppSelector((state) => state.ui.loading);
   const playing = useAppSelector((state) => state.player.playing);
@@ -46,6 +49,9 @@ const PlaylistPage = () => {
     (state) => state.song.tempTriggerFetch,
   );
   const shouldFetchUser = useAppSelector((state) => state.auth.shouldFetchUser);
+  const cachedSongCount = useAppSelector((state) =>
+    state.song.playlists.personalPlaylists.find((p) => p._id === id)?.songs,
+  );
   const { handlePlayClick } = usePlaySong();
 
   // Clear state on unmount or id change
@@ -66,6 +72,7 @@ const PlaylistPage = () => {
     const fetchInitialSongs = async () => {
       try {
         dispatch(setLoading(true));
+        setErrorMsg(null);
         const data = await getPlaylistSongs(id, { limit: 10 });
         if (data.songs && data.songs.length > 0) {
           dispatch(replaceTempSongs(data.songs as unknown as Song[]));
@@ -84,12 +91,18 @@ const PlaylistPage = () => {
         document.title = `${data.name} | WmV`;
       } catch (error) {
         console.error(error);
+        const status = (error as ApiError)?.response?.status;
+        setErrorMsg(
+          status === 404
+            ? "This playlist doesn't exist or is no longer available."
+            : "Couldn't load this playlist. Please check your connection and try again.",
+        );
       } finally {
         dispatch(setLoading(false));
       }
     };
     fetchInitialSongs();
-  }, [dispatch, id, shouldFetchUser]);
+  }, [dispatch, id, shouldFetchUser, retryTick]);
 
   // Infinite Scroll fetch
   useEffect(() => {
@@ -111,6 +124,10 @@ const PlaylistPage = () => {
         }
       } catch (error) {
         console.error(error);
+        showToast({
+          message: "Couldn't load more songs. Please try again.",
+          type: "error",
+        });
       } finally {
         dispatch(setLoading(false));
       }
@@ -138,24 +155,43 @@ const PlaylistPage = () => {
               {playlistInfo.description && (
                 <p className="text-gray-300 mt-2">{playlistInfo.description}</p>
               )}
+              {typeof cachedSongCount === "number" && (
+                <p className="text-xs text-purple-300 mt-2">
+                  {cachedSongCount} / 50 songs
+                </p>
+              )}
             </>
+          ) : errorMsg ? (
+            <div className="py-2">
+              <p className="text-red-300 text-sm">{errorMsg}</p>
+              {!errorMsg.includes("doesn't exist") && (
+                <button
+                  type="button"
+                  onClick={() => setRetryTick((t) => t + 1)}
+                  className="mt-3 px-4 py-2 text-xs font-bold bg-purple-600 hover:bg-purple-500 rounded-lg transition-colors"
+                >
+                  Retry
+                </button>
+              )}
+            </div>
           ) : (
             <div className="h-12 bg-white/20 rounded animate-pulse w-1/3"></div>
           )}
         </div>
 
         {/* Song List */}
-        {loading && tempSongs.length < 10 ? (
-          <SongListSkeleton rows={10} />
-        ) : (
-          <SongList
-            handlePlayClick={handlePlayClick}
-            playing={playing}
-            playingSong={playingSong}
-            songs={tempSongs}
-            isTemp={true}
-          />
-        )}
+        {!errorMsg &&
+          (loading && tempSongs.length < 10 ? (
+            <SongListSkeleton rows={10} />
+          ) : (
+            <SongList
+              handlePlayClick={handlePlayClick}
+              playing={playing}
+              playingSong={playingSong}
+              songs={tempSongs}
+              isTemp={true}
+            />
+          ))}
 
         {loading && tempSongs.length >= 10 && (
           <p className="text-center mt-4 text-purple-200 whitespace-pre-line">

@@ -17,6 +17,7 @@ import SongListSkeleton from "@/components/SongList/SongListSkeleton";
 import { handleSortBy, handleSortOrder } from "@/utils/songUtils";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getSongWithId } from "@/services/song.services";
+import { toastList } from "@/utils/toastList";
 
 const MusicPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -61,6 +62,7 @@ const MusicPage: React.FC = () => {
         dispatch(setMiniPanelOpen(true));
       } catch (err) {
         console.error("Deep-link: failed to fetch song", err);
+        toastList.genericError("Couldn't play the shared song.");
       } finally {
         router.replace("/", { scroll: false });
       }

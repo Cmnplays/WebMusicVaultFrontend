@@ -17,6 +17,7 @@ import SongListSkeleton from "@/components/SongList/SongListSkeleton";
 import { getLikedSongs, PlaylistWithSongs } from "@/services/playlist.services";
 import { Song } from "@/services/song.services";
 import { ArrowLeft } from "lucide-react";
+import { showToast } from "@/hooks/useToast";
 
 const LikedSongsPage = () => {
   const params = useParams();
@@ -26,6 +27,8 @@ const LikedSongsPage = () => {
 
   const [playlistInfo, setPlaylistInfo] =
     useState<Partial<PlaylistWithSongs> | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [retryTick, setRetryTick] = useState(0);
 
   const tempSongs = useAppSelector((state) => state.song.tempSongs);
   const loading = useAppSelector((state) => state.ui.loading);
@@ -63,6 +66,7 @@ const LikedSongsPage = () => {
     const fetchInitialSongs = async () => {
       try {
         dispatch(setLoading(true));
+        setErrorMsg(null);
         const data = await getLikedSongs(userId);
         if (data.songs && data.songs.length > 0) {
           dispatch(replaceTempSongs(data.songs as unknown as Song[]));
@@ -80,12 +84,15 @@ const LikedSongsPage = () => {
         document.title = `${data.name} | WmV`;
       } catch (error) {
         console.error("Error fetching liked songs:", error);
+        setErrorMsg(
+          "Couldn't load your liked songs. Please check your connection and try again.",
+        );
       } finally {
         dispatch(setLoading(false));
       }
     };
     fetchInitialSongs();
-  }, [dispatch, userId, shouldFetchUser]);
+  }, [dispatch, userId, shouldFetchUser, retryTick]);
 
   // Infinite Scroll fetch
   useEffect(() => {
@@ -107,6 +114,10 @@ const LikedSongsPage = () => {
         }
       } catch (error) {
         console.error("Error fetching more songs:", error);
+        showToast({
+          message: "Couldn't load more songs. Please try again.",
+          type: "error",
+        });
       } finally {
         dispatch(setLoading(false));
       }
@@ -133,24 +144,35 @@ const LikedSongsPage = () => {
               <p className="text-gray-300 mt-2">{playlistInfo.description}</p>
             )}
           </>
+        ) : errorMsg ? (
+          <div className="py-2">
+            <p className="text-red-300 text-sm">{errorMsg}</p>
+            <button
+              type="button"
+              onClick={() => setRetryTick((t) => t + 1)}
+              className="mt-3 px-4 py-2 text-xs font-bold bg-purple-600 hover:bg-purple-500 rounded-lg transition-colors"
+            >
+              Retry
+            </button>
+          </div>
         ) : (
           <div className="h-12 bg-white/20 rounded animate-pulse w-1/3"></div>
         )}
       </div>
 
       {/* Song List */}
-
-      {loading && tempSongs.length < 10 ? (
-        <SongListSkeleton rows={10} />
-      ) : (
-        <SongList
-          handlePlayClick={handlePlayClick}
-          playing={playing}
-          playingSong={playingSong}
-          songs={tempSongs}
-          isTemp={true}
-        />
-      )}
+      {!errorMsg &&
+        (loading && tempSongs.length < 10 ? (
+          <SongListSkeleton rows={10} />
+        ) : (
+          <SongList
+            handlePlayClick={handlePlayClick}
+            playing={playing}
+            playingSong={playingSong}
+            songs={tempSongs}
+            isTemp={true}
+          />
+        ))}
 
       {(downloading || deleting) && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">

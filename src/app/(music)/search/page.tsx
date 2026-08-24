@@ -18,6 +18,7 @@ import { Search, X } from "lucide-react";
 import { searchSong } from "@/services/song.services";
 import MusicHeader from "@/components/MusicPage/MusicPageHeader";
 import { handleSortBy, handleSortOrder } from "@/utils/songUtils";
+import { showToast } from "@/hooks/useToast";
 
 const SearchPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -47,6 +48,10 @@ const SearchPage: React.FC = () => {
   const tempSortBy = useAppSelector((state) => state.song.tempSortBy);
   const tempSortChanged = useAppSelector((state) => state.song.tempSortChanged);
 
+  // Error / retry state for the initial search request
+  const [searchError, setSearchError] = useState(false);
+  const [retryTick, setRetryTick] = useState(0);
+
   // Clear state on unmount
   useEffect(() => {
     document.title = "Search Songs | WmV";
@@ -71,6 +76,7 @@ const SearchPage: React.FC = () => {
     const fetchSongs = async () => {
       try {
         dispatch(setLoading(true));
+        setSearchError(false);
         const data = await searchSong({
           query: submittedQuery.trim(),
           limit: 10,
@@ -85,12 +91,13 @@ const SearchPage: React.FC = () => {
         }
       } catch (error) {
         console.error(error);
+        setSearchError(true);
       } finally {
         dispatch(setLoading(false));
       }
     };
     fetchSongs();
-  }, [submittedQuery, dispatch, tempSortChanged, tempSortBy, tempSortOrder]);
+  }, [submittedQuery, dispatch, tempSortChanged, tempSortBy, tempSortOrder, retryTick]);
 
   useEffect(() => {
     if (!submittedQuery.trim() || !tempNextCursor || !tempHasMoreSongs) return;
@@ -113,6 +120,10 @@ const SearchPage: React.FC = () => {
         }
       } catch (error) {
         console.error(error);
+        showToast({
+          message: "Couldn't load more results. Please try again.",
+          type: "error",
+        });
       } finally {
         dispatch(setLoading(false));
       }
@@ -137,7 +148,8 @@ const SearchPage: React.FC = () => {
     if (e.key === "Enter") handleSearch();
   };
   const hasSearched = submittedQuery.trim().length > 0;
-  const noResults = hasSearched && tempSongs.length === 0 && !loading;
+  const noResults =
+    hasSearched && tempSongs.length === 0 && !loading && !searchError;
 
   return (
     <>
@@ -189,8 +201,28 @@ const SearchPage: React.FC = () => {
           <p className="text-purple-300 text-sm">
             {noResults
               ? `No results for "${submittedQuery}"`
-              : `Results for "${submittedQuery}"`}
+              : searchError
+                ? ""
+                : `Results for "${submittedQuery}"`}
           </p>
+        </div>
+      )}
+
+      {/* ── Search Error State ── */}
+      {searchError && !loading && (
+        <div className="flex flex-col items-center justify-center py-10 gap-3 text-center">
+          <Search className="w-10 h-10 text-red-300/60" />
+          <p className="text-red-300 text-sm">
+            Couldn&apos;t load results. Please check your connection and try
+            again.
+          </p>
+          <button
+            type="button"
+            onClick={() => setRetryTick((t) => t + 1)}
+            className="px-4 py-2 text-xs font-bold bg-purple-600 hover:bg-purple-500 rounded-lg transition-colors"
+          >
+            Retry
+          </button>
         </div>
       )}
 

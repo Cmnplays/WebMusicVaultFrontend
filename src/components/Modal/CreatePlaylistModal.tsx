@@ -132,11 +132,18 @@ const CreatePlaylistModal = () => {
                 value={name}
                 placeholder="e.g., My Favourites"
                 maxLength={15}
+                minLength={3}
+                pattern="[a-zA-Z0-9_ ]+"
+                title="3-15 characters — letters, numbers, spaces & underscores only"
                 className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:bg-white/10 focus:border-purple-400/50 focus:ring-1 focus:ring-purple-400/50 transition-all"
                 onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
+            <p className="text-[10px] text-purple-200/50 mt-1">
+              3-15 characters • letters, numbers, spaces &amp; underscores
+              only
+            </p>
           </div>
 
           {/* Description */}
@@ -152,6 +159,9 @@ const CreatePlaylistModal = () => {
               className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:bg-white/10 focus:border-purple-400/50 focus:ring-1 focus:ring-purple-400/50 transition-all resize-none"
               onChange={(e) => setDescription(e.target.value)}
             />
+            <p className="text-[10px] text-purple-200/50 mt-1">
+              Optional • 3–50 characters
+            </p>
           </div>
 
           {/* Status */}

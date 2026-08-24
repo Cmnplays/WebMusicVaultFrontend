@@ -167,7 +167,7 @@ export function SongRow({
               <>
                 <Image
                   src={URL.createObjectURL(entry.coverImage)}
-                  alt="cover"
+                  alt={`${entry.title || entry.file.name} cover`}
                   width={28}
                   height={28}
                   unoptimized
@@ -251,7 +251,7 @@ export function SongRow({
             {entry.coverImage ? (
               <Image
                 src={URL.createObjectURL(entry.coverImage)}
-                alt="cover"
+                alt={`${entry.title || entry.file.name} cover`}
                 width={24}
                 height={24}
                 unoptimized
