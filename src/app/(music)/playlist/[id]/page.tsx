@@ -19,8 +19,9 @@ import {
   PlaylistWithSongs,
 } from "@/services/playlist.services";
 import { Song } from "@/services/song.services";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ListMusic, Home } from "lucide-react";
 import ProtectedLayout from "@/components/ProtectedLayout";
+import Link from "next/link";
 import { showToast } from "@/hooks/useToast";
 
 const PlaylistPage = () => {
@@ -183,6 +184,26 @@ const PlaylistPage = () => {
         {!errorMsg &&
           (loading && tempSongs.length < 10 ? (
             <SongListSkeleton rows={10} />
+          ) : tempSongs.length === 0 ? (
+            /* ── Empty playlist state ── */
+            <div className="flex flex-col items-center justify-center py-14 gap-4 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-purple-600/20 border border-white/10 flex items-center justify-center">
+                <ListMusic className="w-8 h-8 text-purple-300/80" />
+              </div>
+              <div>
+                <p className="text-white font-semibold">This playlist is empty</p>
+                <p className="text-sm text-white/50 mt-1 max-w-[260px]">
+                  Add songs from the home page and they&apos;ll show up here.
+                </p>
+              </div>
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold bg-purple-600 hover:bg-purple-500 rounded-xl transition-colors shadow-md"
+              >
+                <Home className="w-4 h-4" />
+                Browse songs
+              </Link>
+            </div>
           ) : (
             <SongList
               handlePlayClick={handlePlayClick}

@@ -36,37 +36,49 @@ const PlaylistList: React.FC<PlaylistListProps> = ({ playlists }) => {
 
   return (
     <>
-      <div className="flex items-center gap-3 mb-6">
-        <ListMusic className="w-7 h-7 text-purple-300" />
-        <h1 className="text-2xl font-bold tracking-tight">Your Playlists</h1>
-        <span className="ml-auto text-sm text-purple-300">
-          {total} playlists
-        </span>
-        <span
-          title="Personal playlists you can create"
-          className={`text-[10px] font-semibold px-2 py-1 rounded-full border transition-colors ${
-            atCap
-              ? "text-red-300 bg-red-500/10 border-red-500/30"
-              : "text-purple-200 bg-white/10 border-white/10"
-          }`}
-        >
-          {personalCount} / {MAX_PLAYLISTS}
-        </span>
-        <button
-          type="button"
-          onClick={handleCreateClick}
-          disabled={atCap}
-          title={
-            atCap
-              ? "Playlist limit reached (10). Delete one to create another."
-              : undefined
-          }
-          aria-label="Create new playlist"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-600 text-white text-xs font-bold hover:bg-purple-500 active:scale-[0.98] transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-purple-600"
-        >
-          <Plus className="w-4 h-4" />
-          New Playlist
-        </button>
+      {/* ── Header ── */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 rounded-xl bg-purple-600/25 border border-white/10 flex items-center justify-center shrink-0">
+              <ListMusic className="w-5 h-5 text-purple-300" />
+            </div>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight truncate">
+              Your Playlists
+            </h1>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleCreateClick}
+            disabled={atCap}
+            title={
+              atCap
+                ? "Playlist limit reached (10). Delete one to create another."
+                : undefined
+            }
+            aria-label="Create new playlist"
+            className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl bg-purple-600 text-white text-xs font-bold hover:bg-purple-500 active:scale-[0.98] transition-all shadow-md shrink-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-purple-600"
+          >
+            <Plus className="w-4 h-4" />
+            New
+          </button>
+        </div>
+
+        {/* Meta row */}
+        <div className="mt-2 pl-[52px] flex items-center gap-2 text-xs text-purple-300/70">
+          <span>{total} total</span>
+          <span className="text-white/20">•</span>
+          <span
+            className={atCap ? "text-red-300 font-medium" : ""}
+            title="Personal playlists you can create"
+          >
+            {personalCount} / {MAX_PLAYLISTS} personal
+          </span>
+          {atCap && (
+            <span className="text-red-300/80">(limit reached)</span>
+          )}
+        </div>
       </div>
 
       {/* Default playlists */}

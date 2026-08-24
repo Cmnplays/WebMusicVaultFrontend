@@ -16,7 +16,8 @@ import SongList from "@/components/SongList/SongList";
 import SongListSkeleton from "@/components/SongList/SongListSkeleton";
 import { getLikedSongs, PlaylistWithSongs } from "@/services/playlist.services";
 import { Song } from "@/services/song.services";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Heart, Home } from "lucide-react";
+import Link from "next/link";
 import { showToast } from "@/hooks/useToast";
 
 const LikedSongsPage = () => {
@@ -164,6 +165,26 @@ const LikedSongsPage = () => {
       {!errorMsg &&
         (loading && tempSongs.length < 10 ? (
           <SongListSkeleton rows={10} />
+        ) : tempSongs.length === 0 ? (
+          /* ── Empty favourites state ── */
+          <div className="flex flex-col items-center justify-center py-14 gap-4 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-red-500/15 border border-white/10 flex items-center justify-center">
+              <Heart className="w-8 h-8 text-red-300/80" />
+            </div>
+            <div>
+              <p className="text-white font-semibold">No favourites yet</p>
+              <p className="text-sm text-white/50 mt-1 max-w-[260px]">
+                Tap the ♥ on any song and it&apos;ll be waiting for you here.
+              </p>
+            </div>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold bg-purple-600 hover:bg-purple-500 rounded-xl transition-colors shadow-md"
+            >
+              <Home className="w-4 h-4" />
+              Explore songs
+            </Link>
+          </div>
         ) : (
           <SongList
             handlePlayClick={handlePlayClick}
