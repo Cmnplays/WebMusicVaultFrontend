@@ -15,9 +15,9 @@ import {
 } from "../reduxSlices/song.slice";
 import { setStatusText, setLoading } from "@/reduxSlices/ui.slice";
 
-// Module-level flag: persists across page navigation (hook unmount/remount)
-// for the whole SPA session, unlike useRef which resets on remount.
-let pinnedFetchedThisSession = false;
+// Module-level pinned-songs cache, keyed by user id so it survives page
+// navigation but NEVER leaks between sessions/users (guest → login, etc.)
+let pinnedCacheOwnerKey: string | null = null;
 
 export const useSongs = () => {
   const dispatch = useAppDispatch();
@@ -30,11 +30,19 @@ export const useSongs = () => {
   const nextCursor = useAppSelector((state) => state.song.nextCursor);
   const songs = useAppSelector((state) => state.song.songs);
   const pinnedSongs = useAppSelector((state) => state.song.pinnedSongs);
+  const currentUserId = useAppSelector(
+    (state) => state.auth.user?.username ?? null,
+  );
   const didMount = useRef(false);
   const nextCursorRef = useRef(nextCursor);
   const songsLengthRef = useRef(songs.length);
   // Pinned-songs sync ref (mirrors Redux so closures always read fresh value)
   const pinnedRef = useRef(pinnedSongs);
+  const userIdRef = useRef(currentUserId);
+
+  useEffect(() => {
+    userIdRef.current = currentUserId;
+  }, [currentUserId]);
 
   useEffect(() => {
     nextCursorRef.current = nextCursor;
@@ -52,9 +60,6 @@ export const useSongs = () => {
     const loadSongs = async () => {
       // Don't fetch songs until initial auth check has completed
       if (shouldFetchUser) {
-        // Session boundary (app boot / logout): force a fresh pinned fetch
-        // on the next login so we never show another user's pins.
-        pinnedFetchedThisSession = false;
         return;
       }
       if (!didMount.current && songsLengthRef.current > 0) {
@@ -80,13 +85,16 @@ export const useSongs = () => {
           cursor: nextCursorRef.current,
         });
 
-        // Fetch pinned songs only once per SESSION (module flag survives page
-        // navigation); afterwards reuse Redux state (pin/unpin actions keep
-        // it in sync) instead of re-requesting /song/pinned.
+        // Pinned songs: fetched fresh whenever the owner identity changes
+        // (guest → login, user switch). Afterwards Redux state — kept in sync
+        // by pin/unpin actions — is reused instead of re-requesting.
+        const ownerKey = userIdRef.current ?? "__guest__";
+        const needsPinnedFetch = pinnedCacheOwnerKey !== ownerKey;
+
         let effectivePinned = pinnedRef.current;
-        if (!pinnedFetchedThisSession) {
+        if (needsPinnedFetch) {
           effectivePinned = await getPinnedSongs();
-          pinnedFetchedThisSession = true;
+          pinnedCacheOwnerKey = ownerKey;
           dispatch(setPinnedSongs(effectivePinned));
         }
 
