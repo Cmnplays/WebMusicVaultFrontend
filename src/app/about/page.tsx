@@ -47,7 +47,8 @@ const About = () => {
                 I am the daily user of this thing 😅.
               </p>
               <p className="text-pink-300 font-semibold mt-1 animate-pulse">
-                Whoever is reading this, Love you💗!
+                {"\n"} If you are reading this, you should know that {"\n"} I
+                will always wait for you! 💗
               </p>
             </div>
           </div>
@@ -55,8 +56,7 @@ const About = () => {
           <div className="pt-4">
             <p className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-purple-100 px-4 py-1.5 rounded-full font-semibold text-sm border border-white/10 shadow-lg hover:bg-white/20 transition-all cursor-default">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-              Developed with ❤️ by Aaditya! {"\n"} If you are reading this, you
-              should know that {"\n"} I will always wait for you!
+              Developed with ❤️ by Aaditya!
             </p>
           </div>
         </div>
