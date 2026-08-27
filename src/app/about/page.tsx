@@ -28,22 +28,24 @@ const About = () => {
 
           <div className="space-y-4 text-purple-300/80 text-base leading-relaxed max-w-2xl mx-auto px-4">
             <p>
-              WebMusicVault (WmV) is my first fullstack project which is live and
-              can be used by people out there or at least me and my loved ones.
+              WebMusicVault (WmV) is my first fullstack project which is live
+              and can be used by people out there or at least me and my loved
+              ones.
             </p>
             <p>
-              Here anyone can upload, search, play, and download songs
-              easily and enjoy my music taste with different playback modes.
+              Here anyone can upload, search, play, and download songs easily
+              and enjoy my music taste with different playback modes.
             </p>
-            
+
             <p>
-              This is version 3 of this site which is yet not fully
-              optimized and not even complete. But works for now. That&apos;s
-              it. 🙂
+              This is version 3 of this site which is yet not fully optimized
+              and not even complete. But works for now. That&apos;s it. 🙂
             </p>
 
             <div className="pt-2 text-purple-200/70">
-              <p className="font-medium">I am the daily user of this thing 😅.</p>
+              <p className="font-medium">
+                I am the daily user of this thing 😅.
+              </p>
               <p className="text-pink-300 font-semibold mt-1 animate-pulse">
                 Whoever is reading this, Love you💗!
               </p>
@@ -53,7 +55,8 @@ const About = () => {
           <div className="pt-4">
             <p className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-purple-100 px-4 py-1.5 rounded-full font-semibold text-sm border border-white/10 shadow-lg hover:bg-white/20 transition-all cursor-default">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-              Developed with ❤️ by Aaditya!
+              Developed with ❤️ by Aaditya! {"\n"} If you are reading this, you
+              should know that {"\n"} I will always wait for you!
             </p>
           </div>
         </div>
@@ -164,7 +167,7 @@ const About = () => {
 
         {/* Version */}
         <div className="text-center text-purple-300 text-sm">
-          <p>WMV v2.0.0 – Last updated December 2025</p>
+          <p>WMV v3.0.0 – Last updated August 2026</p>
         </div>
       </div>
     </>
