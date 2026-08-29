@@ -9,7 +9,8 @@ export interface Song {
   duration: number;
   artist: string;
   isLiked: boolean;
-  coverImageUrl: string | undefined
+  coverImageUrl: string | undefined;
+  searchScore?: number;
   owner: {
     _id: string;
     username: string;

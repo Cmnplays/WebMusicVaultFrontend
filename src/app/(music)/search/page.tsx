@@ -26,6 +26,7 @@ const SearchPage: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const tempSongs = useAppSelector((state) => state.song.tempSongs);
   const loading = useAppSelector((state) => state.ui.loading);
@@ -67,6 +68,13 @@ const SearchPage: React.FC = () => {
     };
   }, [dispatch, tempSortChanged]);
 
+  // Clear any pending debounced search on unmount.
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
+
   useEffect(() => {
     if (!submittedQuery.trim()) {
       dispatch(replaceTempSongs([]));
@@ -78,7 +86,7 @@ const SearchPage: React.FC = () => {
         dispatch(setLoading(true));
         setSearchError(false);
         const data = await searchSong({
-          query: submittedQuery.trim(),
+          query: submittedQuery,
           limit: 10,
           sortBy: tempSortBy,
           sortOrder: tempSortOrder,
@@ -106,7 +114,7 @@ const SearchPage: React.FC = () => {
       try {
         dispatch(setLoading(true));
         const data = await searchSong({
-          query: submittedQuery.trim(),
+          query: submittedQuery,
           cursor: tempNextCursor,
           sortBy: tempSortBy,
           sortOrder: tempSortOrder,
@@ -132,7 +140,25 @@ const SearchPage: React.FC = () => {
     fetchMoreSongs();
   }, [tempTriggerFetch]);
 
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+    setInputValue(rawValue);
+
+    // Debounce live search (400ms) so we don't hammer the endpoint on every
+    // keystroke. The raw input is passed straight through so Atlas fuzzy
+    // matching gets exactly what the user typed.
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (rawValue.trim()) {
+      debounceRef.current = setTimeout(() => {
+        setSubmittedQuery(rawValue);
+      }, 400);
+    } else {
+      setSubmittedQuery("");
+    }
+  };
+
   const handleClear = () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
     setInputValue("");
     setSubmittedQuery("");
     dispatch(replaceTempSongs([]));
@@ -141,7 +167,9 @@ const SearchPage: React.FC = () => {
 
   const handleSearch = () => {
     if (!inputValue.trim()) return;
-    setSubmittedQuery(inputValue.trim());
+    // Cancel any pending debounced search and submit the raw input as-is.
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    setSubmittedQuery(inputValue);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -163,7 +191,7 @@ const SearchPage: React.FC = () => {
             id="search-songs"
             ref={inputRef}
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={handleSearchInputChange}
             onKeyDown={handleKeyDown}
             placeholder="Search songs, artists..."
             aria-label="Search songs and artists"

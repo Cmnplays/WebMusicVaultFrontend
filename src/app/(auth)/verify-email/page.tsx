@@ -89,7 +89,8 @@ const Page = () => {
           toastList.otpVerificationFailed();
           break;
         case StatusCode.TooManyRequests:
-          toastList.tooManyOtpRequests();
+          // Handled globally by the api response interceptor (`toastList.rateLimited`)
+          // so the 429 toast is shown exactly once across the whole app.
           break;
         default:
           toastList.internalServerError();

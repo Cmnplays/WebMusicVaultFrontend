@@ -3,6 +3,7 @@ import store from "@/store/store";
 import { clearAuth, setAccessToken } from "@/reduxSlices/auth.slice";
 import { toastList } from "@/utils/toastList";
 import { ErrorCode } from "@/constants/ErrorCode";
+import { StatusCode } from "@/constants/StatusCode";
 import {
   enableMaintenance,
   disableMaintenance,
@@ -117,6 +118,15 @@ api.interceptors.response.use(
       handleSessionExpired(code);
     } else if (!error.response) {
       toastList.networkError();
+    } else if (error.response.status === StatusCode.TooManyRequests) {
+      // Rate-limited: show a styled in-app toast (reuses the site toast).
+      // `Retry-After` is set by express-rate-limit (seconds until reset).
+      const retryAfter = Number(error.response.headers?.["retry-after"]);
+      toastList.rateLimited(
+        Number.isFinite(retryAfter) && retryAfter > 0
+          ? Math.ceil(retryAfter)
+          : undefined,
+      );
     } else if (error.response.status === 500) {
       toastList.internalServerError();
     }

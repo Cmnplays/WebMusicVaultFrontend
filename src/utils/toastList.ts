@@ -56,6 +56,15 @@ export const toastList = {
       message: "Internal server error. Please try later.",
       type: "error",
     }),
+  rateLimited: (retryAfterSeconds?: number) =>
+    showToast({
+      message: retryAfterSeconds
+        ? `Too many requests. Please try again in ${retryAfterSeconds}s.`
+        : "Too many requests. Please slow down and try again in a moment.",
+      type: "error",
+      // Give users enough time to read the rate-limit message.
+      duration: 4000,
+    }),
   // OTP / Email
   otpSent: () =>
     showToast({ message: "OTP sent successfully.", type: "success" }),
