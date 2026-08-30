@@ -160,7 +160,7 @@ const SongList = ({
       )}
 
       {/* ── Spacer so the last card is never hidden behind the fixed MiniPlayer ── */}
-      {playingSong && <div className="h-20 lg:h-16" aria-hidden="true" />}
+      {playingSong && <div className="h-20 lg:h-24" aria-hidden="true" />}
 
       {/* ── Floating action button: jump to playing song OR scroll to top ── */}
       {showFab && (
