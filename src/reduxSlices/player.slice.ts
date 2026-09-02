@@ -4,6 +4,11 @@ import { login, signup, clearAuth } from "./auth.slice";
 
 export type repeatType = "repeat" | "noRepeat" | "single";
 
+// Hard cap on the Play Next queue.
+export const MAX_UP_NEXT_QUEUE_SIZE = 15;
+
+export type playNextContextType = "songs" | "tempSongs";
+
 interface PlayerState {
   playing: boolean;
   playingSong: Song | null;
@@ -14,6 +19,12 @@ interface PlayerState {
   miniPanelOpen: boolean;
   repeat: repeatType;
   shuffle: boolean;
+  // "Play Next" queue. TODO: persists (in-memory) with the main page's
+  // playing song; resets when playback switches context (setPlayNextContext).
+  upNextQueue: Song[];
+  // Which context's queue is currently active: "songs" (main page) or
+  // "tempSongs" (search/playlist/liked/shuffle). null = no queue yet.
+  playNextContext: playNextContextType | null;
 }
 
 const initialState: PlayerState = {
@@ -26,6 +37,8 @@ const initialState: PlayerState = {
   miniPanelOpen: false,
   repeat: "repeat",
   shuffle: false,
+  upNextQueue: [],
+  playNextContext: null,
 };
 
 const playerSlice = createSlice({
@@ -59,6 +72,28 @@ const playerSlice = createSlice({
     setShuffle: (state) => {
       state.shuffle = !state.shuffle;
     },
+    // "Play Next": add a song to the END of the queue so it plays in FIFO
+    // order — the first song you queued is the first one that plays. No-op
+    // when the queue is full, when the song is already queued (no reordering),
+    // or when it's the currently playing song.
+    addToPlayNext: (state, action: PayloadAction<Song>) => {
+      if (state.upNextQueue.length >= MAX_UP_NEXT_QUEUE_SIZE) return;
+      if (state.upNextQueue.some((s) => s._id === action.payload._id)) return;
+      if (state.playingSong?._id === action.payload._id) return;
+      state.upNextQueue.push(action.payload);
+    },
+    dequeueUpNext: (state) => {
+      state.upNextQueue.shift();
+    },
+    // Mark which context the queue belongs to. If the context changes
+    // (i.e. a different page's song starts playing), the queue resets and
+    // belongs to the new context.
+    setPlayNextContext: (state, action: PayloadAction<playNextContextType>) => {
+      if (state.playNextContext !== action.payload) {
+        state.upNextQueue = [];
+        state.playNextContext = action.payload;
+      }
+    },
   },
   extraReducers: (builder) => {
     const clearPlayerState = (state: PlayerState) => {
@@ -68,6 +103,8 @@ const playerSlice = createSlice({
       state.currentTime = 0;
       state.expandedPanelOpen = false;
       state.miniPanelOpen = false;
+      state.upNextQueue = [];
+      state.playNextContext = null;
     };
 
     builder
@@ -87,6 +124,9 @@ export const {
   setRepeat,
   setShuffle,
   setMiniPanelOpen,
+  addToPlayNext,
+  dequeueUpNext,
+  setPlayNextContext,
 } = playerSlice.actions;
 
 export default playerSlice.reducer;

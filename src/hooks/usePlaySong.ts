@@ -5,13 +5,16 @@ import {
   setPlaying,
   setPlayingSong,
   setMiniPanelOpen,
+  setPlayNextContext,
 } from "../reduxSlices/player.slice";
+import type { playNextContextType } from "../reduxSlices/player.slice";
 
 export const usePlaySong = () => {
   const dispatch = useAppDispatch();
   const playingSong = useAppSelector((state) => state.player.playingSong);
   const playing = useAppSelector((state) => state.player.playing);
   const miniPanelOpen = useAppSelector((state) => state.player.miniPanelOpen);
+  const songsType = useAppSelector((state) => state.song.songsType);
 
   const handlePlayClick = (song: Song) => {
     if (playingSong?._id === song._id) {
@@ -28,6 +31,9 @@ export const usePlaySong = () => {
       }
     } else {
       // Play new song
+      // If the queue belongs to a different context (page), reset it so
+      // Play Next follows the newly playing song's context.
+      dispatch(setPlayNextContext(songsType as playNextContextType));
       if (!miniPanelOpen) {
         dispatch(setMiniPanelOpen(true));
       }

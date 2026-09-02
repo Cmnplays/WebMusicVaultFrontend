@@ -1,15 +1,20 @@
 import React from "react";
 import type { Song } from "@/services/song.services";
-import { Pencil, Trash, Download } from "lucide-react";
-import { useAppDispatch } from "@/store/hook";
+import { Pencil, Trash, Download, ListStart } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 import PinBtn from "../SongList/PinBtn";
 import AddToPlaylistBtn from "../SongList/AddToPlaylistBtn";
 import RemoveFromPlaylistBtn from "../SongList/RemoveFromPlaylistBtn";
+import { showToast } from "@/hooks/useToast";
 import {
   setActionSong,
   setMountDeleteConfirmation,
   setMountDownloadConfirmation,
 } from "@/reduxSlices/ui.slice";
+import {
+  addToPlayNext,
+  MAX_UP_NEXT_QUEUE_SIZE,
+} from "@/reduxSlices/player.slice";
 
 interface SongCardMoreOptionsModalProps {
   song: Song;
@@ -27,11 +32,30 @@ const SongCardMoreOptionsModal: React.FC<SongCardMoreOptionsModalProps> = ({
   onClose,
 }) => {
   const dispatch = useAppDispatch();
+  const playingSong = useAppSelector((state) => state.player.playingSong);
+  const upNextQueue = useAppSelector((state) => state.player.upNextQueue);
 
   const handleDownloadClick = () => {
     dispatch(setActionSong(song));
     dispatch(setMountDownloadConfirmation(true));
     onClose();
+  };
+
+  // "Play Next" — the reducer enforces the same invariants; the checks here
+  // exist to give the user feedback (or a deliberate silent no-op).
+  const handlePlayNextClick = () => {
+    onClose();
+    if (playingSong?._id === song._id) return; // no-op for the playing song
+    if (upNextQueue.some((s) => s._id === song._id)) return; // already queued: ignore
+    if (upNextQueue.length >= MAX_UP_NEXT_QUEUE_SIZE) {
+      showToast({ message: "Queue is full", type: "info" });
+      return;
+    }
+    dispatch(addToPlayNext(song));
+    showToast({
+      message: `Playing "${song.title.replace(/\.mp3$/i, "")}" next`,
+      type: "success",
+    });
   };
 
   const handleDeleteClick = () => {
@@ -48,11 +72,30 @@ const SongCardMoreOptionsModal: React.FC<SongCardMoreOptionsModalProps> = ({
         border border-white/10
         bg-neutral-900/95 backdrop-blur-xl
         shadow-2xl shadow-black/40
-        z-50
+        z-200
         animate-in fade-in zoom-in-95 duration-150
       "
     >
       <div className="py-1">
+        <button
+          type="button"
+          onClick={handlePlayNextClick}
+          className="
+            flex w-full items-center gap-3
+            px-4 py-3
+            text-sm font-medium text-white/80
+            transition-all duration-150
+            hover:bg-white/10
+            hover:text-white
+            active:scale-[0.98]
+            focus:outline-none
+            focus:bg-white/10
+          "
+        >
+          <ListStart className="h-4 w-4 shrink-0" />
+          <span>Play next · {upNextQueue.length}/{MAX_UP_NEXT_QUEUE_SIZE}</span>
+        </button>
+
         <PinBtn
           isPinned={isPinned}
           song={song}

@@ -1,8 +1,10 @@
 "use client";
 import React, { useEffect } from "react";
 import type { Song } from "../services/song.services";
+import { getSongWithId } from "../services/song.services";
 export type repeatType = "repeat" | "noRepeat" | "single";
 import { useAppDispatch, useAppSelector } from "../store/hook";
+import store from "../store/store";
 import useMediaSession from "./useMediaSession";
 
 import { usePathname } from "next/navigation";
@@ -14,6 +16,7 @@ import {
   setDuration,
   setCurrentTime,
   setExpandedPanelOpen,
+  dequeueUpNext,
 } from "../reduxSlices//player.slice";
 
 type customFnType = {
@@ -40,7 +43,30 @@ export const useAudioPlayer = ({
   //    Play or pause audio based on playingSong and playing state
   const isInitialMount = React.useRef(true);
 
+  // Latest values for use inside stable listeners (registered once below)
+  const playingSongRef = React.useRef(playingSong);
+  const currentTimeRef = React.useRef(currentTime);
+  React.useEffect(() => {
+    playingSongRef.current = playingSong;
+    currentTimeRef.current = currentTime;
+  });
+  // Recovery bookkeeping: on a playback failure the error listener silently
+  // re-fetches a fresh URL once, keeps the position, and never loops. Signed
+  // CDN URLs no longer expire on a timer, so this is now a general resilience
+  // net (transient errors / post-API-secret-rotation), not an expiry path.
+  const recoveringUrlRef = React.useRef<string | null>(null);
+  const retriedUrlRef = React.useRef<string | null>(null);
+  const wasPlayingRef = React.useRef(false);
+
   useEffect(() => {
+    // User-initiated play (paused -> playing) starts a new recovery
+    // episode: re-allow the error listener to refetch, even if this exact
+    // URL failed recovery before.
+    if (playing && !wasPlayingRef.current) {
+      retriedUrlRef.current = null;
+    }
+    wasPlayingRef.current = playing;
+
     const audioEl = audioRef.current;
     if (!audioEl || !playingSong?.fileUrl) {
       if (audioEl) {
@@ -55,11 +81,17 @@ export const useAudioPlayer = ({
     if (isNewSource) {
       audioEl.src = playingSong.fileUrl;
 
-      // Restore saved time on first load after refresh
-      if (isInitialMount.current && currentTime > 0) {
-        audioEl.currentTime = currentTime;
+      // Restore saved time on first load after refresh, or when recovering
+      // from a playback failure so the listener keeps their position.
+      const isRecovery = recoveringUrlRef.current === playingSong.fileUrl;
+      const savedTime = currentTimeRef.current;
+      if ((isInitialMount.current || isRecovery) && savedTime > 0) {
+        audioEl.currentTime = savedTime;
       } else {
         audioEl.currentTime = 0;
+      }
+      if (isRecovery) {
+        recoveringUrlRef.current = null;
       }
     }
 
@@ -69,6 +101,13 @@ export const useAudioPlayer = ({
 
       audioEl.play().catch((err) => {
         if (err.name !== "AbortError") {
+          // A failed source load also triggers the `error` listener, which
+          // recovers with a fresh URL — don't clobber the playing state here.
+          // This is an expected, handled expiry path: stay quiet so the
+          // Next.js dev "Issues" overlay isn't triggered by it.
+          if (audioEl.error) {
+            return;
+          }
           console.error("Audio play error", err);
           dispatch(setPlaying(false));
         }
@@ -97,24 +136,81 @@ export const useAudioPlayer = ({
     const handleOnPlay = () => dispatch(setPlaying(true));
     const handleOnPause = () => dispatch(setPlaying(false));
 
+    // On a load/play failure, silently fetch a fresh URL for the same song
+    // and swap it in; the play effect above then reloads with the saved
+    // position. Runs at most once per failed URL so a genuinely
+    // broken/deleted song can't loop forever. (Signed URLs no longer expire
+    // on a timer, so this is a general resilience net, not an expiry path.)
+    const handleError = () => {
+      const currentSong = playingSongRef.current;
+      const failedUrl = audioRef.current?.src;
+      if (!currentSong?.fileUrl || !failedUrl) return;
+
+      const retryKey = `${currentSong._id}::${failedUrl}`;
+      if (retriedUrlRef.current === retryKey) return;
+      retriedUrlRef.current = retryKey;
+
+      (async () => {
+        try {
+          const freshSong = await getSongWithId(currentSong._id);
+          if (!freshSong?.fileUrl || freshSong.fileUrl === failedUrl) {
+            // Unrecoverable: reflect the stopped state honestly.
+            dispatch(setPlaying(false));
+            return;
+          }
+          // Capture the real position at failure time: a mid-play failure
+          // keeps its position; a just-advanced song reads back 0 instead of
+          // the previous song's stale redux time.
+          dispatch(setCurrentTime(audioRef.current?.currentTime ?? 0));
+          recoveringUrlRef.current = freshSong.fileUrl;
+          dispatch(setPlayingSong(freshSong));
+          // Keep playback going — the user initiated it before the URL died.
+          dispatch(setPlaying(true));
+          // Recovery succeeded: clean slate for any future episode.
+          retriedUrlRef.current = null;
+        } catch (e) {
+          console.error("Failed to refresh song URL after audio error", e);
+          dispatch(setPlaying(false));
+        }
+      })();
+    };
+
     song.addEventListener("loadedmetadata", onLoadMetadata);
     song.addEventListener("timeupdate", onTimeUpdate);
     song.addEventListener("play", handleOnPlay);
     song.addEventListener("pause", handleOnPause);
+    song.addEventListener("error", handleError);
 
     return () => {
       song.removeEventListener("loadedmetadata", onLoadMetadata);
       song.removeEventListener("timeupdate", onTimeUpdate);
       song.removeEventListener("play", handleOnPlay);
       song.removeEventListener("pause", handleOnPause);
+      song.removeEventListener("error", handleError);
     };
   }, [dispatch, audioRef]);
 
   function getNextShuffleSongIndex(): number {
     return Math.floor(Math.random() * songs.length);
   }
+  // "Play Next" queue takes priority over all shuffle/repeat/songs-array
+  // logic: if a queued song exists, shift it off, play it, and skip the
+  // rest of the next-song logic for this call. Previous-song is unaffected.
+  function playFromUpNextQueue(): boolean {
+    // Read the queue FRESH from the store at call time — not from this
+    // render's closure — so a rapid second next/ended can't double-read a
+    // stale snapshot and play the wrong song.
+    const queue = store.getState().player.upNextQueue;
+    if (queue.length === 0) return false;
+    const nextSong = queue[0];
+    dispatch(dequeueUpNext());
+    dispatch(setPlayingSong(nextSong));
+    dispatch(setPlaying(true));
+    return true;
+  }
   // New: Handle when current song ends, play next if available
   function handleAudioEnded() {
+    if (playFromUpNextQueue()) return;
     if (!playingSong) return;
 
     const currentIndex = songs.findIndex((s) => s._id === playingSong._id);
@@ -176,6 +272,8 @@ export const useAudioPlayer = ({
     }
   }
   const moveToNextSong = () => {
+    if (playFromUpNextQueue()) return;
+
     const currentIndex = songs.findIndex((s) => s._id === playingSong?._id);
     if (currentIndex === -1) {
       dispatch(setPlayingSong(null));

@@ -12,6 +12,7 @@ import {
   setExpandedPanelOpen,
   setPlayingSong,
   setMiniPanelOpen,
+  setPlayNextContext,
 } from "@/reduxSlices/player.slice";
 import { setLoading } from "@/reduxSlices/ui.slice";
 import SongList from "@/components/SongList/SongList";
@@ -54,6 +55,7 @@ const ShufflePlayer: React.FC = () => {
         const randomSongs = await getRandomSong();
         if (!mounted) return;
         dispatch(replaceTempSongs(randomSongs));
+        dispatch(setPlayNextContext("tempSongs"));
         dispatch(setPlayingSong(randomSongs[0]));
         setMaxVisibleIndex(0); // start by showing only the first song
         dispatch(setPlaying(true));
