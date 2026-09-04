@@ -183,7 +183,6 @@ const SearchPage: React.FC = () => {
     <>
       {/* ── Search Header ── */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-4">Search</h1>
         <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-xl px-4 py-3 focus-within:border-purple-400 transition-colors">
           <Search className="w-5 h-5 text-purple-300 shrink-0" />
           <input
@@ -208,7 +207,7 @@ const SearchPage: React.FC = () => {
           <button
             onClick={handleSearch}
             disabled={!inputValue.trim()}
-            className="ml-1 bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-1.5 rounded-lg transition-colors"
+            className="ml-1 shrink-0 bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium px-4 py-1.5 rounded-lg transition-colors"
           >
             Search
           </button>

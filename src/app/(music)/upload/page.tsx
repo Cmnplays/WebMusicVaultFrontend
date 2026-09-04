@@ -35,7 +35,7 @@ export default function UploadPage() {
   return (
     <ProtectedLayout>
       <div className="min-h-screen bg-transparent flex justify-center items-start pb-6 px-4">
-        <div className="w-full max-w-2xl mt-4 flex flex-col gap-4">
+        <div className="w-full max-w-2xl flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-2xl bg-purple-500/20 flex items-center justify-center shrink-0 shadow-lg shadow-purple-500/10"

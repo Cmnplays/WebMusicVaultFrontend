@@ -26,9 +26,6 @@ const MusicHeader: React.FC<MusicPageHeaderProps> = ({
 }) => {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-    {!isTemp &&   <h2 className="text-3xl font-extrabold text-white tracking-tight leading-tight">
-        Music Collection
-      </h2>}
 
       <div className="flex items-center gap-3 w-full sm:w-auto">
         <Select

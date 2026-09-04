@@ -12,7 +12,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="bg-[#5520A5] flex flex-col h-screen">
       <Navbar />
       <main
-        className={`flex-1 flex flex-col min-h-0 overflow-hidden max-w-5xl mx-auto w-full p-2 text-white transition-all duration-300 pb-16 lg:pb-4`}
+        className={`flex-1 flex flex-col min-h-0 overflow-hidden max-w-5xl mx-auto w-full p-2 text-white transition-all duration-300 pb-20 lg:pb-4`}
       >
         {children}
       </main>

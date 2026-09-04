@@ -180,7 +180,7 @@ export default function AccountCard({ data }: AccountPageProps) {
 
   return (
     <>
-      <div className="min-h-screen bg-[#5520A5] pt-2 pb-6 px-4 md:px-8">
+      <div className="min-h-screen bg-[#5520A5] pt-2 pb-20 px-4 md:px-8">
         <div className="max-w-lg mx-auto flex flex-col gap-4">
           {/* Header */}
           <div className="flex items-center justify-between">
