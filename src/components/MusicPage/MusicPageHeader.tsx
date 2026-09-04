@@ -25,12 +25,10 @@ const MusicHeader: React.FC<MusicPageHeaderProps> = ({
   isTemp=false
 }) => {
   return (
-    <>
-      <h2 className="hidden lg:block text-2xl font-extrabold text-white tracking-tight mb-3">Music Collection</h2>
+    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 mb-4">
+      <h2 className="hidden lg:block text-2xl font-extrabold text-white tracking-tight">Music Collection</h2>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
-
-      <div className="flex items-center gap-3 w-full sm:w-auto">
+      <div className="flex items-center gap-3 w-full lg:w-auto">
         <Select
           value={sortBy}
           onValueChange={(val) => HandleSortBy(val as sortByT, isTemp)}
@@ -77,7 +75,6 @@ const MusicHeader: React.FC<MusicPageHeaderProps> = ({
         )}
       </div>
     </div>
-    </>
   );
 };
 

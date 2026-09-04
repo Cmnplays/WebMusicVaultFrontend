@@ -1,8 +1,7 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { ChevronDown, Pin } from "lucide-react";
-import { Vibrant } from "node-vibrant/browser";
 import gsap from "gsap";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -32,7 +31,6 @@ const ExpandedPlayer = ({
   moveToPreviousSong,
 }: ExpandedPlayerProps) => {
   const panelRef = useRef<HTMLDivElement>(null);
-  const [bgColor, setBgColor] = useState("#1a0635");
   const dispatch = useAppDispatch();
 
   const playingSong = useAppSelector((state) => state.player.playingSong);
@@ -48,37 +46,18 @@ const ExpandedPlayer = ({
 
   const handleSliderChange = useHandleSliderChange(audioRef);
 
-  useEffect(() => {
-    let mounted = true;
+  // Precomputed palette from DB (extracted at upload time) — no live Vibrant run
+  const bgColor = useMemo(() => {
+    if (!playingSong) return "#1a0635";
 
-    Promise.resolve().then(() => {
-      if (!playingSong?.coverImageUrl) {
-        const index = getSongGradientIndex(
-          playingSong?._id || "",
-          playingSong?.title || "",
-        );
-        if (mounted) setBgColor(gradientColors[index]);
-        return;
-      }
-
-      return Vibrant.from(playingSong.coverImageUrl)
-        .getPalette()
-        .then((palette) => {
-          if (!mounted) return;
-          const color =
-            palette.DarkVibrant?.hex ?? palette.Vibrant?.hex ?? "#1a0635";
-          setBgColor(color);
-        })
-        .catch(() => {
-          if (!mounted) return;
-          setBgColor("#1a0635");
-        });
-    });
-
-    return () => {
-      mounted = false;
-    };
-  }, [playingSong?.coverImageUrl, playingSong?._id, playingSong?.title]);
+    return (
+      playingSong.palette?.darkVibrant ??
+      playingSong.palette?.vibrant ??
+      (playingSong.coverImageUrl
+        ? "#1a0635"
+        : gradientColors[getSongGradientIndex(playingSong._id, playingSong.title)])
+    );
+  }, [playingSong]);
 
   const isMount = useRef(true);
 

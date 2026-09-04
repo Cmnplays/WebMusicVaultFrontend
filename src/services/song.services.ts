@@ -2,6 +2,13 @@ import api from "../lib/api";
 import store from "@/store/store";
 import { setLoading } from "@/reduxSlices/ui.slice";
 
+export interface SongPalette {
+  vibrant?: string | null;
+  muted?: string | null;
+  darkVibrant?: string | null;
+  lightVibrant?: string | null;
+}
+
 export interface Song {
   _id: string;
   title: string;
@@ -10,6 +17,7 @@ export interface Song {
   artist: string;
   isLiked: boolean;
   coverImageUrl: string | undefined;
+  palette?: SongPalette;
   searchScore?: number;
   owner: {
     _id: string;

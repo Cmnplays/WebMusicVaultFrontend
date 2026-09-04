@@ -154,38 +154,20 @@ const SongCover: React.FC<SongCoverProps> = ({
         />
       ) : (
         <>
-          {/* Noise/Grain Texture Overlay */}
-          <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none" 
-               style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
-
-          {/* Top Glossy Highlight */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/5 to-transparent opacity-60"></div>
-
-          {/* Inner Depth Shadows */}
-          <div className="absolute inset-0 shadow-[inset_0_2px_4px_rgba(255,255,255,0.2),inset_0_-2px_4px_rgba(0,0,0,0.2)]"></div>
-
-          {/* Large initials background (floating effect) */}
-          <div className={cn("absolute inset-0 flex items-center justify-center opacity-10 blur-[1px]", size === "lg" && "opacity-[0.05]")}>
-            <p
-              className={cn(config.initialsSize, "font-black text-white leading-none tracking-wider transform", size === "lg" ? "scale-100" : "scale-110")}
-            >
-              {initials}
-            </p>
-          </div>
+          {/* Merged highlight + reflection into single layer (was 2 separate divs + blur layer + noise) */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/20 opacity-60 pointer-events-none"></div>
 
           {/* Main initials content */}
-          <div className="relative z-10 flex flex-col items-center justify-center translate-y-[-1px]">
+          <div className="relative z-10 flex flex-col items-center justify-center">
             <p
               className={cn(config.initialsSize, "font-black text-white leading-none")}
               style={{
                 letterSpacing: "0.1em",
                 WebkitTextStroke: "0.5px rgba(255,255,255,0.1)",
-                filter: size === "lg" 
-                  ? "drop-shadow(2px 2px 0px rgba(0,0,0,0.2)) drop-shadow(4px 4px 8px rgba(0,0,0,0.3))" 
-                  : "drop-shadow(2px 2px 0px rgba(0,0,0,0.2)) drop-shadow(4px 4px 0px rgba(0,0,0,0.15)) drop-shadow(8px 8px 12px rgba(0,0,0,0.3)) drop-shadow(12px 12px 20px rgba(0,0,0,0.2))",
+                // Patch 2: text-shadow replaces drop-shadow filter chain — paint-only, no filter graph pass
                 textShadow: size === "lg"
-                  ? "0px 1px 0px rgba(255,255,255,0.1)"
-                  : "1px 1px 0px rgba(255,255,255,0.1), -1px -1px 0px rgba(0,0,0,0.3)"
+                  ? "2px 2px 0px rgba(0,0,0,0.2), 4px 4px 8px rgba(0,0,0,0.3), 0px 1px 0px rgba(255,255,255,0.1)"
+                  : "2px 2px 0px rgba(0,0,0,0.2), 4px 4px 0px rgba(0,0,0,0.15), 8px 8px 12px rgba(0,0,0,0.3), 12px 12px 20px rgba(0,0,0,0.2), 1px 1px 0px rgba(255,255,255,0.1), -1px -1px 0px rgba(0,0,0,0.3)"
               }}
             >
               {initials}

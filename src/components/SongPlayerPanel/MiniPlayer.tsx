@@ -66,17 +66,17 @@ const MiniPlayer = ({
     <div
       ref={panelRef}
       className={cn(
-        "relative w-full bg-[#1a0635]/95 backdrop-blur-md border-t shadow-[0_-4px_20px_rgba(0,0,0,0.4)] cursor-pointer select-none transition-colors duration-200",
+        "relative w-full bg-[#1a0635] border-t shadow-[0_-4px_20px_rgba(0,0,0,0.4)] cursor-pointer select-none transition-colors duration-200",
         isPinned ? "border-amber-400/25" : "border-purple-500/20",
         !miniPanelOpen && "opacity-0 translate-y-full pointer-events-none",
       )}
       onClick={onExpand}
     >
-      {/* Progress bar */}
-      <div className="absolute top-0 left-0 w-full h-0.5 bg-white/10">
+      {/* Progress bar — Patch 4: scaleX (compositor) instead of width (layout) */}
+      <div className="absolute top-0 left-0 w-full h-0.5 bg-white/10 overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-orange-400 to-purple-500 transition-all duration-300"
-          style={{ width: `${progress}%` }}
+          className="h-full w-full origin-left bg-gradient-to-r from-orange-400 to-purple-500 transition-transform duration-300"
+          style={{ transform: `scaleX(${progress / 100})` }}
         />
       </div>
 
