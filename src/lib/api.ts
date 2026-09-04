@@ -46,6 +46,9 @@ const processQueue = (error: unknown, token: string | null = null) => {
 
 const handleSessionExpired = (code: string) => {
   store.dispatch(clearAuth());
+  // NOTE: the stale refresh cookie is cleared server-side by the
+  // /auth/refresh-token endpoint when the refresh fails, so no extra
+  // request is needed here (and /auth/logout is strict-auth anyway).
   if (code === ErrorCode.TOKEN_REVOKED) {
     toastList.sessionRevoked();
   } else {
@@ -75,7 +78,7 @@ api.interceptors.response.use(
             return api(originalRequest);
           })
           .catch((err) => {
-            return Promise.reject(err);
+            throw err;
           });
       }
 
@@ -98,7 +101,14 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        handleSessionExpired(ErrorCode.TOKEN_EXPIRED);
+        // Surface the REAL reason the refresh died: a rotated/revoked
+        // refresh token (logged in on another device) gets its own
+        // message; anything else is a plain expiry.
+        const refreshCode =
+          axios.isAxiosError(refreshError)
+            ? (refreshError.response?.data?.code ?? ErrorCode.TOKEN_EXPIRED)
+            : ErrorCode.TOKEN_EXPIRED;
+        handleSessionExpired(refreshCode);
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

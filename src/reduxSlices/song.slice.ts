@@ -2,7 +2,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { Song } from "../services/song.services";
 import { login, signup, clearAuth } from "./auth.slice";
-import { PlaylistsResponse } from "@/services/playlist.services";
+import {
+  PlaylistsResponse,
+  Playlist,
+} from "@/services/playlist.services";
 
 interface SongState {
   songs: Song[];
@@ -154,6 +157,15 @@ const songSlice = createSlice({
     setPlaylists: (state, action: PayloadAction<PlaylistsResponse>) => {
       state.playlists = action.payload;
     },
+    updatePlaylist: (state, action: PayloadAction<Playlist>) => {
+      const updated = action.payload;
+      const index = state.playlists.personalPlaylists.findIndex(
+        (p) => p._id === updated._id,
+      );
+      if (index !== -1) {
+        state.playlists.personalPlaylists[index] = updated;
+      }
+    },
     setSongsType: (state, action: PayloadAction<songTypes>) => {
       state.songsType = action.payload;
     },
@@ -231,6 +243,11 @@ const songSlice = createSlice({
       state.tempNextCursor = undefined;
       state.triggerFetch = 0;
       state.tempTriggerFetch = 0;
+      // Playlists belong to a specific user - stale cached playlists (e.g. a
+      // guest's view with only the owner's favourites) must not survive a
+      // login/logout, or the playlist page would keep showing them and never
+      // refetch the authenticated list.
+      state.playlists = { defaultPlaylists: [], personalPlaylists: [] };
     };
 
     builder
@@ -262,6 +279,7 @@ export const {
   setTempSortChanged,
   setTempSortOrder,
   setPlaylists,
+  updatePlaylist,
   setSongsType,
   updatePlaylistSongCount,
   incrementPlaylistSongCount,

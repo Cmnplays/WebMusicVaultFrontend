@@ -1,6 +1,7 @@
 // redux/slices/uiSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { Song } from "../services/song.services";
+import type { Playlist } from "../services/playlist.services";
 
 interface UIState {
   loading: boolean;
@@ -16,6 +17,8 @@ interface UIState {
   mountCreatePlaylistModal: boolean;
   mountAddToPlaylistModal: boolean;
   actionSong: Song | null;
+  actionPlaylist: Playlist | null;
+  mountEditPlaylistModal: boolean;
   authPromptText: string;
 }
 
@@ -34,6 +37,8 @@ const initialState: UIState = {
   mountCreatePlaylistModal: false,
   mountAddToPlaylistModal: false,
   actionSong: null,
+  actionPlaylist: null,
+  mountEditPlaylistModal: false,
 };
 
 const uiSlice = createSlice({
@@ -76,8 +81,14 @@ const uiSlice = createSlice({
     setMountAddToPlaylistModal: (state, action: PayloadAction<boolean>) => {
       state.mountAddToPlaylistModal = action.payload;
     },
+    setMountEditPlaylistModal: (state, action: PayloadAction<boolean>) => {
+      state.mountEditPlaylistModal = action.payload;
+    },
     setActionSong: (state, action: PayloadAction<Song | null>) => {
       state.actionSong = action.payload;
+    },
+    setActionPlaylist: (state, action: PayloadAction<Playlist | null>) => {
+      state.actionPlaylist = action.payload;
     },
     setAuthPromptString: (state, action: PayloadAction<string>) => {
       state.authPromptText = action.payload;
@@ -98,7 +109,9 @@ export const {
   setMountEditSongModal,
   setMountCreatePlaylistModal,
   setMountAddToPlaylistModal,
+  setMountEditPlaylistModal,
   setActionSong,
+  setActionPlaylist,
   setAuthPromptString,
 } = uiSlice.actions;
 

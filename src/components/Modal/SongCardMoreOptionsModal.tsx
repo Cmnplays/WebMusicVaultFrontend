@@ -1,6 +1,6 @@
 import React from "react";
 import type { Song } from "@/services/song.services";
-import { Pencil, Trash, Download, ListStart } from "lucide-react";
+import { Pencil, Trash, Download, ListStart, Trash2 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import PinBtn from "../SongList/PinBtn";
 import AddToPlaylistBtn from "../SongList/AddToPlaylistBtn";
@@ -13,6 +13,7 @@ import {
 } from "@/reduxSlices/ui.slice";
 import {
   addToPlayNext,
+  clearPlayNext,
   MAX_UP_NEXT_QUEUE_SIZE,
 } from "@/reduxSlices/player.slice";
 
@@ -95,6 +96,31 @@ const SongCardMoreOptionsModal: React.FC<SongCardMoreOptionsModalProps> = ({
           <ListStart className="h-4 w-4 shrink-0" />
           <span>Play next · {upNextQueue.length}/{MAX_UP_NEXT_QUEUE_SIZE}</span>
         </button>
+
+        {upNextQueue.length > 0 && (
+          <button
+            type="button"
+            onClick={() => {
+              dispatch(clearPlayNext());
+              onClose();
+              showToast({ message: "Queue cleared", type: "success" });
+            }}
+            className="
+              flex w-full items-center gap-3
+              px-4 py-3
+              text-sm font-medium text-red-400/80
+              transition-all duration-150
+              hover:bg-white/10
+              hover:text-red-400
+              active:scale-[0.98]
+              focus:outline-none
+              focus:bg-white/10
+            "
+          >
+            <Trash2 className="h-4 w-4 shrink-0" />
+            <span>Clear Queue</span>
+          </button>
+        )}
 
         <PinBtn
           isPinned={isPinned}

@@ -57,6 +57,7 @@ export const useAudioPlayer = ({
   const recoveringUrlRef = React.useRef<string | null>(null);
   const retriedUrlRef = React.useRef<string | null>(null);
   const wasPlayingRef = React.useRef(false);
+  const lastTimeDispatchRef = React.useRef(0);
 
   useEffect(() => {
     // User-initiated play (paused -> playing) starts a new recovery
@@ -129,7 +130,20 @@ export const useAudioPlayer = ({
       dispatch(setDuration(song.duration ?? 0));
     };
     const onTimeUpdate = () => {
-      dispatch(setCurrentTime(song.currentTime ?? 0));
+      const time = song.currentTime ?? 0;
+      currentTimeRef.current = time;
+
+      // Do not re-render every subscriber for every media timeupdate event.
+      // The player only displays whole seconds, so a quarter-second cadence
+      // keeps the progress UI smooth without flooding Redux during playback.
+      if (
+        Math.abs(time - lastTimeDispatchRef.current) >= 0.25 ||
+        song.paused ||
+        song.ended
+      ) {
+        lastTimeDispatchRef.current = time;
+        dispatch(setCurrentTime(time));
+      }
     };
 
     // SYNC: Update UI if paused via hardware/lock-screen buttons

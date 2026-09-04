@@ -140,7 +140,7 @@ const LikedSongsPage = () => {
         </button>
         {playlistInfo ? (
           <>
-            <h1 className="text-3xl font-bold">{playlistInfo.name}</h1>
+            <h1 className="text-3xl font-bold break-words leading-tight">{playlistInfo.name}</h1>
             {playlistInfo.description && (
               <p className="text-gray-300 mt-2">{playlistInfo.description}</p>
             )}

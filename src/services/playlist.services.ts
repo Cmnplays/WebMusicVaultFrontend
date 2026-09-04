@@ -63,6 +63,12 @@ export interface CreatePlaylistInput {
   status?: "private" | "public";
 }
 
+export interface UpdatePlaylistInput {
+  name?: string;
+  description?: string;
+  status?: "private" | "public";
+}
+
 export interface AddSongsResponse {
   playlist: PlaylistWithSongs;
   skipped: {
@@ -160,6 +166,19 @@ const removeSongs = async (
   return response.data.data;
 };
 
+const updatePlaylist = async (
+  playlistId: string,
+  input: UpdatePlaylistInput,
+): Promise<Playlist> => {
+  const response = await api.put(`/playlist/${playlistId}`, input);
+  if (response.data.status !== 200) {
+    throw new Error(
+      response.data.message ?? "There was a problem while updating the playlist",
+    );
+  }
+  return response.data.data;
+};
+
 export {
   getPlaylists,
   getPlaylistSongs,
@@ -167,4 +186,5 @@ export {
   createPlaylist,
   addSongs,
   removeSongs,
+  updatePlaylist,
 };

@@ -5,6 +5,7 @@ import { useAppSelector } from "@/store/hook";
 import EditSongModal from "@/components/Modal/EditSongModal";
 import CreatePlaylistModal from "@/components/Modal/CreatePlaylistModal";
 import AddToPlaylistModal from "@/components/Modal/AddToPlaylistModal";
+import EditPlaylistModal from "@/components/Modal/EditPlaylistModal";
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const isAdmin = useAppSelector((state) => state.auth.user?.role) === "admin";
   return (
@@ -17,6 +18,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </main>
       {isAdmin && <EditSongModal />}
       <CreatePlaylistModal />
+      <EditPlaylistModal />
       <AddToPlaylistModal />
       <SongPlayerCombined />
     </div>

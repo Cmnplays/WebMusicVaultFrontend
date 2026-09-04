@@ -1,24 +1,24 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { setMountCreatePlaylistModal } from "@/reduxSlices/ui.slice";
+import { setMountEditPlaylistModal } from "@/reduxSlices/ui.slice";
 import { fadeInPanel, fadeOutPanel } from "@/lib/animations";
 import { X, ListMusic, Music2, Globe, Lock } from "lucide-react";
 import {
-  createPlaylist,
-  CreatePlaylistInput,
+  updatePlaylist,
+  UpdatePlaylistInput,
 } from "@/services/playlist.services";
-import { setPlaylists } from "@/reduxSlices/song.slice";
+import { updatePlaylist as syncPlaylistInStore } from "@/reduxSlices/song.slice";
 import { showToast } from "@/hooks/useToast";
 
-const CreatePlaylistModal = () => {
+const EditPlaylistModal = () => {
   const dispatch = useAppDispatch();
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const mountCreatePlaylistModal = useAppSelector(
-    (state) => state.ui.mountCreatePlaylistModal,
+  const mountEditPlaylistModal = useAppSelector(
+    (state) => state.ui.mountEditPlaylistModal,
   );
-  const playlists = useAppSelector((state) => state.song.playlists);
+  const playlist = useAppSelector((state) => state.ui.actionPlaylist);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -26,40 +26,38 @@ const CreatePlaylistModal = () => {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!mountCreatePlaylistModal) return;
+    if (!mountEditPlaylistModal || !playlist) return;
+    setName(playlist.name);
+    setDescription(playlist.description ?? "");
+    setStatus(playlist.status);
     if (panelRef.current) {
       fadeInPanel(panelRef.current);
     }
-  }, [mountCreatePlaylistModal]);
+  }, [mountEditPlaylistModal, playlist]);
 
   const handleClose = () => {
     if (!panelRef.current) {
-      dispatch(setMountCreatePlaylistModal(false));
+      dispatch(setMountEditPlaylistModal(false));
       return;
     }
     fadeOutPanel(panelRef.current, () => {
-      dispatch(setMountCreatePlaylistModal(false));
+      dispatch(setMountEditPlaylistModal(false));
     });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submitting) return;
+    if (submitting || !playlist) return;
     setSubmitting(true);
     try {
-      const input: CreatePlaylistInput = {
-        name: name.trim(),
+      const input: UpdatePlaylistInput = {
+        name: name.trim() || undefined,
         description: description.trim() || undefined,
         status,
       };
-      const newPlaylist = await createPlaylist(input);
-      dispatch(
-        setPlaylists({
-          ...playlists,
-          personalPlaylists: [...playlists.personalPlaylists, newPlaylist],
-        }),
-      );
-      showToast({ message: "Playlist created successfully", type: "success" });
+      const updated = await updatePlaylist(playlist._id, input);
+      dispatch(syncPlaylistInStore(updated));
+      showToast({ message: "Playlist updated successfully", type: "success" });
       handleClose();
     } catch (err) {
       const apiError = err as ApiError;
@@ -72,7 +70,7 @@ const CreatePlaylistModal = () => {
     }
   };
 
-  if (!mountCreatePlaylistModal) return null;
+  if (!mountEditPlaylistModal || !playlist) return null;
 
   return (
     <>
@@ -104,7 +102,7 @@ const CreatePlaylistModal = () => {
                 Playlists
               </span>
               <h2 className="text-base font-bold text-white leading-tight">
-                Create New Playlist
+                Edit Playlist
               </h2>
             </div>
           </div>
@@ -174,11 +172,7 @@ const CreatePlaylistModal = () => {
               <button
                 type="button"
                 onClick={() => setStatus("private")}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${
-                  status === "private"
-                    ? "bg-purple-600/40 border-purple-400/50 text-white"
-                    : "bg-white/5 border-white/10 text-white/60 hover:bg-white/10"
-                }`}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${status === "private" ? "bg-purple-600/40 border-purple-400/50 text-white" : "bg-white/5 border-white/10 text-white/60 hover:bg-white/10"}`}
               >
                 <Lock className="w-4 h-4" />
                 Private
@@ -186,11 +180,7 @@ const CreatePlaylistModal = () => {
               <button
                 type="button"
                 onClick={() => setStatus("public")}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${
-                  status === "public"
-                    ? "bg-purple-600/40 border-purple-400/50 text-white"
-                    : "bg-white/5 border-white/10 text-white/60 hover:bg-white/10"
-                }`}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${status === "public" ? "bg-purple-600/40 border-purple-400/50 text-white" : "bg-white/5 border-white/10 text-white/60 hover:bg-white/10"}`}
               >
                 <Globe className="w-4 h-4" />
                 Public
@@ -213,7 +203,7 @@ const CreatePlaylistModal = () => {
               className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold bg-white text-purple-900 rounded-xl hover:bg-purple-100 active:scale-[0.98] transition-all shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ListMusic className="w-3.5 h-3.5" />
-              {submitting ? "Creating..." : "Create Playlist"}
+              {submitting ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>
@@ -222,4 +212,4 @@ const CreatePlaylistModal = () => {
   );
 };
 
-export default CreatePlaylistModal;
+export default EditPlaylistModal;

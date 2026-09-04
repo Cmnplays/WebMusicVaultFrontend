@@ -76,10 +76,12 @@ const PinBtn: React.FC<PinBtnProps> = ({
       type="button"
       onClick={handleTogglePin}
       disabled={loading}
-      className="flex items-center gap-3 w-full px-4 py-3 text-sm text-left text-white/80 hover:bg-white/10 disabled:opacity-60 disabled:cursor-not-allowed"
+      className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-left text-white/80 hover:bg-white/10 disabled:opacity-60 disabled:cursor-not-allowed "
     >
       <Pin className="w-4 h-4" fill={isPinned ? "currentColor" : "none"} />
-      {isPinned ? "Unpin song" : `Pin song · ${pinnedSongs.length}/3`}
+      <span>
+        {isPinned ? "Unpin song" : `Pin song · ${pinnedSongs.length}/3`}
+      </span>
     </button>
   );
 };

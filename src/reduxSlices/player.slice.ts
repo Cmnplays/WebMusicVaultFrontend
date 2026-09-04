@@ -85,6 +85,11 @@ const playerSlice = createSlice({
     dequeueUpNext: (state) => {
       state.upNextQueue.shift();
     },
+    // Clear the Play Next queue. Keeps playNextContext unchanged so new
+    // adds after clearing still go to the same page's queue.
+    clearPlayNext: (state) => {
+      state.upNextQueue = [];
+    },
     // Mark which context the queue belongs to. If the context changes
     // (i.e. a different page's song starts playing), the queue resets and
     // belongs to the new context.
@@ -126,6 +131,7 @@ export const {
   setMiniPanelOpen,
   addToPlayNext,
   dequeueUpNext,
+  clearPlayNext,
   setPlayNextContext,
 } = playerSlice.actions;
 
