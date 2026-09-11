@@ -1,4 +1,4 @@
-"use clent";
+"use client";
 import { useEffect } from "react";
 import type { Song } from "../services/song.services";
 type controls = {
@@ -27,7 +27,7 @@ function useMediaSession(
       "previoustrack",
       controllers.moveToPreviousSong,
     );
-  }, [playing, playingSong]);
+  }, [playing, playingSong, controllers]);
 }
 
 export default useMediaSession;

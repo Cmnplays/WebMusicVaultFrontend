@@ -26,13 +26,13 @@ import { toastList } from "@/utils/toastList";
 const bottomNavItems = [
   { name: "Music", to: "/", icon: Home },
   { name: "Playlist", to: "/playlist", icon: ListMusic },
+  { name: "About", to: "/about", icon: Info },
   { name: "Shuffle", to: "/shuffle", icon: Shuffle },
 ];
 
 const moreRoutes = [
   { name: "Upload", to: "/upload", icon: CloudUpload },
   { name: "Profile", to: "/me", icon: CircleUser },
-  { name: "About", to: "/about", icon: Info },
 ];
 
 const Navbar = () => {
@@ -59,7 +59,9 @@ const Navbar = () => {
       await logout();
       toastList.loggedOut();
     } catch {
-      toastList.genericError("Logout failed on the server, but you're signed out here.");
+      toastList.genericError(
+        "Logout failed on the server, but you're signed out here.",
+      );
     } finally {
       dispatch(clearAuth());
       setMoreOpen(false);
@@ -185,7 +187,7 @@ const Navbar = () => {
           </div>
         )}
 
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1a0635]/95 backdrop-blur-md border-t border-purple-500/20 shadow-[0_-2px_20px_rgba(0,0,0,0.4)]">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#1a0635]/95 backdrop-blur-md mobile-no-blur border-t border-purple-500/20 shadow-[0_-2px_20px_rgba(0,0,0,0.4)]">
           <div className="flex items-center justify-around px-2 py-2">
             {bottomNavItems.map(({ name, to, icon: Icon }) => {
               const isActive = pathname === to;

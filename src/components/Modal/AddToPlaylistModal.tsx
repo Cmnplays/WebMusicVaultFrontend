@@ -10,6 +10,7 @@ import { X, ListPlus, ListMusic, Check, Loader2 } from "lucide-react";
 import { addSongs, getPlaylists } from "@/services/playlist.services";
 import { setPlaylists } from "@/reduxSlices/song.slice";
 import { incrementPlaylistSongCount } from "@/reduxSlices/song.slice";
+import getApiErrorMessage from "@/utils/getApiErrorMessage";
 import { showToast } from "@/hooks/useToast";
 
 const AddToPlaylistModal = () => {
@@ -81,10 +82,13 @@ const AddToPlaylistModal = () => {
       }
       handleClose();
     } catch (err) {
-      showToast({
-        message: err instanceof Error ? err.message : "Something went wrong",
-        type: "error",
-      });
+      const message = getApiErrorMessage(err);
+      if (message) {
+        showToast({
+          message,
+          type: "error",
+        });
+      }
     } finally {
       setAddingId(null);
     }
@@ -106,14 +110,14 @@ const AddToPlaylistModal = () => {
       {/* Backdrop */}
       <div
         onClick={handleClose}
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-110"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-110 mobile-no-blur"
         aria-hidden="true"
       />
 
       <div
         ref={panelRef}
         style={{ transform: "translateY(100%)", opacity: 0 }}
-        className="fixed bottom-0 left-0 w-full max-w-5xl mx-auto right-0 bg-gradient-to-tr from-purple-900/95 via-purple-800/95 to-purple-700/95 backdrop-blur-xl border-t border-white/10 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.4)] text-white z-120 py-4 px-4 lg:py-5 lg:px-6 lg:rounded-2xl lg:bottom-6"
+        className="fixed bottom-0 left-0 w-full max-w-5xl mx-auto right-0 bg-gradient-to-tr from-purple-900/95 via-purple-800/95 to-purple-700/95 backdrop-blur-xl border-t border-white/10 rounded-t-2xl shadow-[0_-8px_30px_rgba(0,0,0,0.4)] text-white z-120 py-4 px-4 lg:py-5 lg:px-6 lg:rounded-2xl lg:bottom-6 gpu-hint"
       >
         {/* Drag handle (mobile affordance) */}
         <div className="flex justify-center mb-3 lg:hidden">

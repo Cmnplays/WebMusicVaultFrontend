@@ -66,7 +66,7 @@ const MiniPlayer = ({
     <div
       ref={panelRef}
       className={cn(
-        "relative w-full bg-[#1a0635] border-t shadow-[0_-4px_20px_rgba(0,0,0,0.4)] cursor-pointer select-none transition-colors duration-200",
+        "relative w-full bg-[#1a0635] border-t shadow-[0_-4px_20px_rgba(0,0,0,0.4)] cursor-pointer select-none transition-colors duration-200 gpu-hint",
         isPinned ? "border-amber-400/25" : "border-purple-500/20",
         !miniPanelOpen && "opacity-0 translate-y-full pointer-events-none",
       )}
@@ -101,7 +101,7 @@ const MiniPlayer = ({
                 w-6 h-6
                 rounded-full
                 bg-black/40
-                backdrop-blur-xl
+                backdrop-blur-xl mobile-no-blur
                 border border-purple-400/70
                 shadow-[0_0_12px_rgba(168,85,247,0.45)]
               "

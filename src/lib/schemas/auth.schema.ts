@@ -25,7 +25,7 @@ const displayName = z
 
 const password = z
   .string()
-  .min(6, "Password must be at least 6 characters long")
+  .min(8, "Password must be at least 8 characters long")
   .max(50, "Password must be less than or equal to 50 characters");
 
 const identifier = email.or(username);

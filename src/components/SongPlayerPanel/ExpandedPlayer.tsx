@@ -53,9 +53,10 @@ const ExpandedPlayer = ({
     return (
       playingSong.palette?.darkVibrant ??
       playingSong.palette?.vibrant ??
-      (playingSong.coverImageUrl
-        ? "#1a0635"
-        : gradientColors[getSongGradientIndex(playingSong._id, playingSong.title)])
+      gradientColors[
+        getSongGradientIndex(playingSong._id, playingSong.title)
+      ] ??
+      "#1a0635"
     );
   }, [playingSong]);
 
@@ -98,12 +99,12 @@ const ExpandedPlayer = ({
         transition: "background-color 0.8s ease",
       }}
       className={cn(
-        "fixed inset-0 z-[100] flex flex-col text-white overflow-hidden",
+        "fixed inset-0 z-[100] flex flex-col text-white overflow-hidden gpu-hint",
         !expandedPanelOpen && "opacity-0 translate-y-full pointer-events-none",
       )}
     >
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/90 pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/90 pointer-events-none z-0" />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col h-full min-h-0">
@@ -148,7 +149,7 @@ const ExpandedPlayer = ({
                   w-9 h-9
                   rounded-full
                   bg-black/40
-                  backdrop-blur-xl
+                  backdrop-blur-xl mobile-no-blur
                   border border-purple-400/70
                   shadow-[0_0_14px_rgba(168,85,247,0.5)]
                 "

@@ -50,7 +50,13 @@ export const useHandleDownload = (song?: Song) => {
 
       const a = document.createElement("a");
       a.href = url;
-      a.download = targetSong.title;
+      // Derive the file extension from the URL Cloudinary actually serves
+      // (e.g. ".../<publicId>.mp3?signature"), never hardcode it — if the
+      // app ever supports other formats, downloads adapt automatically.
+      const urlPath = targetSong.fileUrl.split("?")[0];
+      const lastDot = urlPath.lastIndexOf(".");
+      const ext = lastDot > -1 ? urlPath.slice(lastDot) : ".mp3";
+      a.download = `${targetSong.title}${ext}`;
       document.body.appendChild(a);
       a.click();
       a.remove();

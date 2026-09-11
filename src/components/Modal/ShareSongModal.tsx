@@ -60,7 +60,7 @@ const ShareSongModal: React.FC<ShareSongProps> = ({ title, songId }) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-110  flex items-center justify-center bg-background/80 backdrop-blur-md px-4 text-foreground"
+      className="fixed inset-0 z-110  flex items-center justify-center bg-background/80 backdrop-blur-md px-4 text-foreground mobile-no-blur"
       onClick={(e) => {
         if (e.target === e.currentTarget) closeWithAnimation();
       }}

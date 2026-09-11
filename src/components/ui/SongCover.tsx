@@ -127,18 +127,13 @@ const SongCover: React.FC<SongCoverProps> = ({
       role={src ? undefined : "img"}
       aria-label={title}
       className={cn(
-        "relative rounded-xl overflow-hidden flex items-center justify-center select-none transition-all duration-300 group",
+        "relative rounded-xl overflow-hidden flex items-center justify-center select-none",
         src ? "bg-zinc-900" : cn("bg-gradient-to-br", gradientClass),
         config.container,
         className
       )}
       style={!src ? {
-        boxShadow: `
-          0 10px 20px -5px rgba(0, 0, 0, 0.3),
-          0 20px 40px -10px ${colors.from}44,
-          inset 0 1px 1px rgba(255, 255, 255, 0.3),
-          inset 0 -1px 1px rgba(0, 0, 0, 0.3)
-        `,
+        boxShadow: `0 10px 20px -5px rgba(0, 0, 0, 0.3), 0 20px 40px -10px ${colors.from}44`,
       } : {
         boxShadow: "0 10px 30px rgba(0,0,0,0.4)"
       }}
@@ -150,11 +145,10 @@ const SongCover: React.FC<SongCoverProps> = ({
           fill
           sizes="(max-width: 768px) 100vw, 384px"
           className="object-cover"
-          priority={size === "lg"}
         />
       ) : (
         <>
-          {/* Merged highlight + reflection into single layer (was 2 separate divs + blur layer + noise) */}
+          {/* Single highlight overlay (merged from 3 separate layers) */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/20 opacity-60 pointer-events-none"></div>
 
           {/* Main initials content */}
@@ -163,25 +157,18 @@ const SongCover: React.FC<SongCoverProps> = ({
               className={cn(config.initialsSize, "font-black text-white leading-none")}
               style={{
                 letterSpacing: "0.1em",
-                WebkitTextStroke: "0.5px rgba(255,255,255,0.1)",
-                // Patch 2: text-shadow replaces drop-shadow filter chain — paint-only, no filter graph pass
-                textShadow: size === "lg"
-                  ? "2px 2px 0px rgba(0,0,0,0.2), 4px 4px 8px rgba(0,0,0,0.3), 0px 1px 0px rgba(255,255,255,0.1)"
-                  : "2px 2px 0px rgba(0,0,0,0.2), 4px 4px 0px rgba(0,0,0,0.15), 8px 8px 12px rgba(0,0,0,0.3), 12px 12px 20px rgba(0,0,0,0.2), 1px 1px 0px rgba(255,255,255,0.1), -1px -1px 0px rgba(0,0,0,0.3)"
+                textShadow: "2px 2px 4px rgba(0,0,0,0.3)",
               }}
             >
               {initials}
             </p>
             {size === "lg" && artist && (
-              <p className="mt-4 text-xs font-bold tracking-[0.3em] text-white/40 uppercase drop-shadow-md text-center max-w-[80%] line-clamp-2">
+              <p className="mt-4 text-xs font-bold tracking-[0.3em] text-white/40 uppercase text-center max-w-[80%] line-clamp-2">
                 {artist}
               </p>
             )}
           </div>
 
-          {/* Bottom Reflection / Depth */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
-          
           {/* Border light effect */}
           <div className="absolute inset-0 rounded-xl border border-white/10 pointer-events-none"></div>
         </>

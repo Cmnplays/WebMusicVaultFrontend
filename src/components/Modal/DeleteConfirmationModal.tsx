@@ -80,9 +80,9 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
         closeWithAnimation();
         moveToNextSong();
       }, 1200);
-    } catch (err) {
-      console.error(err);
-      setMessage("Failed to delete the song");
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : "Failed to delete the song";
+      setMessage(msg);
     } finally {
       setClose(true);
       dispatch(setDeleting(false));
@@ -92,7 +92,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-110 flex items-center justify-center bg-background/80 backdrop-blur-md px-4 text-foreground"
+      className="fixed inset-0 z-110 flex items-center justify-center bg-background/80 backdrop-blur-md px-4 text-foreground mobile-no-blur"
       style={{ transformOrigin: "center" }}
     >
       <div className="w-full max-w-md rounded-xl bg-card border border-border p-6 shadow-xl">
