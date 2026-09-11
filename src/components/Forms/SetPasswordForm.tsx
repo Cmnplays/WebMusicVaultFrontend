@@ -86,7 +86,7 @@ export function SetPasswordForm({
                   </button>
                 </div>
                 <FieldDescription>
-                  Must be at least 6 characters long.
+                  Must be at least 8 characters long.
                 </FieldDescription>
                 {errors.password && (
                   <p className="text-sm text-red-500 mt-1">

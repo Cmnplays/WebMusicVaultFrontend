@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useSongs } from "@/hooks/useSongs";
 import { usePlaySong } from "@/hooks/usePlaySong";
@@ -58,18 +58,32 @@ const MusicPage: React.FC = () => {
       try {
         const song = await getSongWithId(songId);
         dispatch(setPlayingSong(song));
-        dispatch(setPlaying(true));
+                dispatch(setPlaying(true));
         dispatch(setMiniPanelOpen(true));
       } catch (err) {
         console.error("Deep-link: failed to fetch song", err);
         toastList.genericError("Couldn't play the shared song.");
-      } finally {
-        router.replace("/", { scroll: false });
       }
     };
 
     fetchAndPlay();
-  }, [shouldFetchUser, searchParams, dispatch, router]);
+  }, [shouldFetchUser, searchParams, dispatch]);
+
+  // Route transition after playback state is set + effects processed
+  const deepLinkPlayedRef = useRef(false);
+  useEffect(() => {
+    const songId = searchParams?.get("song");
+    if (
+      songId &&
+      !deepLinkPlayedRef.current &&
+      playing &&
+      playingSong &&
+      !shouldFetchUser
+    ) {
+      deepLinkPlayedRef.current = true;
+      router.replace("/", { scroll: false });
+    }
+  }, [playing, playingSong, shouldFetchUser, searchParams, router]);
 
   return (
     <>

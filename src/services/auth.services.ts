@@ -36,7 +36,7 @@ const verifyUsername = async (username: string): Promise<boolean> => {
   if (response.data.status !== 200) {
     throw new Error(
       response.data.message ||
-        "There was a problem while getting username suggestions",
+        "There was a problem while verifying the username",
     );
   }
   return response.data.data;
@@ -84,8 +84,7 @@ const requestOtp = async ({
   );
   if (response.data.status !== 200) {
     throw new Error(
-      response.data.message ||
-        "There was a problem while getting username suggestions",
+      response.data.message || "There was a problem while sending the OTP",
     );
   }
 };
@@ -100,8 +99,7 @@ const verifyEmail = async (data: {
   );
   if (response.data.status !== 200) {
     throw new Error(
-      response.data.message ||
-        "There was a problem while getting username suggestions",
+      response.data.message || "There was a problem while verifying the email",
     );
   }
 };
@@ -144,7 +142,7 @@ const setPassword = async (
   );
   if (response.data.status !== 200) {
     throw new Error(
-      response.data.message || "There was a problem while registering user",
+      response.data.message || "There was a problem while setting the password",
     );
   }
   return response.data.data;

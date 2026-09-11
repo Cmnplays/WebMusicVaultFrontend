@@ -20,7 +20,10 @@ const AuthCallbackHandler = () => {
   useEffect(() => {
     const auth = searchParams?.get("auth") as string;
     const code = searchParams?.get("code") as string;
-    if (!auth || !code) return;
+    // NOTE: the guard must NOT require both params. The backend's failure
+    // redirect is `?auth=error` WITHOUT a code — requiring both made the
+    // failure toast below unreachable and left `?auth=error` in the URL.
+    if (!auth && !code) return;
 
     async function handleGoogleLogin(code: string) {
       try {

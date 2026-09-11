@@ -67,7 +67,7 @@ const getSongs = async ({
       sortOrder,
       sortBy,
     },
-    timeout: 1000 * 100, //120seconds
+    timeout: 1000 * 100,
   });
   if (response.data.status !== 200) {
     throw new Error(response.data.message || "Failed to fetch songs");
@@ -75,12 +75,14 @@ const getSongs = async ({
   return response.data.data;
 };
 
-const deleteSong = async (id: string): Promise<number> => {
+const deleteSong = async (id: string): Promise<null> => {
   const response = await api.delete(`song/${id}`);
   if (response.data.status !== 200) {
-    throw new Error(response.data.message || "Failed to fetch songs");
+    throw new Error(response.data.message || "Failed to delete the song");
   }
-  return response.data.data;
+  // Backend responds with data: null on success (song.controller's
+  // deleteSongById wraps null in ApiResponse), so the return type is null.
+  return response.data.data as null;
 };
 
 const getSongsLength = async (): Promise<number> => {

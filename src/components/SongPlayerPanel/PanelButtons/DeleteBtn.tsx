@@ -1,18 +1,22 @@
 "use client";
-import { useAppDispatch } from "@/store/hook";
+import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { setPlaying } from "@/reduxSlices/player.slice";
-import { setMountDeleteConfirmation } from "@/reduxSlices/ui.slice";
+import { setMountDeleteConfirmation, setActionSong } from "@/reduxSlices/ui.slice";
 import { Trash } from "lucide-react";
 interface DeleteBtnProps {
   audioRef: AudioRef;
 }
 const DeleteBtn: React.FC<DeleteBtnProps> = ({ audioRef }) => {
   const dispatch = useAppDispatch();
+  const playingSong = useAppSelector((state) => state.player.playingSong);
 
   const handleDelete = () => {
     if (!audioRef.current) return;
     dispatch(setPlaying(false));
     audioRef.current.pause();
+    if (playingSong) {
+      dispatch(setActionSong(playingSong));
+    }
     dispatch(setMountDeleteConfirmation(true));
   };
   return (

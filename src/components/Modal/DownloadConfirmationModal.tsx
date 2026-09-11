@@ -61,7 +61,7 @@ const DownloadConfirmation: React.FC<DownloadConfirmationProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-110 flex items-center justify-center bg-background/80 backdrop-blur-md px-4 text-foreground"
+      className="fixed inset-0 z-110 flex items-center justify-center bg-background/80 backdrop-blur-md px-4 text-foreground mobile-no-blur"
       style={{ transformOrigin: "center" }}
     >
       <div className="w-full max-w-md rounded-xl bg-card border border-border p-6 shadow-xl">

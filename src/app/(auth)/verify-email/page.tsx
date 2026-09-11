@@ -55,6 +55,10 @@ const Page = () => {
           otp: data.otp,
         };
         await setPassword(dataToSend);
+        // The plaintext password has served its purpose — wipe it from
+        // sessionStorage immediately so it can't be read later by any XSS
+        // or linger across future flows in this tab.
+        sessionStorage.removeItem("password");
         dispatch(setShouldFetchUser(true));
         router.replace("/login");
         toastList.passwordSetSuccess(purpose);

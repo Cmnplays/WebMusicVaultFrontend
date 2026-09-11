@@ -129,7 +129,8 @@ const createPlaylist = async (
   input: CreatePlaylistInput,
 ): Promise<Playlist> => {
   const response = await api.post("/playlist", input);
-  if (response.data.status !== 200) {
+  // Wire status AND body status are 201 (Created) — both set by the backend.
+  if (response.data.status !== 201) {
     throw new Error(
       response.data.message ??
         "There was a problem while creating the playlist",
