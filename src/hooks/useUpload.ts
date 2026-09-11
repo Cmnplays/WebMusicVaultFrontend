@@ -36,14 +36,26 @@ export function useUpload() {
   };
 
   const addFiles = useCallback((files: File[]) => {
-    const newEntries: SongEntry[] = files.map((file) => ({
+    const existing = new Set(
+      songsRef.current.map(
+        (s) => `${s.file.name}|${s.file.size}|${s.file.lastModified}`,
+      ),
+    );
+    const unseen = files.filter((file) => {
+      const key = `${file.name}|${file.size}|${file.lastModified}`;
+      if (existing.has(key)) return false;
+      existing.add(key);
+      return true;
+    });
+    if (!unseen.length) return;
+    const newEntries: SongEntry[] = unseen.map((file) => ({
       id: `${file.name}-${Date.now()}-${Math.random()}`,
       file,
       title: file.name.replace(/\.[^.]+$/, ""),
       artist: "",
       status: "idle",
     }));
-    updateSongs((prev) => [...prev, ...newEntries].slice(0, 5));
+    updateSongs((prev) => [...prev, ...newEntries].slice(0, 10));
   }, []);
 
   const updateEntry = useCallback((id: string, patch: Partial<SongEntry>) => {
@@ -85,9 +97,20 @@ export function useUpload() {
           setStatus(entry.id, "cancelled");
           continue;
         }
-        const axiosErr = err as { response?: { status?: number } };
+        const axiosErr = err as {
+          response?: { status?: number; data?: { message?: string } };
+        };
+        const serverMessage = axiosErr?.response?.data?.message;
         if (axiosErr?.response?.status === 409) {
-          setStatus(entry.id, "exists", "Already exists in library");
+          setStatus(
+            entry.id,
+            "exists",
+            serverMessage || "Already exists in library",
+          );
+        } else if (serverMessage) {
+          // Backend sent an intentional message (e.g. 413 "Audio file is
+          // too large. Maximum allowed size is 25 MB", 400 bad file type).
+          setStatus(entry.id, "error", serverMessage);
         } else if (err instanceof Error) {
           setStatus(entry.id, "error", err.message);
         } else {

@@ -6,7 +6,6 @@ import { ErrorCode } from "@/constants/ErrorCode";
 import { StatusCode } from "@/constants/StatusCode";
 import {
   enableMaintenance,
-  disableMaintenance,
 } from "@/reduxSlices/maintenance.slice";
 const apiBase = process.env.NEXT_PUBLIC_API_URL;
 const api = axios.create({
@@ -93,8 +92,6 @@ api.interceptors.response.use(
         const newAccessToken = response.data.data;
 
         store.dispatch(setAccessToken(newAccessToken));
-        api.defaults.headers.common["Authorization"] =
-          `Bearer ${newAccessToken}`;
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
 
         processQueue(null, newAccessToken);
@@ -120,14 +117,28 @@ api.interceptors.response.use(
             "Server is under maintenance.\n Please try again later!",
         ),
       );
-    } else {
-      store.dispatch(disableMaintenance());
-    }
-
-    if (code === ErrorCode.TOKEN_REVOKED) {
+    } else if (code === ErrorCode.TOKEN_REVOKED) {
       handleSessionExpired(code);
+    } else if (axios.isCancel(error)) {
+      // Request was cancelled (user aborted upload) - silent, no toast
     } else if (!error.response) {
       toastList.networkError();
+    } else if (error.response.status === StatusCode.Unauthorized) {
+      // 401 that wasn't TOKEN_EXPIRED/TOKEN_REVOKED (e.g. "Access token is required",
+      // "Invalid token" when a token was sent but rejected).
+      toastList.sessionExpired();
+      if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+    } else if (error.response.status === StatusCode.Forbidden) {
+      toastList.genericError(
+        error.response?.data?.message ||
+          "You don't have permission to do that.",
+      );
+    } else if (error.response.status === StatusCode.NotFound) {
+      toastList.genericError(
+        error.response?.data?.message || "Resource not found.",
+      );
     } else if (error.response.status === StatusCode.TooManyRequests) {
       // Rate-limited: show a styled in-app toast (reuses the site toast).
       // `Retry-After` is set by express-rate-limit (seconds until reset).
@@ -137,9 +148,10 @@ api.interceptors.response.use(
           ? Math.ceil(retryAfter)
           : undefined,
       );
-    } else if (error.response.status === 500) {
+    } else if (error.response.status === StatusCode.InternalServerError) {
       toastList.internalServerError();
     }
+    // NOTE: For other status codes, we DON'T show a toast here.
     return Promise.reject(error);
   },
 );

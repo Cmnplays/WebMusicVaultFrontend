@@ -9,6 +9,7 @@ import {
 } from "@/reduxSlices/song.slice";
 import { removeSongs } from "@/services/playlist.services";
 import { showToast } from "@/hooks/useToast";
+import getApiErrorMessage from "@/utils/getApiErrorMessage";
 import { usePathname, useParams } from "next/navigation";
 
 interface RemoveFromPlaylistBtnProps {
@@ -43,10 +44,13 @@ const RemoveFromPlaylistBtn: React.FC<RemoveFromPlaylistBtnProps> = ({
         type: "success",
       });
     } catch (err) {
-      showToast({
-        message: err instanceof Error ? err.message : "Something went wrong",
-        type: "error",
-      });
+      const message = getApiErrorMessage(err);
+      if (message) {
+        showToast({
+          message,
+          type: "error",
+        });
+      }
     } finally {
       setRemoving(false);
     }

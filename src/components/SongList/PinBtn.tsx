@@ -10,6 +10,7 @@ import {
 } from "@/reduxSlices/ui.slice";
 import { showToast } from "@/hooks/useToast";
 import { togglePinSong } from "@/services/song.services";
+import getApiErrorMessage from "@/utils/getApiErrorMessage";
 
 interface PinBtnProps {
   isPinned: boolean;
@@ -61,10 +62,13 @@ const PinBtn: React.FC<PinBtnProps> = ({
       } else {
         dispatch(pinSong(song));
       }
-      showToast({
-        message: err instanceof Error ? err.message : "Something went wrong",
-        type: "error",
-      });
+      const message = getApiErrorMessage(err);
+      if (message) {
+        showToast({
+          message,
+          type: "error",
+        });
+      }
     } finally {
       setLoading(false);
       closeMoreOptionsModal();
