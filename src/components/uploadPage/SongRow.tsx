@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import {
   Music,
@@ -75,6 +75,18 @@ export function SongRow({
   onRetry,
 }: SongRowProps) {
   const coverRef = useRef<HTMLInputElement>(null);
+  // Blob preview URL: created once per cover file and revoked on
+  // replace/unmount. Calling URL.createObjectURL directly in JSX used to
+  // leak a brand-new URL (pinned image bytes) on every re-render.
+  const coverUrl = useMemo(
+    () => (entry.coverImage ? URL.createObjectURL(entry.coverImage) : null),
+    [entry.coverImage],
+  );
+  useEffect(() => {
+    return () => {
+      if (coverUrl) URL.revokeObjectURL(coverUrl);
+    };
+  }, [coverUrl]);
   const cfg = statusConfig[entry.status];
 
   const editable =
@@ -250,7 +262,9 @@ export function SongRow({
           >
             {entry.coverImage ? (
               <Image
-                src={URL.createObjectURL(entry.coverImage)}
+                // Safe: inside this branch coverUrl is guaranteed non-null
+                // (the memo only returns null when entry.coverImage is null).
+                src={coverUrl!}
                 alt={`${entry.title || entry.file.name} cover`}
                 width={24}
                 height={24}

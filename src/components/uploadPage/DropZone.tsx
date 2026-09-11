@@ -10,7 +10,7 @@ interface DropZoneProps {
 
 export function DropZone({ onFiles, disabled, currentCount }: DropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const remaining = 5 - currentCount;
+  const remaining = 10 - currentCount;
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ export function DropZone({ onFiles, disabled, currentCount }: DropZoneProps) {
     <div
       role="button"
       tabIndex={disabled || remaining <= 0 ? -1 : 0}
-      aria-label={remaining > 0 ? `Drop audio files here, or press Enter to browse. ${remaining} slot${remaining !== 1 ? "s" : ""} remaining.` : "Maximum 5 songs reached"}
+      aria-label={remaining > 0 ? `Drop audio files here, or press Enter to browse. ${remaining} slot${remaining !== 1 ? "s" : ""} remaining.` : "Maximum 10 songs reached"}
       onClick={() => !disabled && remaining > 0 && inputRef.current?.click()}
       onKeyDown={(e) => {
         if ((e.key === "Enter" || e.key === " ") && !disabled && remaining > 0) {
@@ -64,7 +64,7 @@ export function DropZone({ onFiles, disabled, currentCount }: DropZoneProps) {
             </p>
           </>
         ) : (
-          <p className="text-purple-300/70 text-sm">Max 5 songs reached</p>
+          <p className="text-purple-300/70 text-sm">Max 10 songs reached</p>
         )}
       </div>
       <input
