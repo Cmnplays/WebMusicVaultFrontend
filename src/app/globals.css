@@ -153,11 +153,8 @@
   }
 }
 
-/* Mobile: Remove backdrop-blur on low-end devices (major lag source) */
-/* Placed OUTSIDE @layer so it overrides Tailwind's backdrop-blur-md */
 @media (max-width: 768px) {
   .mobile-no-blur {
     backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
   }
 }
