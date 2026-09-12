@@ -163,7 +163,21 @@ const songSlice = createSlice({
         (p) => p._id === updated._id,
       );
       if (index !== -1) {
-        state.playlists.personalPlaylists[index] = updated;
+        const previous = state.playlists.personalPlaylists[index];
+        state.playlists.personalPlaylists[index] = {
+          ...previous,
+          ...updated,
+          // PUT /playlist/:id serializes `owner` as a bare ObjectId string
+          // (not populated), which blanked the username shown on
+          // PlaylistCard until the next full fetch. Keep the populated owner
+          // unless the response genuinely ships a populated object.
+          owner:
+            updated.owner &&
+            typeof updated.owner === "object" &&
+            "username" in updated.owner
+              ? updated.owner
+              : previous.owner,
+        };
       }
     },
     setSongsType: (state, action: PayloadAction<songTypes>) => {

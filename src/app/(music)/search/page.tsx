@@ -56,8 +56,6 @@ const SearchPage: React.FC = () => {
   useEffect(() => {
     document.title = "Search Songs | WmV";
     dispatch(setSongsType("tempSongs"));
-    // Auto focus search box
-    inputRef.current?.focus();
     return () => {
       dispatch(replaceTempSongs([]));
       dispatch(setTempHasMoreSongs(true));
@@ -66,6 +64,13 @@ const SearchPage: React.FC = () => {
       dispatch(setLoading(false));
     };
   }, [dispatch, tempSortChanged]);
+
+  // Focus the search box only on page entry — NOT when the user later clicks
+  // a sort control. (This effect used to depend on tempSortChanged, so every
+  // sort change re-ran it and yanked the cursor back into the input.)
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   // Clear any pending debounced search on unmount.
   useEffect(() => {

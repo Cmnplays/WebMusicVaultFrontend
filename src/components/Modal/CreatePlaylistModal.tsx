@@ -27,6 +27,11 @@ const CreatePlaylistModal = () => {
 
   useEffect(() => {
     if (!mountCreatePlaylistModal) return;
+    // Reset the form every time it opens — the component stays mounted and
+    // returns null when closed, so state used to linger between sessions.
+    setName("");
+    setDescription("");
+    setStatus("private");
     if (panelRef.current) {
       fadeInPanel(panelRef.current);
     }

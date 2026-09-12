@@ -18,6 +18,7 @@ interface PlaylistListProps {
 const PlaylistList: React.FC<PlaylistListProps> = ({ playlists }) => {
   const dispatch = useAppDispatch();
   const accessToken = useAppSelector((state) => state.auth.accessToken);
+  const playingSong = useAppSelector((state) => state.player.playingSong);
   const total =
     playlists.defaultPlaylists.length + playlists.personalPlaylists.length;
   const personalCount = playlists.personalPlaylists.filter(
@@ -35,7 +36,7 @@ const PlaylistList: React.FC<PlaylistListProps> = ({ playlists }) => {
   };
 
   return (
-    <>
+    <div className="flex-1 min-h-0 overflow-y-auto">
       {/* ── Header ── */}
       <div className="mb-6">
         <div className="flex items-center justify-between gap-3">
@@ -104,7 +105,13 @@ const PlaylistList: React.FC<PlaylistListProps> = ({ playlists }) => {
           </div>
         </>
       )}
-    </>
+
+      {/* MiniPlayer clearance — the fixed MiniPlayer overlays the bottom of
+          the viewport while a song plays, so the last card needs room. */}
+      {playingSong && (
+        <div className="h-20 lg:h-24" aria-hidden="true" />
+      )}
+    </div>
   );
 };
 

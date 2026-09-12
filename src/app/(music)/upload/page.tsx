@@ -5,6 +5,7 @@ import { useUpload } from "@/hooks/useUpload";
 import { DropZone } from "@/components/uploadPage/DropZone";
 import { ProgressList } from "@/components/uploadPage/ProgressList";
 import ProtectedLayout from "@/components/ProtectedLayout";
+import { useAppSelector } from "@/store/hook";
 
 export default function UploadPage() {
   const {
@@ -19,6 +20,7 @@ export default function UploadPage() {
     clearCompleted,
     reset,
   } = useUpload();
+  const playingSong = useAppSelector((state) => state.player.playingSong);
 
   useEffect(() => {
     document.title = "Upload Songs | WmV";
@@ -34,7 +36,11 @@ export default function UploadPage() {
 
   return (
     <ProtectedLayout>
-      <div className="min-h-screen bg-transparent flex justify-center items-start px-4 overflow-y-auto pb-32 pt-4">
+      <div
+        className={`min-h-screen bg-transparent flex justify-center items-start px-4 overflow-y-auto pt-4 ${
+          playingSong ? "pb-44" : "pb-32"
+        }`}
+      >
         <div className="w-full max-w-2xl flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <div
