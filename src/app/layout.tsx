@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "@/components/Providers";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: {
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body className={`relative overflow-x-hidden`}>
         <div className="fixed inset-0 -z-10" />
         <Providers>{children}</Providers>
+        <SpeedInsights />
       </body>
     </html>
   );
