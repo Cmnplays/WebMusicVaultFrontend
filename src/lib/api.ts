@@ -67,6 +67,18 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     const code = error.response?.data?.code;
 
+    // The /auth/refresh-token probe (used by getUser to detect whether a
+    // visitor has a live session) must NEVER trigger interceptor side
+    // effects. A guest with no refresh cookie gets a plain 401 here —
+    // toasting "session expired" and hard-redirecting to /login used to
+    // bounce every guest to the login page on reload. The caller (getUser)
+    // handles the 401 and flips the app into guest mode instead. The
+    // interceptor's internal refresh retry uses raw axios, so it is not
+    // affected by this guard.
+    if (originalRequest?.url?.includes("/auth/refresh-token")) {
+      return Promise.reject(error);
+    }
+
     if (code === ErrorCode.TOKEN_EXPIRED && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise(function (resolve, reject) {
