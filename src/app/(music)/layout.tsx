@@ -1,6 +1,7 @@
 "use client";
 import Navbar from "@/components/Navbar/Navbar";
 import SongPlayerCombined from "@/components/SongPlayerPanel/SongPlayerCombined";
+import DownloadProgress from "@/components/Download/DownloadProgress";
 import { useAppSelector } from "@/store/hook";
 import EditSongModal from "@/components/Modal/EditSongModal";
 import CreatePlaylistModal from "@/components/Modal/CreatePlaylistModal";
@@ -21,6 +22,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <EditPlaylistModal />
       <AddToPlaylistModal />
       <SongPlayerCombined />
+      <DownloadProgress />
     </div>
   );
 }

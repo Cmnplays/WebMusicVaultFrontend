@@ -35,6 +35,7 @@ const SongCardMoreOptionsModal: React.FC<SongCardMoreOptionsModalProps> = ({
   const dispatch = useAppDispatch();
   const playingSong = useAppSelector((state) => state.player.playingSong);
   const upNextQueue = useAppSelector((state) => state.player.upNextQueue);
+  const downloading = useAppSelector((state) => state.ui.downloading);
 
   const handleDownloadClick = () => {
     dispatch(setActionSong(song));
@@ -135,6 +136,10 @@ const SongCardMoreOptionsModal: React.FC<SongCardMoreOptionsModalProps> = ({
         <button
           type="button"
           onClick={handleDownloadClick}
+          disabled={downloading}
+          title={
+            downloading ? "A download is already in progress" : undefined
+          }
           className="
             flex w-full items-center gap-3
             px-4 py-3
@@ -145,6 +150,8 @@ const SongCardMoreOptionsModal: React.FC<SongCardMoreOptionsModalProps> = ({
             active:scale-[0.98]
             focus:outline-none
             focus:bg-white/10
+            disabled:opacity-40
+            disabled:cursor-not-allowed
           "
         >
           <Download className="h-4 w-4 shrink-0" />

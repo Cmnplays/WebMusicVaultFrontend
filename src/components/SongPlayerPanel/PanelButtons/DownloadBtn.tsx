@@ -18,7 +18,7 @@ const DownloadBtn: React.FC<DownloadBtnProps> = ({ downloading }) => {
     >
       <Download
         size={30}
-        className="transition-colors duration-300 hover:text-orange-400"
+        className="transition-colors duration-300 hover:text-orange-400 disabled:opacity-40 disabled:cursor-not-allowed"
       />
     </button>
   );

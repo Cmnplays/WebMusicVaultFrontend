@@ -1,6 +1,8 @@
 "use client";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
+import axios from "axios";
 import { uploadSong } from "@/services/song.services";
+import { showToast } from "./useToast";
 
 export type UploadStatus =
   | "idle"
@@ -24,6 +26,27 @@ export function useUpload() {
   const [songs, setSongs] = useState<SongEntry[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
+  // Synchronous "is an upload in flight?" flag — read directly in the
+  // unmount cleanup below. State (isRunning) can't be used for this: its
+  // value inside the cleanup closure is stale at the moment of unmount.
+  const isUploadingRef = useRef(false);
+
+  // Cancel any in-flight upload when the user leaves the upload page. The
+  // request would otherwise keep running in the background (wasting
+  // bandwidth and backend resources for an upload whose owner is gone).
+  // The toast only fires when an upload was ACTUALLY in progress — an idle
+  // visit to the page never triggers it.
+  useEffect(() => {
+    return () => {
+      if (isUploadingRef.current) {
+        abortRef.current?.abort();
+        showToast({
+          message: "Upload cancelled — you left the page.",
+          type: "info",
+        });
+      }
+    };
+  }, []);
   const songsRef = useRef<SongEntry[]>([]); // 👈 always fresh
 
   // keep ref in sync
@@ -36,18 +59,38 @@ export function useUpload() {
   };
 
   const addFiles = useCallback((files: File[]) => {
-    const existing = new Set(
-      songsRef.current.map(
-        (s) => `${s.file.name}|${s.file.size}|${s.file.lastModified}`,
-      ),
-    );
+    // lastModified isn't populated consistently across browsers (Firefox may
+    // leave it undefined) — normalize it so a re-pick of the same file always
+    // dedupes regardless of browser.
+    const fileKey = (f: File) => `${f.name}|${f.size}|${f.lastModified ?? ""}`;
+    const existing = new Set(songsRef.current.map((s) => fileKey(s.file)));
     const unseen = files.filter((file) => {
-      const key = `${file.name}|${file.size}|${file.lastModified}`;
+      const key = fileKey(file);
       if (existing.has(key)) return false;
       existing.add(key);
       return true;
     });
-    if (!unseen.length) return;
+    const skipped = files.length - unseen.length;
+    if (!unseen.length && skipped > 0) {
+      // Every picked file is already in the queue — give visible feedback
+      // instead of silently doing nothing (previously this looked like a
+      // dead dropzone).
+      showToast({
+        message:
+          skipped === 1
+            ? "Song already in your upload queue"
+            : `${skipped} songs are already in your upload queue`,
+        type: "info",
+      });
+      return;
+    }
+    if (skipped > 0) {
+      // Mixed batch: add the new ones, tell the user what was skipped.
+      showToast({
+        message: `${skipped} already in queue — added ${unseen.length} new`,
+        type: "info",
+      });
+    }
     const newEntries: SongEntry[] = unseen.map((file) => ({
       id: `${file.name}-${Date.now()}-${Math.random()}`,
       file,
@@ -80,6 +123,7 @@ export function useUpload() {
 
     const controller = new AbortController();
     abortRef.current = controller;
+    isUploadingRef.current = true;
     setIsRunning(true);
 
     for (const entry of pending) {
@@ -93,7 +137,11 @@ export function useUpload() {
         await uploadSong(entry, controller.signal);
         setStatus(entry.id, "done");
       } catch (err: unknown) {
-        if (controller.signal.aborted) {
+        // Distinguish a deliberate cancel (user left the page / pressed
+        // Cancel) from a genuine network/server failure. axios.isCancel
+        // catches the in-flight rejection; the signal check covers an abort
+        // that landed between entries.
+        if (axios.isCancel(err) || controller.signal.aborted) {
           setStatus(entry.id, "cancelled");
           continue;
         }
@@ -119,6 +167,7 @@ export function useUpload() {
       }
     }
 
+    isUploadingRef.current = false;
     abortRef.current = null;
     setIsRunning(false);
   }, [isRunning]);

@@ -27,7 +27,6 @@ const MusicPage: React.FC = () => {
   const playing = useAppSelector((state) => state.player.playing);
   const playingSong = useAppSelector((state) => state.player.playingSong);
 
-  const downloading = useAppSelector((state) => state.ui.downloading);
   const deleting = useAppSelector((state) => state.ui.deleting);
 
   const sortOrder = useAppSelector((state) => state.song.sortOrder);
@@ -113,7 +112,7 @@ const MusicPage: React.FC = () => {
         </p>
       )}
 
-      {(downloading || deleting) && (
+      {deleting && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
           <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
         </div>

@@ -6,6 +6,8 @@ import type { Playlist } from "../services/playlist.services";
 interface UIState {
   loading: boolean;
   downloading: boolean;
+  downloadProgress: number | null;
+  downloadTitle: string | null;
   deleting: boolean;
   statusText: string;
   mountDeleteConfirmation: boolean;
@@ -25,6 +27,8 @@ interface UIState {
 const initialState: UIState = {
   loading: false,
   downloading: false,
+  downloadProgress: null,
+  downloadTitle: null,
   deleting: false,
   statusText: "",
   mountDeleteConfirmation: false,
@@ -50,6 +54,21 @@ const uiSlice = createSlice({
     },
     setDownloading: (state, action: PayloadAction<boolean>) => {
       state.downloading = action.payload;
+    },
+    // A download session begins: flip the global flag (disables every other
+    // download button) and remember what is being downloaded for the card.
+    startDownload: (state, action: PayloadAction<string>) => {
+      state.downloading = true;
+      state.downloadTitle = action.payload;
+      state.downloadProgress = 0;
+    },
+    setDownloadProgress: (state, action: PayloadAction<number>) => {
+      state.downloadProgress = action.payload;
+    },
+    finishDownload: (state) => {
+      state.downloading = false;
+      state.downloadProgress = null;
+      state.downloadTitle = null;
     },
     setDeleting: (state, action: PayloadAction<boolean>) => {
       state.deleting = action.payload;
@@ -99,6 +118,9 @@ const uiSlice = createSlice({
 export const {
   setLoading,
   setDownloading,
+  setDownloadProgress,
+  startDownload,
+  finishDownload,
   setDeleting,
   setStatusText,
   setMountDeleteConfirmation,

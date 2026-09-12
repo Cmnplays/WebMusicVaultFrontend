@@ -27,7 +27,6 @@ const ShufflePlayer: React.FC = () => {
   const playingSong = useAppSelector((state) => state.player.playingSong);
   const repeat = useAppSelector((state) => state.player.repeat);
 
-  const downloading = useAppSelector((state) => state.ui.downloading);
   const deleting = useAppSelector((state) => state.ui.deleting);
 
   const songs = useAppSelector((state) => state.song.tempSongs);
@@ -172,7 +171,7 @@ const ShufflePlayer: React.FC = () => {
         </p>
       )}
 
-      {(downloading || deleting) && (
+      {deleting && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
           <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
         </div>

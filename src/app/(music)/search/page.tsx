@@ -32,7 +32,6 @@ const SearchPage: React.FC = () => {
   const loading = useAppSelector((state) => state.ui.loading);
   const playing = useAppSelector((state) => state.player.playing);
   const playingSong = useAppSelector((state) => state.player.playingSong);
-  const downloading = useAppSelector((state) => state.ui.downloading);
   const deleting = useAppSelector((state) => state.ui.deleting);
 
   const tempHasMoreSongs = useAppSelector(
@@ -286,7 +285,7 @@ const SearchPage: React.FC = () => {
         ))}
 
       {/* ── Global action spinner ── */}
-      {(downloading || deleting) && (
+      {deleting && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
           <i className="ri-loader-2-line text-purple-300 text-6xl animate-spin" />
         </div>
